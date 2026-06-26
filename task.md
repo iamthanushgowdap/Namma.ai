@@ -1,0 +1,29 @@
+# Theme Implementation Tasks
+
+- `[x]` Configure Theme Provider and CSS globals
+  - `[x]` Create `components/theme-provider.tsx`
+  - `[x]` Update `app/globals.css` with Tailwind v4 dark mode configuration and theme variables
+  - `[x]` Update root `app/layout.tsx` to mount `ThemeProvider` and inject theme script
+- `[x]` Update Landing Page
+  - `[x]` Update `app/page.tsx` with light/dark adaptive classes
+  - `[x]` Add Theme Toggle button to floating navbar in `app/page.tsx`
+- `[x]` Update Legal Pages
+  - `[x]` Update `app/legal/layout.tsx`
+  - `[x]` Update `app/legal/privacy/page.tsx`
+  - `[x]` Update `app/legal/terms/page.tsx`
+  - `[x]` Update `app/legal/refund/page.tsx`
+- `[x]` Update Auth & Dashboard Shell
+  - `[x]` Update `app/login/page.tsx`
+  - `[x]` Update `components/dashboard-shell.tsx`
+  - `[x]` Add Theme Toggle button to sidebar footer in `components/dashboard-shell.tsx`
+- `[x]` Update Dashboard Pages
+  - `[x]` Update `app/dashboard/page.tsx`
+  - `[x]` Update `app/dashboard/analytics/page.tsx`
+  - `[x]` Update `app/dashboard/automations/page.tsx`
+  - `[x]` Update `app/dashboard/billing/page.tsx`
+  - `[x]` Update `app/dashboard/connections/page.tsx`
+  - `[x]` Update `app/dashboard/inbox/page.tsx`
+  - `[x]` Update `app/dashboard/settings/page.tsx`
+- `[x]` Verification
+  - `[x]` Run production build `npm run build`
+  - `[x]` Manually verify visual correctness in light and dark modes
