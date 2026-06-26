@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { decrypt } from '@/lib/crypto'
-import { sendInstagramMessage, replyToComment, sendInstagramPrivateReply, sendFollowGateCard, sendNotFollowingCard } from '@/lib/meta/messages'
+import { sendInstagramMessage, replyToComment, sendInstagramPrivateReply, sendFollowGateCard, sendNotFollowingCard, sendInstagramImageAttachment } from '@/lib/meta/messages'
 import { checkUserFollowsAccount } from '@/lib/meta/instagram'
 import { getAIResponse } from '@/lib/ai-engine'
 import crypto from 'crypto'
@@ -150,6 +150,16 @@ export async function POST(request: NextRequest) {
               if (isFollowing) {
                 // ✅ FOLLOWING — Send the actual automation response DM
                 const rule = automation.automation_rules?.[0]
+                
+                // Send photo attachment if configured
+                if (rule?.image_url) {
+                  try {
+                    await sendInstagramImageAttachment(senderId, rule.image_url, pageAccessToken)
+                  } catch (imgErr) {
+                    console.error('Failed to send image attachment in postback:', imgErr)
+                  }
+                }
+
                 if (rule?.response_message) {
                   await sendInstagramMessage(senderId, rule.response_message, pageAccessToken)
 
@@ -241,6 +251,15 @@ export async function POST(request: NextRequest) {
                   
                   // Send Instagram Message reply
                   try {
+                    // Send photo attachment if configured
+                    if (rule.image_url) {
+                      try {
+                        await sendInstagramImageAttachment(senderId, rule.image_url, pageAccessToken)
+                      } catch (imgErr) {
+                        console.error('Failed to send image attachment in direct DM:', imgErr)
+                      }
+                    }
+
                     await sendInstagramMessage(senderId, rule.response_message, pageAccessToken)
 
                     // Save outbound message to DB
@@ -317,6 +336,95 @@ export async function POST(request: NextRequest) {
               .eq('workspace_id', workspaceId)
               .eq('status', 'active')
 
+            // --- SAME-FOR-NEXT POST FEATURE IMPLEMENTATION ---
+            const mediaId = commentValue.media?.id
+            if (mediaId && automations) {
+              const hasExistingAuto = automations.some(a => a.media_id === mediaId)
+              if (!hasExistingAuto) {
+                // Double check DB directly to handle concurrent webhook race conditions
+                const { data: dbExistingAuto } = await supabase
+                  .from('automations')
+                  .select('id')
+                  .eq('workspace_id', workspaceId)
+                  .eq('media_id', mediaId)
+                  .limit(1)
+
+                if (!dbExistingAuto || dbExistingAuto.length === 0) {
+                  // Find active automation with same_for_next enabled targeting a specific post
+                  const parentAuto = automations.find(a => a.media_id && a.same_for_next === true)
+                  if (parentAuto) {
+                    console.log(`Same-for-next: cloning automation ${parentAuto.id} for new media post ${mediaId}`)
+                    try {
+                      // Fetch details of the new media from Instagram Graph API
+                      const mediaDetailsUrl = `https://graph.facebook.com/v19.0/${mediaId}?fields=permalink,media_url,thumbnail_url,media_type&access_token=${pageAccessToken}`
+                      const mediaDetailsRes = await fetch(mediaDetailsUrl)
+                      const mediaDetails = await mediaDetailsRes.json()
+                      
+                      if (!mediaDetails.error) {
+                        const thumbnail = mediaDetails.thumbnail_url || mediaDetails.media_url
+                        const permalink = mediaDetails.permalink
+                        
+                        // Insert new cloned automation record in database
+                        const { data: newAuto } = await supabase
+                          .from('automations')
+                          .insert({
+                            workspace_id: workspaceId,
+                            name: `${parentAuto.name} (Auto-applied)`,
+                            trigger_type: parentAuto.trigger_type,
+                            status: 'active',
+                            media_id: mediaId,
+                            media_permalink: permalink || null,
+                            media_thumbnail_url: thumbnail || null,
+                            follow_gate_enabled: parentAuto.follow_gate_enabled,
+                            follow_gate_message: parentAuto.follow_gate_message,
+                            same_for_next: true, // Keep it active for the next post too (chains sequentially)
+                          })
+                          .select()
+                          .single()
+
+                        if (newAuto) {
+                          const parentRule = parentAuto.automation_rules?.[0]
+                          if (parentRule) {
+                            await supabase
+                              .from('automation_rules')
+                              .insert({
+                                automation_id: newAuto.id,
+                                keyword: parentRule.keyword,
+                                response_message: parentRule.response_message,
+                                image_url: parentRule.image_url,
+                              })
+                          }
+
+                          // Disable same_for_next on the parent to prevent future duplicate cloning triggers
+                          await supabase
+                            .from('automations')
+                            .update({ same_for_next: false })
+                            .eq('id', parentAuto.id)
+                          
+                          parentAuto.same_for_next = false // update local object
+                          
+                          // Fetch newly created automation with its rules to add to array
+                          const { data: refreshedAuto } = await supabase
+                            .from('automations')
+                            .select('*, automation_rules(*)')
+                            .eq('id', newAuto.id)
+                            .single()
+                            
+                          if (refreshedAuto) {
+                            automations.push(refreshedAuto)
+                          }
+                        }
+                      } else {
+                        console.error('Failed to fetch new media details from Meta Graph:', mediaDetails.error)
+                      }
+                    } catch (cloneErr) {
+                      console.error('Failed to clone automation for same-for-next post:', cloneErr)
+                    }
+                  }
+                }
+              }
+            }
+
             if (automations) {
               for (const auto of automations) {
                 // Skip if this automation is configured for a specific post and it doesn't match
@@ -325,8 +433,14 @@ export async function POST(request: NextRequest) {
                 }
 
                 for (const rule of auto.automation_rules) {
-                  const keywords = rule.keyword.split(',').map((k: string) => k.trim().toLowerCase()).filter(Boolean)
-                  const matched = keywords.some((kw: string) => commentText.toLowerCase().includes(kw))
+                  let matched = false
+                  if (auto.trigger_type === 'comment_any') {
+                    matched = true
+                  } else {
+                    const keywords = rule.keyword.split(',').map((k: string) => k.trim().toLowerCase()).filter(Boolean)
+                    matched = keywords.some((kw: string) => commentText.toLowerCase().includes(kw))
+                  }
+                  
                   if (matched) {
                     commentAutomated = true
 
@@ -386,7 +500,17 @@ export async function POST(request: NextRequest) {
                     } else {
                       // 2b. No Follow-Gate: send the DM with the automated response directly
                       try {
+                        // Send the private reply text (opens the communication channel)
                         await sendInstagramPrivateReply(commentId, rule.response_message, pageAccessToken)
+
+                        // Send photo attachment if configured
+                        if (rule.image_url) {
+                          try {
+                            await sendInstagramImageAttachment(commenterId, rule.image_url, pageAccessToken)
+                          } catch (imgErr) {
+                            console.error('Failed to send image attachment in comment reply:', imgErr)
+                          }
+                        }
 
                         // Create a conversation for reporting in the Inbox
                         const { data: conversation } = await supabase

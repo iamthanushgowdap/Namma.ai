@@ -27,3 +27,9 @@
 - `[x]` Verification
   - `[x]` Run production build `npm run build`
   - `[x]` Manually verify visual correctness in light and dark modes
+- `[x]` Referral API POST 404 Fix
+  - `[x]` Research root cause for 404 on POST /api/referral
+  - `[x]` Update Route Handler to use createAdminClient to bypass RLS policies
+  - `[x]` Test KYC verification, cash withdrawals, and transfers using mock sessions
+  - `[x]` Verify clean compile with tsc --noEmit
+

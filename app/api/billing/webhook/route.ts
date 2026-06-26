@@ -66,6 +66,40 @@ export async function POST(request: NextRequest) {
           console.error('Failed to update subscription in webhook:', error)
           return NextResponse.json({ error: 'Database update failed' }, { status: 500 })
         }
+
+        // Process referral conversion if user is referred
+        const userId = notes.userId
+        if (userId) {
+          try {
+            const { data: plan } = await supabaseAdmin
+              .from('plans')
+              .select('price_inr')
+              .eq('id', planId)
+              .single()
+
+            const { data: referral } = await supabaseAdmin
+              .from('referrals')
+              .select('status')
+              .eq('referred_id', userId)
+              .eq('status', 'joined')
+              .maybeSingle()
+
+            let fallbackAmount = plan ? plan.price_inr : 0
+            if (referral && plan) {
+              fallbackAmount = Math.round(fallbackAmount * 0.85) // 15% discount
+            }
+
+            const { processReferralConversion } = await import('@/lib/referral-helper')
+            await processReferralConversion({
+              supabase: supabaseAdmin,
+              userId: userId,
+              paidAmountPaise: fallbackAmount,
+              razorpayPaymentId: paymentEntity.id
+            })
+          } catch (err) {
+            console.error('Error processing referral conversion in webhook:', err)
+          }
+        }
       }
     } else if (event === 'subscription.cancelled') {
       const subEntity = payload.payload?.subscription?.entity

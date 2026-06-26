@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [referralCodeInput, setReferralCodeInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
@@ -39,6 +40,7 @@ export default function LoginPage() {
           options: {
             data: {
               name: name || email.split('@')[0],
+              referral_code_input: referralCodeInput.trim() || null,
             },
           },
         })
@@ -171,6 +173,27 @@ export default function LoginPage() {
                 />
               </div>
             </div>
+
+            {mode === 'signup' && (
+              <div className="space-y-1.5 animate-in fade-in duration-200">
+                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="referralCode">
+                  Referral Code (Optional)
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
+                    <User className="w-4 h-4" />
+                  </span>
+                  <input
+                    id="referralCode"
+                    type="text"
+                    value={referralCodeInput}
+                    onChange={(e) => setReferralCodeInput(e.target.value)}
+                    placeholder="e.g., john1234"
+                    className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
+                  />
+                </div>
+              </div>
+            )}
 
             <button
               type="button"

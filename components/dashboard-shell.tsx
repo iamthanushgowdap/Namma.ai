@@ -21,6 +21,7 @@ import {
   Activity,
   User2,
   Sparkles,
+  Share2,
 } from 'lucide-react'
 
 interface ShellProps {
@@ -41,6 +42,7 @@ const NAV_ITEMS = [
   { label: 'Connections', href: '/dashboard/connections', icon: Instagram },
   { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   { label: 'Billing', href: '/dashboard/billing', icon: CreditCard },
+  { label: 'Refer & Earn', href: '/dashboard/referral', icon: Share2 },
   { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]
 

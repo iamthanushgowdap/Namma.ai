@@ -359,6 +359,165 @@ function PlanCard({
   )
 }
 
+// ─── Payment Method Selection Modal ───────────────────────────────────────────
+function PaymentMethodModal({
+  plan,
+  balance,
+  isReferred,
+  onClose,
+  onPayWithBalance,
+  onPayWithRazorpay,
+  loading,
+}: {
+  plan: Plan
+  balance: number // total in paise
+  isReferred: boolean
+  onClose: () => void
+  onPayWithBalance: () => void
+  onPayWithRazorpay: () => void
+  loading: boolean
+}) {
+  // Calculate pricing options
+  let basePrice = plan.price_inr
+  if (isReferred) {
+    basePrice = Math.round(basePrice * 0.85) // 15% discount for referred users
+  }
+
+  const balancePrice = Math.round(basePrice * 0.90) // 10% discount for paying with balance
+  const hasEnoughBalance = balance >= balancePrice
+
+  return (
+    <div className="fixed inset-0 z-55 flex items-center justify-center bg-white/40 dark:bg-zinc-950/80 backdrop-blur-md animate-in fade-in duration-200 p-4">
+      <div
+        className="absolute inset-0"
+        onClick={onClose}
+      />
+      <div className="relative w-full max-w-lg bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-white/40 dark:border-zinc-800/85 rounded-2xl p-6 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        {/* Glow Effects */}
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#B41DE6]/10 rounded-full blur-2xl pointer-events-none" />
+
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-650 dark:hover:text-white transition-colors cursor-pointer"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="mb-6">
+          <span className="text-[10px] tracking-wider uppercase font-bold text-[#B41DE6] bg-[#B41DE6]/10 px-2.5 py-1 rounded-full">
+            Upgrade Subscription
+          </span>
+          <h3 className="font-extrabold text-zinc-900 dark:text-zinc-50 text-xl mt-2.5">
+            Select Payment Method
+          </h3>
+          <p className="text-zinc-500 dark:text-zinc-400 text-xs mt-1">
+            Choose how you would like to pay for the <span className="text-zinc-800 dark:text-zinc-200 font-semibold">{plan.name}</span> plan.
+          </p>
+        </div>
+
+        <div className="space-y-4 mb-6">
+          {/* Option 1: Pay with Balance */}
+          <div
+            className={`relative rounded-xl border p-4 transition-all ${
+              hasEnoughBalance
+                ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-55/45 dark:bg-zinc-900/40 hover:border-[#B41DE6]/50 hover:bg-[#B41DE6]/3'
+                : 'border-zinc-200/50 dark:border-zinc-850/40 bg-zinc-100/30 dark:bg-zinc-950/10 opacity-75'
+            }`}
+          >
+            {hasEnoughBalance && (
+              <div className="absolute top-3 right-3 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-550/20 dark:border-emerald-500/20 px-2 py-0.5 rounded-full">
+                Extra 10% Off!
+              </div>
+            )}
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 p-2 rounded-lg bg-gradient-to-br from-[#B41DE6] to-[#0052cc] text-white">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-zinc-900 dark:text-white">Pay with Referral/Promo Balance</p>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">Your Balance:</span>
+                  <span className="text-xs font-semibold text-zinc-855 dark:text-white">₹{(balance / 100).toFixed(2)}</span>
+                </div>
+
+                <div className="flex items-baseline gap-2 mt-2">
+                  <span className="text-lg font-extrabold text-zinc-900 dark:text-white">₹{(balancePrice / 100).toFixed(2)}</span>
+                  <span className="text-[10px] text-zinc-500 dark:text-zinc-400">for first month</span>
+                  {isReferred && (
+                    <span className="text-[10px] line-through text-zinc-400 dark:text-zinc-600">₹{(plan.price_inr / 100).toFixed(2)}</span>
+                  )}
+                </div>
+
+                {!hasEnoughBalance && (
+                  <p className="text-[10px] text-red-600 dark:text-red-400 font-medium mt-2 flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3 shrink-0" />
+                    Need ₹{((balancePrice - balance) / 100).toFixed(2)} more to pay with balance.
+                  </p>
+                )}
+
+                {hasEnoughBalance && (
+                  <button
+                    onClick={onPayWithBalance}
+                    disabled={loading}
+                    className="w-full mt-4 bg-gradient-to-r from-[#B41DE6] to-[#0052cc] hover:opacity-90 disabled:opacity-50 text-white font-bold py-2 px-4 rounded-xl text-xs transition-all shadow-md shadow-purple-500/15 cursor-pointer"
+                  >
+                    {loading ? 'Processing Transaction...' : 'Pay with Balance'}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Option 2: Pay with Razorpay */}
+          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-55/45 dark:bg-zinc-900/40 hover:border-indigo-500/50 hover:bg-indigo-500/3 p-4 transition-all">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-white border border-zinc-200 dark:border-zinc-700">
+                <CreditCard className="w-4 h-4" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-zinc-900 dark:text-white">Credit/Debit Card, UPI, Netbanking</p>
+                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Secure payment via Razorpay checkout gateway.</p>
+
+                <div className="flex items-baseline gap-2 mt-2.5">
+                  <span className="text-lg font-extrabold text-zinc-900 dark:text-white">₹{(basePrice / 100).toFixed(2)}</span>
+                  <span className="text-[10px] text-zinc-500 dark:text-zinc-400">for first month</span>
+                  {isReferred && (
+                    <span className="text-[10px] line-through text-zinc-400 dark:text-zinc-600">₹{(plan.price_inr / 100).toFixed(2)}</span>
+                  )}
+                </div>
+
+                {isReferred && (
+                  <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mt-1.5">
+                    15% first-purchase discount automatically applied!
+                  </p>
+                )}
+
+                <button
+                  onClick={onPayWithRazorpay}
+                  disabled={loading}
+                  className="w-full mt-4 bg-zinc-900 hover:bg-zinc-850 dark:bg-white dark:hover:bg-zinc-100 disabled:opacity-50 text-white dark:text-zinc-950 font-bold py-2 px-4 rounded-xl text-xs transition-all cursor-pointer"
+                >
+                  {loading ? 'Opening Razorpay Gateway...' : 'Pay with Razorpay'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end border-t border-zinc-200 dark:border-zinc-800 pt-4">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function BillingPage() {
   const { activeWorkspace } = useWorkspace()
@@ -373,6 +532,10 @@ export default function BillingPage() {
   const [cancelLoading, setCancelLoading] = useState(false)
   const [showCancelModal, setShowCancelModal] = useState(false)
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
+
+  const [selectedPlanForUpgrade, setSelectedPlanForUpgrade] = useState<Plan | null>(null)
+  const [referralBalance, setReferralBalance] = useState({ withdrawable: 0, promo: 0, total: 0 })
+  const [isReferred, setIsReferred] = useState(false)
 
   const showToast = (type: 'success' | 'error', message: string) => {
     setToast({ type, message })
@@ -435,6 +598,33 @@ export default function BillingPage() {
         automations_count: automationsCount || 0,
         replies_count: repliesCount || 0,
       })
+
+      // Fetch referral details
+      try {
+        const refRes = await fetch('/api/referral')
+        if (refRes.ok) {
+          const refData = await refRes.json()
+          setReferralBalance(refData.balances || { withdrawable: 0, promo: 0, total: 0 })
+        }
+      } catch (err) {
+        console.error('Failed to fetch referral details:', err)
+      }
+
+      // Check if user is referred themselves
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const { data: selfReferral } = await supabase
+            .from('referrals')
+            .select('status')
+            .eq('referred_id', user.id)
+            .eq('status', 'joined')
+            .maybeSingle()
+          setIsReferred(!!selfReferral)
+        }
+      } catch (err) {
+        console.error('Failed to verify self referral status:', err)
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to load billing data')
     } finally {
@@ -446,8 +636,36 @@ export default function BillingPage() {
     fetchBillingData()
   }, [fetchBillingData])
 
+  // ── Upgrade via Referral/Promo Balance ──────────────────────────────────────
+  const handleUpgradeWithBalance = async (planId: string) => {
+    if (!activeWorkspace) return
+    setUpgrading(planId)
+
+    try {
+      const res = await fetch('/api/billing/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId,
+          workspaceId: activeWorkspace.id,
+          payWithBalance: true,
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to complete balance checkout')
+
+      showToast('success', `Successfully upgraded to ${plans.find((p) => p.id === planId)?.name} plan using referral balance!`)
+      await fetchBillingData()
+    } catch (err: any) {
+      showToast('error', err.message || 'Payment failed. Please try again.')
+    } finally {
+      setUpgrading(null)
+    }
+  }
+
   // ── Upgrade via Razorpay ────────────────────────────────────────────────────
-  const handleUpgrade = async (planId: string) => {
+  const handleUpgradeWithRazorpay = async (planId: string) => {
     if (!activeWorkspace) return
     setUpgrading(planId)
 
@@ -717,7 +935,10 @@ export default function BillingPage() {
               key={plan.id}
               plan={plan}
               isCurrent={subscription?.plan_id === plan.id || (!subscription && plan.id === 'free')}
-              onUpgrade={handleUpgrade}
+              onUpgrade={(planId) => {
+                const targetPlan = plans.find((p) => p.id === planId)
+                if (targetPlan) setSelectedPlanForUpgrade(targetPlan)
+              }}
               upgrading={upgrading}
             />
           ))}
@@ -741,6 +962,26 @@ export default function BillingPage() {
           <span>100% Secure Checkout</span>
         </div>
       </div>
+
+      {selectedPlanForUpgrade && (
+        <PaymentMethodModal
+          plan={selectedPlanForUpgrade}
+          balance={referralBalance.total}
+          isReferred={isReferred}
+          onClose={() => setSelectedPlanForUpgrade(null)}
+          onPayWithBalance={async () => {
+            const planId = selectedPlanForUpgrade.id
+            setSelectedPlanForUpgrade(null)
+            await handleUpgradeWithBalance(planId)
+          }}
+          onPayWithRazorpay={async () => {
+            const planId = selectedPlanForUpgrade.id
+            setSelectedPlanForUpgrade(null)
+            await handleUpgradeWithRazorpay(planId)
+          }}
+          loading={upgrading !== null}
+        />
+      )}
     </div>
   )
 }

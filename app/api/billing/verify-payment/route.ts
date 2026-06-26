@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
+    const supabaseAdmin = createAdminClient()
 
     // 1. Get authenticated user
     const { data: { user } } = await supabase.auth.getUser()
@@ -57,12 +58,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid payment signature' }, { status: 400 })
     }
 
-    // 4. Update the subscription in DB
+    // 4. Update the subscription in DB (Using Admin Client to bypass RLS)
     const periodStart = new Date()
     const periodEnd = new Date()
     periodEnd.setMonth(periodEnd.getMonth() + 1) // default to 1 month subscription
 
-    const { error: subError } = await supabase
+    const { error: subError } = await supabaseAdmin
       .from('subscriptions')
       .upsert({
         workspace_id: workspaceId,
@@ -77,6 +78,38 @@ export async function POST(request: NextRequest) {
     if (subError) {
       console.error('Subscription update failed:', subError)
       return NextResponse.json({ error: 'Failed to update subscription in database' }, { status: 500 })
+    }
+
+    // 5. Process referral conversion if user is referred (Using Admin Client to bypass RLS)
+    try {
+      const { data: plan } = await supabaseAdmin
+        .from('plans')
+        .select('price_inr')
+        .eq('id', planId)
+        .single()
+
+      const { data: referral } = await supabaseAdmin
+        .from('referrals')
+        .select('status')
+        .eq('referred_id', user.id)
+        .eq('status', 'joined')
+        .maybeSingle()
+
+      let fallbackAmount = plan ? plan.price_inr : 0
+      if (referral && plan) {
+        fallbackAmount = Math.round(fallbackAmount * 0.85) // 15% discount
+      }
+
+      const { processReferralConversion } = await import('@/lib/referral-helper')
+      await processReferralConversion({
+        supabase: supabaseAdmin,
+        userId: user.id,
+        paidAmountPaise: fallbackAmount,
+        razorpayPaymentId: razorpay_payment_id
+      })
+    } catch (err) {
+      console.error('Error processing referral conversion in verify-payment:', err)
+      // Do not block subscription activation if referral processing fails
     }
 
     return NextResponse.json({ success: true })

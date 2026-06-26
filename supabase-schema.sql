@@ -260,3 +260,17 @@ create or replace trigger on_workspace_created
 alter table public.automations
   add column if not exists follow_gate_enabled boolean default false not null,
   add column if not exists follow_gate_message text default 'This link is exclusive for our followers only! Tap the button below to verify your follow and get instant access.' not null;
+
+-- ============================================================
+-- Photo Attachment Migration
+-- Add image_url column to automation_rules table
+-- ============================================================
+alter table public.automation_rules
+  add column if not exists image_url text;
+
+-- ============================================================
+-- Same for Next Post Migration
+-- Add same_for_next column to automations table
+-- ============================================================
+alter table public.automations
+  add column if not exists same_for_next boolean default false not null;

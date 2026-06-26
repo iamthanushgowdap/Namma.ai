@@ -252,3 +252,50 @@ export async function sendNotFollowingCard(
     }
   }
 }
+
+/**
+ * Sends an image/photo attachment to an Instagram user's DM.
+ * @param recipientId The Instagram scoped user ID of the recipient.
+ * @param imageUrl The public URL of the image/photo.
+ * @param pageAccessToken The access token of the connected Facebook Page.
+ */
+export async function sendInstagramImageAttachment(
+  recipientId: string,
+  imageUrl: string,
+  pageAccessToken: string
+): Promise<{ message_id: string }> {
+  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      recipient: {
+        id: recipientId,
+      },
+      message: {
+        attachment: {
+          type: 'image',
+          payload: {
+            url: imageUrl,
+            is_reusable: true,
+          },
+        },
+      },
+    }),
+  });
+
+  const data = await response.json();
+
+  if (data.error) {
+    console.error('Meta Graph send image attachment error:', data.error);
+    throw new Error(`Failed to send Instagram image: ${data.error.message}`);
+  }
+
+  return {
+    message_id: data.message_id,
+  };
+}
+
