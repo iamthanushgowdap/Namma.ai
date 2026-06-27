@@ -406,8 +406,24 @@ export async function POST(request: NextRequest) {
       // 3. Process incoming Comments on media
       if (entry.changes) {
         for (const change of entry.changes) {
+          let commentValue: any = null
+
           if (change.field === 'comments') {
-            const commentValue = change.value
+            // Instagram object webhook format
+            commentValue = change.value
+          } else if (change.field === 'feed' && change.value?.item === 'comment' && change.value?.verb === 'add') {
+            // Page feed webhook format — normalize to match Instagram comment shape
+            const feedValue = change.value
+            commentValue = {
+              id: feedValue.comment_id,
+              text: feedValue.message,
+              from: feedValue.from ? { id: feedValue.from.id, username: feedValue.from.name } : undefined,
+              media: feedValue.post_id ? { id: feedValue.post_id } : undefined,
+            }
+            console.log(`Comment received via Page feed webhook: "${feedValue.message}" from ${feedValue.from?.id}`)
+          }
+
+          if (commentValue) {
             const commentId = commentValue.id
             const commentText = commentValue.text
             const commenterId = commentValue.from?.id
