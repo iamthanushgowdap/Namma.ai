@@ -106,6 +106,21 @@ export async function GET(request: NextRequest) {
           instagram: updateIgData,
           page: updatePageData
         }
+
+        // CRITICAL: Subscribe the Page itself to deliver comment/message events
+        // This is SEPARATE from App-level subscriptions above.
+        // Without this, Meta knows the app CAN receive events but won't DELIVER them for this Page.
+        const pageSubParams = new URLSearchParams({
+          subscribed_fields: 'feed,mention',
+          access_token: pageAccessToken
+        })
+        const pageSubRes = await fetch(
+          `https://graph.facebook.com/v21.0/${pageId}/subscribed_apps`,
+          { method: 'POST', body: pageSubParams }
+        )
+        const pageSubData = await pageSubRes.json()
+
+        attemptedUpdateResult.pageSubscribedApps = pageSubData
       }
 
       // Get token details
