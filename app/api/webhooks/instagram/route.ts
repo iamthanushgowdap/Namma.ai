@@ -227,9 +227,14 @@ export async function POST(request: NextRequest) {
             continue // Done processing this postback event
           }
 
-          // ── 2b. Handle Regular DMs & Edits ───────────────────────────────────
+          // Ignore message_edit events completely to prevent double responses
+          if (messagingEvent.message_edit) {
+            continue
+          }
+
+          // ── 2b. Handle Regular DMs ───────────────────────────────────────────
           let messageText = messagingEvent.message?.text
-          const messageId = messagingEvent.message?.mid || messagingEvent.message_edit?.mid
+          const messageId = messagingEvent.message?.mid
 
           if ((!messageText || !senderId) && messageId) {
             console.log(`Message text or sender ID missing from payload, fetching via Graph API for ID: ${messageId}`)
