@@ -12,13 +12,14 @@ const sections = [
   { id: 'service-desc', label: '2. Description of Service' },
   { id: 'user-responsibilities', label: '3. User Responsibilities & Instagram Compliance' },
   { id: 'billing-subscriptions', label: '4. Subscriptions, Payments & Cancellation' },
-  { id: 'prohibited-uses', label: '5. Prohibited Activities' },
-  { id: 'intellectual-property', label: '6. Intellectual Property' },
-  { id: 'termination', label: '7. Account Termination' },
-  { id: 'disclaimer', label: '8. Disclaimer of Warranties' },
-  { id: 'limitation-liability', label: '9. Limitation of Liability' },
-  { id: 'governing-law', label: '10. Governing Law & Jurisdiction' },
-  { id: 'contact', label: '11. Contact Information' },
+  { id: 'referral-wallet', label: '5. Refer & Earn Program & Wallet Balances' },
+  { id: 'prohibited-uses', label: '6. Prohibited Activities' },
+  { id: 'intellectual-property', label: '7. Intellectual Property' },
+  { id: 'termination', label: '8. Account Termination' },
+  { id: 'disclaimer', label: '9. Disclaimer of Warranties' },
+  { id: 'limitation-liability', label: '10. Limitation of Liability' },
+  { id: 'governing-law', label: '11. Governing Law & Jurisdiction' },
+  { id: 'contact', label: '12. Contact Information' },
 ]
 
 function SectionCard({
@@ -185,7 +186,30 @@ export default function TermsPage() {
           </ul>
         </SectionCard>
 
-        <SectionCard id="prohibited-uses" title="05. Prohibited Activities">
+        <SectionCard id="referral-wallet" title="05. Refer & Earn Program & Wallet Balances">
+          <p>
+            Namma.ai offers a Referral Program allowing users to earn wallet credits by referring new users:
+          </p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>
+              <strong>Commissions:</strong> Referrers earn a 10% commission of the paid amount when a referred user makes a paid subscription purchase. Commissions are credited to the referrer's withdrawable cash balance.
+            </li>
+            <li>
+              <strong>Discounts:</strong> Referred users receive a 15% discount on their first paid subscription purchase when signing up with a valid referral code.
+            </li>
+            <li>
+              <strong>Wallet Balance Usage:</strong> Wallet balances can be used to purchase Namma.ai subscriptions. Payments made using wallet balances receive an additional 10% discount on the plan price.
+            </li>
+            <li>
+              <strong>Withdrawals & Transfers:</strong> Withdrawals to a bank account are permitted once the withdrawable balance reaches a minimum of ₹500, subject to verification of at least 2 converted referrals, compliance checks, and applicable TDS deductions (3% or 6% based on total limits). Users may also transfer promo credits to peer wallets.
+            </li>
+            <li>
+              <strong>Anti-Abuse & Fraud Policy:</strong> Self-referrals, creating duplicate accounts, or using identical payment instruments (hashing checks) to exploit referral credits is strictly prohibited. Namma.ai reserves the right to freeze wallets, forfeit balances, and terminate accounts found engaging in fraudulent referral behavior.
+            </li>
+          </ul>
+        </SectionCard>
+
+        <SectionCard id="prohibited-uses" title="06. Prohibited Activities">
           <p>You agree not to use the Service to:</p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Send spam, bulk messages, unsolicited promotional content, or engage in phishing.</li>
@@ -196,7 +220,7 @@ export default function TermsPage() {
           </ul>
         </SectionCard>
 
-        <SectionCard id="intellectual-property" title="06. Intellectual Property">
+        <SectionCard id="intellectual-property" title="07. Intellectual Property">
           <p>
             All intellectual property rights in the Service (including layout, design, logos, graphics, software
             code, and databases) belong to Thanush Gowda P or our licensors.
@@ -208,7 +232,7 @@ export default function TermsPage() {
           </p>
         </SectionCard>
 
-        <SectionCard id="termination" title="07. Account Termination">
+        <SectionCard id="termination" title="08. Account Termination">
           <p>
             We reserve the right to suspend or terminate your access to Namma.ai, without prior notice or
             liability, if you violate these terms or fail to pay subscription fees when due.
@@ -219,7 +243,7 @@ export default function TermsPage() {
           </p>
         </SectionCard>
 
-        <SectionCard id="disclaimer" title="08. Disclaimer of Warranties">
+        <SectionCard id="disclaimer" title="09. Disclaimer of Warranties">
           <p className="uppercase font-mono text-xs">
             THE SERVICE IS PROVIDED &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND,
             EITHER EXPRESS OR IMPLIED. WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE,
@@ -227,7 +251,7 @@ export default function TermsPage() {
           </p>
         </SectionCard>
 
-        <SectionCard id="limitation-liability" title="09. Limitation of Liability">
+        <SectionCard id="limitation-liability" title="10. Limitation of Liability">
           <p>
             To the maximum extent permitted by applicable Indian law, Thanush Gowda P and Namma.ai shall not be liable for
             any indirect, incidental, special, consequential, or punitive damages, or any loss of profits,
@@ -244,7 +268,7 @@ export default function TermsPage() {
           </p>
         </SectionCard>
 
-        <SectionCard id="governing-law" title="10. Governing Law & Jurisdiction">
+        <SectionCard id="governing-law" title="11. Governing Law & Jurisdiction">
           <p>
             These Terms of Service and any disputes arising out of them shall be governed by and construed in
             accordance with the laws of <strong className="text-foreground font-semibold">India</strong>.
@@ -255,7 +279,7 @@ export default function TermsPage() {
           </p>
         </SectionCard>
 
-        <SectionCard id="contact" title="11. Contact Information">
+        <SectionCard id="contact" title="12. Contact Information">
           <p>If you have any questions or feedback about these Terms of Service, please contact us:</p>
           <div className="mt-4 rounded-xl border border-border/40 p-5 bg-muted/20">
             <p className="text-foreground font-semibold mb-1">Namma.ai Support</p>

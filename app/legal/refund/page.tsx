@@ -138,6 +138,12 @@ export default function RefundPage() {
                 100% refund for the duplicate transaction upon verification.
               </p>
             </div>
+            <div className="rounded-xl border border-border/40 p-4 bg-muted/20">
+              <p className="font-semibold text-foreground mb-1">Wallet & Referral Balance Purchases</p>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                Refunds for subscriptions purchased using your referral wallet balance will only be credited back to your promo balance in your Namma.ai wallet. Under no circumstances will wallet-funded purchases be refunded to a credit card, bank account, or as withdrawable cash. Furthermore, if a cash payment is refunded, any associated referral commission earned by your referrer for that transaction will be debited (clawed back) from their wallet balance.
+              </p>
+            </div>
           </div>
           <p className="mt-4 text-muted-foreground text-xs">
             We do not issue refunds for suspensions or account blocks caused by violations of our Terms of Service or Meta&apos;s Platform Policies.

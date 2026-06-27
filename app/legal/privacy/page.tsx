@@ -158,6 +158,14 @@ export default function PrivacyPage() {
                 value="Subscription plan and billing status. Card details and bank information are handled exclusively by Razorpay and are never transmitted to or stored on our servers."
               />
               <DataRow
+                label="Referral & Wallet data"
+                value="Your unique referral code, records of referred users, ledger transactions (commissions earned, withdrawals, peer transfers, and subscription purchases), and wallet balance statements."
+              />
+              <DataRow
+                label="Anti-abuse payment hashes"
+                value="Irreversible cryptographic hashes of your payment source fingerprint (provided by Razorpay) to identify and prevent self-referral and duplicate-referral abuse on shared payment instruments."
+              />
+              <DataRow
                 label="Usage data"
                 value="Pages visited, feature interactions, timestamps, and browser/device type — used solely for improving the product."
               />
@@ -251,6 +259,14 @@ export default function PrivacyPage() {
             <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed">
               When the Follow-Gate feature is enabled on an automation, our system makes a real-time API call to the Instagram Graph API to check whether a commenter is following the connected account. This relationship check is performed in real-time and the result (following / not following) is{' '}
               <strong className="text-zinc-800 dark:text-zinc-200 font-semibold">not stored</strong> in our databases. No follower relationship data is persisted.
+            </p>
+          </div>
+          <div className="mt-4 rounded-xl border border-purple-500/20 p-4" style={{ background: 'rgba(180,29,230,0.04)' }}>
+            <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1">
+              Refer & Earn Wallet Feature
+            </p>
+            <p className="text-zinc-600 dark:text-zinc-400 text-xs leading-relaxed">
+              When you participate in our Refer & Earn program, we track ledger transactions (commissions, withdrawals, peer transfers, and purchases) linked to your profile ID to calculate and maintain your active wallet balance. To prevent system abuse (such as self-referrals or creating multiple accounts using the same credit card/UPI ID), we hash and securely check your payment metadata fingerprint.
             </p>
           </div>
           <p className="mt-4 text-zinc-500 text-xs">
