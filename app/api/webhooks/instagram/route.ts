@@ -45,8 +45,8 @@ export async function POST(request: NextRequest) {
   console.log('-------------------------------------')
   const signature = request.headers.get('x-hub-signature-256')
 
-  // Verify Meta Request Signature for security (enforced only in production)
-  if (process.env.META_APP_SECRET && signature && process.env.NODE_ENV !== 'development') {
+  // Verify Meta Request Signature for security (enforced only in production unless bypassed)
+  if (process.env.META_APP_SECRET && signature && process.env.NODE_ENV !== 'development' && process.env.BYPASS_SIGNATURE_CHECK !== 'true') {
     const expectedSignature = crypto
       .createHmac('sha256', process.env.META_APP_SECRET)
       .update(rawBody)
@@ -63,8 +63,8 @@ export async function POST(request: NextRequest) {
       console.log('----------------------------------------')
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
-  } else if (process.env.NODE_ENV === 'development') {
-    console.log('Bypassing signature verification in development mode.')
+  } else if (process.env.NODE_ENV === 'development' || process.env.BYPASS_SIGNATURE_CHECK === 'true') {
+    console.log('Bypassing signature verification (development mode or BYPASS_SIGNATURE_CHECK enabled).')
   }
 
   let payload: any
