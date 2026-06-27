@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useWorkspace } from '@/components/workspace-context'
 import { createClient } from '@/lib/supabase/client'
-import { Sparkles, Save, HelpCircle, MessageSquare, ToggleLeft, ToggleRight, Clock, RefreshCw, CheckCircle2, Trash2, Plus } from 'lucide-react'
+import { Sparkles, Save, HelpCircle, MessageSquare, ToggleLeft, ToggleRight, Clock, RefreshCw, CheckCircle2, Trash2, Plus, AlertTriangle } from 'lucide-react'
 
 export default function AIAgentPage() {
   const { activeWorkspace } = useWorkspace()
@@ -56,6 +56,67 @@ export default function AIAgentPage() {
   const [success, setSuccess] = useState<string | null>(null)
 
   const supabase = createClient()
+  const [confirmToggleActive, setConfirmToggleActive] = useState<{
+    type: 'ai_enabled' | 'respond_on_comments';
+    currentVal: boolean;
+    name: string;
+  } | null>(null)
+
+  const handleToggleActiveSetting = async (type: 'ai_enabled' | 'respond_on_comments', currentVal: boolean) => {
+    const newVal = !currentVal
+    if (type === 'ai_enabled') {
+      setAiEnabled(newVal)
+    } else if (type === 'respond_on_comments') {
+      setRespondOnComments(newVal)
+    }
+
+    if (!activeWorkspace) return
+    try {
+      const cleanKeywords = (str: string) => 
+        str.split(',').map(k => k.trim()).filter(Boolean)
+
+      const preparedCustomIntents = customIntents
+        .map((ci) => ({
+          id: ci.id,
+          name: ci.name.trim(),
+          keywords: cleanKeywords(ci.keywords),
+          response: ci.response.trim(),
+        }))
+        .filter((ci) => ci.name && ci.response)
+
+      const { error: upsertError } = await supabase
+        .from('ai_settings')
+        .upsert({
+          workspace_id: activeWorkspace.id,
+          ai_enabled: type === 'ai_enabled' ? newVal : aiEnabled,
+          respond_on_dms: respondOnDms,
+          respond_on_comments: type === 'respond_on_comments' ? newVal : respondOnComments,
+          reply_delay_seconds: replyDelay,
+          
+          greeting_keywords: cleanKeywords(greetingKeywords),
+          greeting_response: greetingResponse,
+          
+          pricing_keywords: cleanKeywords(pricingKeywords),
+          pricing_response: pricingResponse,
+          
+          product_keywords: cleanKeywords(productKeywords),
+          product_response: productResponse,
+          
+          support_keywords: cleanKeywords(supportKeywords),
+          support_response: supportResponse,
+          
+          unknown_response: unknownResponse,
+          custom_intents: preparedCustomIntents,
+        }, {
+          onConflict: 'workspace_id',
+        })
+
+      if (upsertError) throw upsertError
+      setSuccess(`${type === 'ai_enabled' ? 'AI Agent' : 'Response to Comments'} status updated successfully.`)
+    } catch (err: any) {
+      setError(err.message || 'Failed to update settings')
+    }
+  }
 
   const fetchSettings = async () => {
     if (!activeWorkspace) return
@@ -193,24 +254,31 @@ export default function AIAgentPage() {
         {/* Master AI Agent Toggle */}
         <button
           type="button"
-          onClick={() => setAiEnabled(!aiEnabled)}
-          className={`flex items-center gap-2 py-2 px-4 rounded-xl text-xs font-bold transition-all shadow-sm border cursor-pointer ${
-            aiEnabled
-              ? 'bg-emerald-500/10 border-emerald-500/35 text-emerald-600 dark:text-emerald-400'
-              : 'bg-zinc-150 border-zinc-350 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-500'
-          }`}
+          onClick={() => setConfirmToggleActive({ type: 'ai_enabled', currentVal: aiEnabled, name: 'AI Agent Active' })}
+          title={aiEnabled ? 'Deactivate' : 'Activate'}
+          className="cursor-pointer focus:outline-none text-foreground"
         >
-          {aiEnabled ? (
-            <>
-              <ToggleRight className="w-5 h-5 text-emerald-500" />
-              AI Agent Active
-            </>
-          ) : (
-            <>
-              <ToggleLeft className="w-5 h-5 text-zinc-400" />
-              AI Agent Disabled
-            </>
-          )}
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold text-muted-foreground">AI Agent Active</span>
+            <div className={`w-14 h-7 rounded-full border-2 flex items-center relative transition-all duration-300 select-none ${
+              aiEnabled 
+                ? 'border-emerald-500/80 bg-emerald-500/5' 
+                : 'border-red-500/80 bg-red-500/5'
+            }`}>
+              <span className={`text-[8px] font-extrabold tracking-wider absolute transition-all duration-300 ${
+                aiEnabled 
+                  ? 'left-2 text-emerald-600 dark:text-emerald-400 opacity-100' 
+                  : 'right-2 text-red-650 dark:text-red-400 opacity-100'
+              }`}>
+                {aiEnabled ? 'ON' : 'OFF'}
+              </span>
+              <div className={`w-4 h-4 rounded-full absolute left-1 transition-all duration-300 ${
+                aiEnabled 
+                  ? 'translate-x-7 bg-emerald-500 dark:bg-emerald-400 shadow-sm' 
+                  : 'translate-x-0 bg-red-500 dark:bg-red-400 shadow-sm'
+              }`} />
+            </div>
+          </div>
         </button>
       </div>
 
@@ -256,20 +324,39 @@ export default function AIAgentPage() {
 
           {/* Comment Channel Selection */}
           <div 
-            onClick={() => setRespondOnComments(!respondOnComments)}
-            className={`glass-panel rounded-2xl p-5 border flex flex-col justify-between h-32 transition-all cursor-pointer select-none ${
+            className={`glass-panel rounded-2xl p-5 border flex flex-col justify-between h-32 transition-all select-none ${
               respondOnComments && aiEnabled
                 ? 'border-indigo-500/30 bg-indigo-50/10 dark:bg-indigo-950/5 shadow-indigo-500/5' 
-                : 'opacity-70 hover:opacity-100'
+                : 'opacity-70'
             }`}
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Comment Responses</span>
-              {respondOnComments && aiEnabled ? (
-                <ToggleRight className="w-5 h-5 text-indigo-500" />
-              ) : (
-                <ToggleLeft className="w-5 h-5 text-zinc-400" />
-              )}
+              <button
+                type="button"
+                onClick={() => setConfirmToggleActive({ type: 'respond_on_comments', currentVal: respondOnComments, name: 'Response to Comments' })}
+                title={respondOnComments ? 'Deactivate' : 'Activate'}
+                className="cursor-pointer focus:outline-none"
+              >
+                <div className={`w-14 h-7 rounded-full border-2 flex items-center relative transition-all duration-300 select-none ${
+                  respondOnComments 
+                    ? 'border-emerald-500/80 bg-emerald-500/5' 
+                    : 'border-red-500/80 bg-red-500/5'
+                }`}>
+                  <span className={`text-[8px] font-extrabold tracking-wider absolute transition-all duration-300 ${
+                    respondOnComments 
+                      ? 'left-2 text-emerald-600 dark:text-emerald-400 opacity-100' 
+                      : 'right-2 text-red-650 dark:text-red-400 opacity-100'
+                  }`}>
+                    {respondOnComments ? 'ON' : 'OFF'}
+                  </span>
+                  <div className={`w-4 h-4 rounded-full absolute left-1 transition-all duration-300 ${
+                    respondOnComments 
+                      ? 'translate-x-7 bg-emerald-500 dark:bg-emerald-400 shadow-sm' 
+                      : 'translate-x-0 bg-red-500 dark:bg-red-400 shadow-sm'
+                  }`} />
+                </div>
+              </button>
             </div>
             <div>
               <h4 className="text-xs font-bold text-foreground">Respond to Comments</h4>
@@ -569,6 +656,55 @@ export default function AIAgentPage() {
         </div>
 
       </form>
+      {/* Confirmation Modal for Active Toggle */}
+      {confirmToggleActive && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 dark:bg-zinc-950/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="max-w-md w-full mx-4 p-8 rounded-3xl shadow-2xl border border-white/40 dark:border-zinc-800/85 animate-in zoom-in-95 duration-200 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl">
+            <div className="flex flex-col items-center text-center">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 animate-pulse ${
+                confirmToggleActive.currentVal
+                  ? 'bg-red-500/10 dark:bg-red-500/20 text-red-650 dark:text-red-400'
+                  : 'bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-650 dark:text-emerald-400'
+              }`}>
+                {confirmToggleActive.currentVal ? (
+                  <AlertTriangle className="w-6 h-6" />
+                ) : (
+                  <CheckCircle2 className="w-6 h-6" />
+                )}
+              </div>
+              <h3 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                {confirmToggleActive.currentVal ? `Deactivate ${confirmToggleActive.name}` : `Activate ${confirmToggleActive.name}`}
+              </h3>
+              <p className="text-zinc-550 dark:text-zinc-400 text-sm mt-3 leading-relaxed">
+                Are you sure you want to {confirmToggleActive.currentVal ? 'deactivate' : 'activate'} <strong className="text-zinc-850 dark:text-zinc-100 font-semibold">{confirmToggleActive.name}</strong>?
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 mt-8 w-full">
+              <button
+                type="button"
+                onClick={() => setConfirmToggleActive(null)}
+                className="flex-1 py-3 px-4 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700/80 text-zinc-700 dark:text-zinc-300 rounded-xl text-xs font-semibold cursor-pointer transition-all active:scale-[0.98]"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleToggleActiveSetting(confirmToggleActive.type, confirmToggleActive.currentVal)
+                  setConfirmToggleActive(null)
+                }}
+                className={`flex-1 py-3 px-4 text-white rounded-xl text-xs font-semibold cursor-pointer shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  confirmToggleActive.currentVal
+                    ? 'bg-gradient-to-r from-red-600 to-red-500 hover:from-red-550 hover:to-red-450 shadow-red-500/15 hover:shadow-red-500/25'
+                    : 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-550 hover:to-emerald-450 shadow-emerald-500/15 hover:shadow-emerald-500/25'
+                }`}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
