@@ -163,7 +163,7 @@ export async function subscribePageToWebhooks(
   pageAccessToken: string
 ): Promise<boolean> {
   const response = await fetch(
-    `${META_GRAPH_URL}/${pageId}/subscribed_apps?subscribed_fields=feed&access_token=${pageAccessToken}`,
+    `${META_GRAPH_URL}/${pageId}/subscribed_apps?subscribed_fields=feed,mention&access_token=${pageAccessToken}`,
     {
       method: 'POST',
     }

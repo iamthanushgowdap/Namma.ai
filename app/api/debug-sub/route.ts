@@ -39,7 +39,14 @@ export async function GET(request: NextRequest) {
     const pageId = meData.id
     const pageName = meData.name
 
-    // 2. Fetch subscribed apps
+    // 2. Run manual subscription POST request
+    const subscribeRes = await fetch(
+      `https://graph.facebook.com/v21.0/${pageId}/subscribed_apps?subscribed_fields=feed,mention&access_token=${pageAccessToken}`,
+      { method: 'POST' }
+    )
+    const subscribeData = await subscribeRes.json()
+
+    // Fetch subscribed apps again
     const subRes = await fetch(`https://graph.facebook.com/v21.0/${pageId}/subscribed_apps?access_token=${pageAccessToken}`)
     const subData: any = await subRes.json()
 
@@ -63,6 +70,7 @@ export async function GET(request: NextRequest) {
         name: pageName,
         username: account.username
       },
+      attemptedSubscriptionResponse: subscribeData,
       tokenDebug: tokenDebugData,
       subscribedApps: subData
     })
