@@ -358,18 +358,18 @@ export default function ReferralDashboard() {
       {data?.kycStatus !== 'verified' && (
         <div className="glass-panel rounded-3xl p-6 border border-amber-200/50 dark:border-amber-900/30 bg-amber-500/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-550 shrink-0 mt-0.5" />
+            <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-450 shrink-0 mt-0.5" />
             <div>
               <h4 className="font-bold text-zinc-900 dark:text-white text-sm">KYC Verification Missing</h4>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
-                KYC is optional for small balances, but is **mandatory** for withdrawals exceeding ₹10,000. 
+                KYC is optional for small balances, but is **mandatory** for withdrawals exceeding ₹10,050. 
                 Complete your details now to keep your account verified.
               </p>
             </div>
           </div>
           <button
             onClick={() => setShowKycForm(!showKycForm)}
-            className="py-2 px-4 bg-amber-550 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+            className="py-2 px-4 bg-amber-600 hover:bg-amber-500 dark:bg-amber-600 dark:hover:bg-amber-500 text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
           >
             {showKycForm ? 'Close KYC' : 'Verify KYC'}
           </button>
@@ -457,34 +457,66 @@ export default function ReferralDashboard() {
           <TrendingUp className="w-4.5 h-4.5 text-indigo-500" />
           Transaction Audits & Ledger
         </h3>
-        <div className="overflow-x-auto">
+        <div>
           {data?.ledger?.length > 0 ? (
-            <table className="w-full border-collapse text-left text-xs">
-              <thead>
-                <tr className="border-b border-border/40 text-muted-foreground">
-                  <th className="py-3 font-semibold">Date</th>
-                  <th className="py-3 font-semibold">Transaction Description</th>
-                  <th className="py-3 font-semibold">Type</th>
-                  <th className="py-3 font-semibold text-right">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full border-collapse text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-border/40 text-muted-foreground">
+                      <th className="py-3 font-semibold w-1/4">Date</th>
+                      <th className="py-3 font-semibold w-2/5">Transaction Description</th>
+                      <th className="py-3 font-semibold w-1/5">Type</th>
+                      <th className="py-3 font-semibold w-1/7 text-right">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.ledger.map((entry: LedgerEntry) => {
+                      const isDebit = entry.amount < 0
+                      const cleanAmount = Math.abs(entry.amount) / 100
+                      return (
+                        <tr key={entry.id} className="border-b border-border/20 last:border-0 text-zinc-650 dark:text-zinc-350 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/10">
+                          <td className="py-3.5 whitespace-nowrap">{new Date(entry.created_at).toLocaleString()}</td>
+                          <td className="py-3.5 max-w-sm leading-relaxed">{entry.description || 'N/A'}</td>
+                          <td className="py-3.5 capitalize font-medium">{entry.transaction_type.replace(/_/g, ' ')}</td>
+                          <td className={`py-3.5 font-bold text-right ${isDebit ? 'text-red-500' : 'text-emerald-500'}`}>
+                            {isDebit ? '-' : '+'}₹{cleanAmount.toFixed(2)}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards View */}
+              <div className="block md:hidden space-y-4">
                 {data.ledger.map((entry: LedgerEntry) => {
                   const isDebit = entry.amount < 0
                   const cleanAmount = Math.abs(entry.amount) / 100
                   return (
-                    <tr key={entry.id} className="border-b border-border/20 last:border-0 text-zinc-650 dark:text-zinc-350">
-                      <td className="py-3.5 whitespace-nowrap">{new Date(entry.created_at).toLocaleString()}</td>
-                      <td className="py-3.5 max-w-sm leading-relaxed">{entry.description || 'N/A'}</td>
-                      <td className="py-3.5 capitalize font-medium">{entry.transaction_type.replace(/_/g, ' ')}</td>
-                      <td className={`py-3.5 font-bold text-right ${isDebit ? 'text-red-500' : 'text-emerald-500'}`}>
-                        {isDebit ? '-' : '+'}₹{cleanAmount.toFixed(2)}
-                      </td>
-                    </tr>
+                    <div key={entry.id} className="bg-zinc-50/50 dark:bg-zinc-900/35 border border-zinc-200 dark:border-white/[0.06] rounded-xl p-4 space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">
+                          {new Date(entry.created_at).toLocaleDateString()}
+                        </span>
+                        <span className={`text-xs font-bold ${isDebit ? 'text-red-500' : 'text-emerald-500'}`}>
+                          {isDebit ? '-' : '+'}₹{cleanAmount.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="border-t border-zinc-100 dark:border-white/[0.04] pt-2 space-y-1">
+                        <p className="text-xs text-zinc-800 dark:text-zinc-200 font-medium leading-relaxed">{entry.description || 'N/A'}</p>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-1.5 border-t border-dashed border-zinc-100 dark:border-white/[0.04]">
+                        <span className="font-semibold uppercase tracking-wider">Type</span>
+                        <span className="capitalize font-medium text-zinc-650 dark:text-zinc-300">{entry.transaction_type.replace(/_/g, ' ')}</span>
+                      </div>
+                    </div>
                   )
                 })}
-              </tbody>
-            </table>
+              </div>
+            </>
           ) : (
             <div className="py-12 text-center text-muted-foreground">
               No transactions recorded in ledger history yet.
@@ -632,7 +664,7 @@ export default function ReferralDashboard() {
                   className={`flex-1 py-3 px-4 rounded-xl text-xs font-semibold transition-all ${
                     (transferLoading || withdrawableInr <= 0)
                       ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-500 border border-zinc-200 dark:border-zinc-700 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white cursor-pointer shadow-lg shadow-indigo-550/15 hover:scale-[1.02] active:scale-[0.98]'
+                      : 'bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white cursor-pointer shadow-lg shadow-indigo-500/15 hover:scale-[1.02] active:scale-[0.98]'
                   }`}
                 >
                   {transferLoading ? 'Transferring...' : 'Confirm'}

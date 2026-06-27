@@ -44,6 +44,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Cannot purchase free plan' }, { status: 400 })
     }
 
+    // 3a. Enforce subscription tier hierarchy (block downgrades)
+    const { data: currentSubscription } = await supabase
+      .from('subscriptions')
+      .select('plan_id')
+      .eq('workspace_id', workspaceId)
+      .maybeSingle()
+
+    const PLAN_TIERS: Record<string, number> = {
+      free: 0,
+      starter: 1,
+      pro: 2,
+      agency: 3,
+    }
+
+    const currentPlanId = currentSubscription?.plan_id || 'free'
+    const currentTier = PLAN_TIERS[currentPlanId] || 0
+    const targetTier = PLAN_TIERS[planId] || 0
+
+    if (targetTier <= currentTier) {
+      return NextResponse.json({
+        error: `Cannot purchase lower or equal tier plan. You are currently on the "${currentPlanId.toUpperCase()}" plan, and cannot downgrade to "${planId.toUpperCase()}".`
+      }, { status: 400 })
+    }
+
     // 3b. Check if the user has an active referral ('joined' status)
     const { data: referral } = await supabase
       .from('referrals')

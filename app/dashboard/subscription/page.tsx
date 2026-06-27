@@ -225,16 +225,28 @@ function PlanCard({
   isCurrent,
   onUpgrade,
   upgrading,
+  currentPlanId,
 }: {
   plan: Plan
   isCurrent: boolean
   onUpgrade: (planId: string) => void
   upgrading: string | null
+  currentPlanId: string
 }) {
   const Icon = PLAN_ICONS[plan.id] || CreditCard
   const isPro = plan.id === 'pro'
   const isUpgrading = upgrading === plan.id
   const isFree = plan.id === 'free'
+
+  const PLAN_TIERS: Record<string, number> = {
+    free: 0,
+    starter: 1,
+    pro: 2,
+    agency: 3,
+  }
+  const currentTier = PLAN_TIERS[currentPlanId] || 0
+  const targetTier = PLAN_TIERS[plan.id] || 0
+  const isLowerPlan = targetTier < currentTier
 
   return (
     <div
@@ -321,13 +333,15 @@ function PlanCard({
 
         {/* CTA */}
         <button
-          onClick={() => !isCurrent && !isFree && onUpgrade(plan.id)}
-          disabled={isCurrent || isFree || isUpgrading}
+          onClick={() => !isCurrent && !isFree && !isLowerPlan && onUpgrade(plan.id)}
+          disabled={isCurrent || isFree || isLowerPlan || isUpgrading}
           className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer
             ${isCurrent
               ? 'bg-muted text-muted-foreground cursor-default'
               : isFree
               ? 'bg-muted/50 text-muted-foreground/60 cursor-default'
+              : isLowerPlan
+              ? 'bg-muted/20 text-muted-foreground/45 border border-border/20 cursor-not-allowed opacity-50'
               : isPro
               ? 'bg-gradient-to-r from-[#B41DE6] to-[#0052cc] text-white hover:opacity-90 shadow-lg shadow-purple-600/25 hover:shadow-purple-600/40 active:scale-[0.98]'
               : 'bg-foreground hover:opacity-90 text-background active:scale-[0.98]'
@@ -347,6 +361,8 @@ function PlanCard({
             </>
           ) : isFree ? (
             'Your Base Plan'
+          ) : isLowerPlan ? (
+            'Unavailable'
           ) : (
             <>
               Upgrade to {plan.name}
@@ -421,12 +437,12 @@ function PaymentMethodModal({
           <div
             className={`relative rounded-xl border p-4 transition-all ${
               hasEnoughBalance
-                ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-55/45 dark:bg-zinc-900/40 hover:border-[#B41DE6]/50 hover:bg-[#B41DE6]/3'
+                ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-50/45 dark:bg-zinc-900/40 hover:border-[#B41DE6]/50 hover:bg-[#B41DE6]/3'
                 : 'border-zinc-200/50 dark:border-zinc-850/40 bg-zinc-100/30 dark:bg-zinc-950/10 opacity-75'
             }`}
           >
             {hasEnoughBalance && (
-              <div className="absolute top-3 right-3 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-550/20 dark:border-emerald-500/20 px-2 py-0.5 rounded-full">
+              <div className="absolute top-3 right-3 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 dark:border-emerald-500/20 px-2 py-0.5 rounded-full">
                 Extra 10% Off!
               </div>
             )}
@@ -927,6 +943,7 @@ export default function SubscriptionPage() {
               key={plan.id}
               plan={plan}
               isCurrent={subscription?.plan_id === plan.id || (!subscription && plan.id === 'free')}
+              currentPlanId={subscription?.plan_id || 'free'}
               onUpgrade={(planId) => {
                 const targetPlan = plans.find((p) => p.id === planId)
                 if (targetPlan) setSelectedPlanForUpgrade(targetPlan)
