@@ -17,6 +17,7 @@ import {
   MessageSquareCode,
   Users,
   Lock,
+  Coins,
 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -507,6 +508,26 @@ export default function HomePage() {
                 <span>Follower verification</span>
                 <span>&bull;</span>
                 <span>Instant reward delivery</span>
+              </div>
+            </div>
+
+            {/* Bento Card 8: Refer & Earn Wallet */}
+            <div className="md:col-span-2 bg-zinc-50/50 dark:bg-zinc-900/35 border border-zinc-200 dark:border-emerald-800/30 rounded-2xl p-8 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
+                  <Coins className="w-5 h-5 text-emerald-650 dark:text-emerald-400" />
+                </div>
+                <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">Refer &amp; Earn Wallet</h3>
+                <p className="text-zinc-550 dark:text-zinc-400 text-sm leading-relaxed max-w-md">
+                  Earn a 10% recurring cash commission on all subscription payments made by users you refer. Referred friends receive a 15% discount on their first billing cycle. Spend your earned credits on your own subscription to get an extra 10% discount, or withdraw to your bank account!
+                </p>
+              </div>
+              <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800/60 flex items-center gap-4 text-xs text-emerald-650 dark:text-emerald-400 font-semibold">
+                <span>10% Referral payouts</span>
+                <span>&bull;</span>
+                <span>15% Signup discount</span>
+                <span>&bull;</span>
+                <span>Peer-to-peer transfers</span>
               </div>
             </div>
 

@@ -519,7 +519,7 @@ function PaymentMethodModal({
 }
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
-export default function BillingPage() {
+export default function SubscriptionPage() {
   const { activeWorkspace } = useWorkspace()
   const supabase = createClient()
 
@@ -828,7 +828,7 @@ export default function BillingPage() {
       {/* ── Page Header ───────────────────────────────────────────── */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Billing & Plans
+          Subscription & Plans
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
           Manage your subscription and usage for <span className="text-foreground font-medium">{activeWorkspace?.name}</span>.

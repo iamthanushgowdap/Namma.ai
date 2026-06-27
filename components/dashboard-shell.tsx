@@ -41,7 +41,7 @@ const NAV_ITEMS = [
   { label: 'Inbox', href: '/dashboard/inbox', icon: MessageSquare },
   { label: 'Connections', href: '/dashboard/connections', icon: Instagram },
   { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
-  { label: 'Billing', href: '/dashboard/billing', icon: CreditCard },
+  { label: 'Subscription', href: '/dashboard/subscription', icon: CreditCard },
   { label: 'Refer & Earn', href: '/dashboard/referral', icon: Share2 },
   { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ]

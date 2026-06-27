@@ -711,18 +711,13 @@ export default function AutomationsPage() {
                   </div>
                   
                   <div className="flex gap-2">
-                    <input
-                      type="url"
-                      value={imageUrl}
-                      onChange={e => setImageUrl(e.target.value)}
-                      placeholder="e.g., https://example.com/image.jpg"
-                      className="flex-1 px-3.5 py-2 glass-input rounded-lg text-sm placeholder-muted-foreground transition-colors"
-                    />
-                    <label className="px-4 py-2 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-lg flex items-center justify-center cursor-pointer transition-all shrink-0">
+                    <label className="flex-1 px-4 py-2 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-lg flex items-center justify-center cursor-pointer transition-all">
                       {uploadingStandard ? (
                         <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : imageUrl ? (
+                        'Change Image'
                       ) : (
-                        'Upload Image'
+                        'Upload from Device'
                       )}
                       <input
                         type="file"
@@ -844,21 +839,15 @@ export default function AutomationsPage() {
                             </div>
 
                             <div className="space-y-2">
-                              <label className="text-xs font-medium text-muted-foreground">Card Image URL *</label>
+                              <label className="text-xs font-medium text-muted-foreground">Card Image *</label>
                               <div className="flex gap-2">
-                                <input
-                                  type="url"
-                                  required
-                                  value={card.image_url}
-                                  onChange={(e) => setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, image_url: e.target.value } : c))}
-                                  placeholder="e.g., https://example.com/image.jpg"
-                                  className="flex-1 px-3 py-1.5 glass-input rounded-lg text-xs placeholder-muted-foreground transition-colors"
-                                />
-                                <label className="px-3 py-1.5 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-lg flex items-center justify-center cursor-pointer transition-all shrink-0">
+                                <label className="flex-1 px-4 py-2 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-lg flex items-center justify-center cursor-pointer transition-all">
                                   {uploadingIndex === cardIndex ? (
                                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                  ) : card.image_url ? (
+                                    'Change Image'
                                   ) : (
-                                    'Upload'
+                                    'Upload from Device'
                                   )}
                                   <input
                                     type="file"
@@ -871,6 +860,15 @@ export default function AutomationsPage() {
                                     disabled={uploadingIndex === cardIndex}
                                   />
                                 </label>
+                                {card.image_url && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, image_url: '' } : c))}
+                                    className="px-3 py-2 bg-red-650/10 hover:bg-red-650/20 text-red-650 dark:text-red-400 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                                  >
+                                    Remove
+                                  </button>
+                                )}
                               </div>
                             </div>
                           </div>
