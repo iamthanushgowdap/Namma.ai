@@ -67,7 +67,29 @@ export async function GET(request: NextRequest) {
     let tokenDebugData: any = { note: 'Missing App ID or App Secret to debug token' }
     let appSubscriptionsData: any = { note: 'Missing App ID or App Secret to fetch App webhook subscriptions' }
 
+    let attemptedUpdateResult: any = null
+
     if (appId && appSecret) {
+      const updateParam = request.nextUrl.searchParams.get('update')
+      if (updateParam === 'true') {
+        const verifyToken = process.env.META_VERIFY_TOKEN || 'namma_verify_token'
+        const params = new URLSearchParams({
+          object: 'instagram',
+          callback_url: 'https://namma-ai-topaz.vercel.app/api/webhooks/instagram',
+          fields: 'comments,messages,messaging_postbacks',
+          verify_token: verifyToken,
+          access_token: `${appId}|${appSecret}`
+        })
+        const updateRes = await fetch(
+          `https://graph.facebook.com/v21.0/${appId}/subscriptions`,
+          {
+            method: 'POST',
+            body: params
+          }
+        )
+        attemptedUpdateResult = await updateRes.json()
+      }
+
       // Get token details
       const debugRes = await fetch(
         `https://graph.facebook.com/v21.0/debug_token?input_token=${pageAccessToken}&access_token=${appId}|${appSecret}`
@@ -103,6 +125,7 @@ export async function GET(request: NextRequest) {
           ? new Date(tokenDebugData.data.issued_at * 1000).toISOString() 
           : 'Unknown'
       },
+      attemptedAppSubscriptionUpdate: attemptedUpdateResult,
       pageWebhookSubscription: subData.data || [],
       appWebhookSubscriptions: appSubscriptionsData.data || []
     })
