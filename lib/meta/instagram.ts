@@ -30,8 +30,7 @@ export function getOAuthUrl(redirectUri: string): string {
     'pages_show_list',
     'pages_read_engagement',
     'business_management',
-    'pages_manage_metadata',
-    'pages_messaging'
+    'pages_manage_metadata'
   ];
 
   return `https://www.facebook.com/${META_GRAPH_VERSION}/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(
@@ -164,7 +163,7 @@ export async function subscribePageToWebhooks(
   pageAccessToken: string
 ): Promise<boolean> {
   const response = await fetch(
-    `${META_GRAPH_URL}/${pageId}/subscribed_apps?subscribed_fields=feed,messages,messaging_postbacks&access_token=${pageAccessToken}`,
+    `${META_GRAPH_URL}/${pageId}/subscribed_apps?subscribed_fields=feed&access_token=${pageAccessToken}`,
     {
       method: 'POST',
     }
