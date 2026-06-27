@@ -887,15 +887,7 @@ export default function BillingPage() {
               </div>
             </div>
 
-            {/* Right: Cancel button */}
-            {isPaidPlan && !subscription?.cancel_at_period_end && (
-              <button
-                onClick={() => setShowCancelModal(true)}
-                className="flex items-center gap-2 px-4 py-2 text-xs text-red-650 dark:text-red-400 border border-red-250 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors font-semibold cursor-pointer"
-              >
-                Cancel Subscription
-              </button>
-            )}
+            {/* Right: Cancellation indicator (if scheduled) */}
             {subscription?.cancel_at_period_end && (
               <div className="flex items-center gap-2 px-4 py-2 text-xs text-amber-700 dark:text-amber-400 border border-amber-250 dark:border-amber-900/30 bg-amber-50 dark:bg-amber-950/20 rounded-xl">
                 <AlertTriangle className="w-3.5 h-3.5" />
