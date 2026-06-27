@@ -332,36 +332,70 @@ export async function POST(request: NextRequest) {
                   
                   // Send Instagram Message reply
                   try {
-                    const responseCards = rule.response_cards || []
-                    if (Array.isArray(responseCards) && responseCards.length > 0) {
-                      // Send generic template carousel
-                      await sendInstagramGenericTemplate(senderId, responseCards, pageAccessToken)
+                    if (auto.follow_gate_enabled) {
+                      // Follow-Gate enabled: send interactive card instead of direct response
+                      try {
+                        const igUsername = igAccount.username || 'our account'
+                        await sendFollowGateCard(
+                          senderId,
+                          auto.id,
+                          igUsername,
+                          auto.follow_gate_message || 'This link is exclusive for our followers only! Tap the button below to verify.',
+                          pageAccessToken
+                        )
 
-                      // Save outbound message to DB
-                      await supabase.from('messages').insert({
-                        conversation_id: conversation.id,
-                        sender: 'ai',
-                        content: '[Interactive Cards Carousel sent]',
-                      })
-                    } else {
-                      // Send photo attachment if configured
-                      if (rule.image_url) {
-                        try {
-                          await sendInstagramImageAttachment(senderId, rule.image_url, pageAccessToken)
-                        } catch (imgErr) {
-                          console.error('Failed to send image attachment in direct DM:', imgErr)
-                        }
+                        // Log event
+                        await supabase.from('webhook_events').insert({
+                          workspace_id: workspaceId,
+                          event_type: 'follow_gate_initiated',
+                          payload: {
+                            automation_id: auto.id,
+                            commenter_id: senderId,
+                            timestamp: new Date().toISOString(),
+                          },
+                        })
+
+                        await supabase.from('messages').insert({
+                          conversation_id: conversation.id,
+                          sender: 'ai',
+                          content: '[Follow-Gate card sent — awaiting user follow verification]',
+                        })
+                      } catch (fgErr) {
+                        console.error('Failed to send follow-gate card in DM:', fgErr)
                       }
-
-                      if (rule.response_message) {
-                        await sendInstagramMessage(senderId, rule.response_message, pageAccessToken)
+                    } else {
+                      // No Follow-Gate: send the DM response directly
+                      const responseCards = rule.response_cards || []
+                      if (Array.isArray(responseCards) && responseCards.length > 0) {
+                        // Send generic template carousel
+                        await sendInstagramGenericTemplate(senderId, responseCards, pageAccessToken)
 
                         // Save outbound message to DB
                         await supabase.from('messages').insert({
                           conversation_id: conversation.id,
                           sender: 'ai',
-                          content: rule.response_message,
+                          content: '[Interactive Cards Carousel sent]',
                         })
+                      } else {
+                        // Send photo attachment if configured
+                        if (rule.image_url) {
+                          try {
+                            await sendInstagramImageAttachment(senderId, rule.image_url, pageAccessToken)
+                          } catch (imgErr) {
+                            console.error('Failed to send image attachment in direct DM:', imgErr)
+                          }
+                        }
+
+                        if (rule.response_message) {
+                          await sendInstagramMessage(senderId, rule.response_message, pageAccessToken)
+
+                          // Save outbound message to DB
+                          await supabase.from('messages').insert({
+                            conversation_id: conversation.id,
+                            sender: 'ai',
+                            content: rule.response_message,
+                          })
+                        }
                       }
                     }
                   } catch (sendErr) {
