@@ -11,7 +11,7 @@ import {
   sendInstagramGenericTemplate,
   sendInstagramGenericTemplatePrivateReply
 } from '@/lib/meta/messages'
-import { checkUserFollowsAccount, getMessageContent } from '@/lib/meta/instagram'
+import { checkUserFollowsAccount, getMessageDetails } from '@/lib/meta/instagram'
 import { getAIResponse } from '@/lib/ai-engine'
 import crypto from 'crypto'
 
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
       // 2. Process incoming Messages (Direct Messages) and Postback Events
       if (entry.messaging) {
         for (const messagingEvent of entry.messaging) {
-          const senderId = messagingEvent.sender?.id
+          let senderId = messagingEvent.sender?.id
           const recipientId = messagingEvent.recipient?.id
 
           // ── 2a. Handle Follow-Gate Postback Button Taps ──────────────────────
@@ -231,16 +231,19 @@ export async function POST(request: NextRequest) {
           let messageText = messagingEvent.message?.text
           const messageId = messagingEvent.message?.mid || messagingEvent.message_edit?.mid
 
-          if (!messageText && messageId) {
-            console.log(`Message text missing from payload, fetching via Graph API for ID: ${messageId}`)
+          if ((!messageText || !senderId) && messageId) {
+            console.log(`Message text or sender ID missing from payload, fetching via Graph API for ID: ${messageId}`)
             try {
-              const fetchedText = await getMessageContent(messageId, pageAccessToken)
-              if (fetchedText) {
-                messageText = fetchedText
-                console.log(`Successfully fetched message text: "${messageText}"`)
+              const details = await getMessageDetails(messageId, pageAccessToken)
+              if (details.text) {
+                messageText = details.text
               }
+              if (details.senderId) {
+                senderId = details.senderId
+              }
+              console.log(`Successfully fetched details from Graph API - Text: "${messageText}", Sender ID: "${senderId}"`)
             } catch (fetchErr) {
-              console.error('Failed to fetch message text content:', fetchErr)
+              console.error('Failed to fetch message details content:', fetchErr)
             }
           }
 

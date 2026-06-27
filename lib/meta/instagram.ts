@@ -257,26 +257,29 @@ export async function checkUserFollowsAccount(
 }
 
 /**
- * Retrieves the text content of a message from Meta Graph API using its message ID.
- * Required in regions (like Europe/EEA) or scenarios where Meta strips the message text 
- * from the webhook payload due to privacy policies.
+ * Retrieves the text content and sender ID of a message from Meta Graph API using its message ID.
+ * Required in regions (like Europe/EEA) or for message_edit webhook events where Meta strips
+ * the text and sender details from the webhook payload due to privacy policies.
  */
-export async function getMessageContent(
+export async function getMessageDetails(
   messageId: string,
   pageAccessToken: string
-): Promise<string | null> {
+): Promise<{ text: string | null; senderId: string | null }> {
   try {
     const response = await fetch(
-      `${META_GRAPH_URL}/${messageId}?fields=message&access_token=${pageAccessToken}`
+      `${META_GRAPH_URL}/${messageId}?fields=message,from&access_token=${pageAccessToken}`
     );
     const data = await response.json();
     if (data.error) {
-      console.error('Failed to fetch message content from Meta Graph API:', data.error);
-      return null;
+      console.error('Failed to fetch message details from Meta Graph API:', data.error);
+      return { text: null, senderId: null };
     }
-    return data.message || null;
+    return {
+      text: data.message || null,
+      senderId: data.from?.id || null
+    };
   } catch (err) {
-    console.error('Failed to fetch message content due to error:', err);
-    return null;
+    console.error('Failed to fetch message details due to error:', err);
+    return { text: null, senderId: null };
   }
 }
