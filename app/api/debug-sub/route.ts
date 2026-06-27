@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
     // 2. Try to run subscription POST request directly and capture response
     const subscribeRes = await fetch(
-      `https://graph.facebook.com/v21.0/${pageId}/subscribed_apps?subscribed_fields=feed,messages,messaging_postbacks,messaging_seen&access_token=${pageAccessToken}`,
+      `https://graph.facebook.com/v21.0/${pageId}/subscribed_apps?subscribed_fields=feed,messages,messaging_postbacks&access_token=${pageAccessToken}`,
       { method: 'POST' }
     )
     const subscribeData = await subscribeRes.json()
