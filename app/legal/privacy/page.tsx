@@ -183,13 +183,14 @@ export default function PrivacyPage() {
             <p className="text-xs text-zinc-550 dark:text-zinc-400 leading-relaxed mb-4">
               To operate Instagram automations via official Meta Graph APIs, Namma.ai requests the following granular permissions during the Facebook OAuth connection flow. Here is why they are required and how they are used:
             </p>
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs border border-zinc-200 dark:border-white/[0.06] rounded-xl overflow-hidden">
                 <thead>
                   <tr className="bg-zinc-100/50 dark:bg-zinc-900/50 text-zinc-700 dark:text-zinc-300 border-b border-zinc-200 dark:border-white/[0.06]">
-                    <th className="p-3 font-semibold">Permission Scope</th>
-                    <th className="p-3 font-semibold">Data Accessed</th>
-                    <th className="p-3 font-semibold">Justification / How We Use It</th>
+                    <th className="p-3 font-semibold w-1/4">Permission Scope</th>
+                    <th className="p-3 font-semibold w-1/4">Data Accessed</th>
+                    <th className="p-3 font-semibold w-2/4">Justification / How We Use It</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-200 dark:divide-white/[0.06] text-zinc-650 dark:text-zinc-400">
@@ -225,6 +226,57 @@ export default function PrivacyPage() {
                   </tr>
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card List View */}
+            <div className="block md:hidden space-y-4">
+              {[
+                {
+                  scope: 'instagram_basic',
+                  data: 'Instagram username, profile info, media list, and permalinks.',
+                  justification: 'To identify connected professional profiles and let you select specific posts to attach keyword triggers.'
+                },
+                {
+                  scope: 'instagram_manage_messages',
+                  data: 'Direct message text, postback payloads, and sender scoped IDs.',
+                  justification: 'To receive webhook events for new DMs, parse triggers/payloads (including Follow-Gate checks), and deliver automatic responses in the DM window.'
+                },
+                {
+                  scope: 'instagram_manage_comments',
+                  data: 'Public comment content, commenter scoped IDs, and comment permalinks.',
+                  justification: 'To receive real-time webhook updates when a user comments on your media, detect matching keywords, and reply to comments.'
+                },
+                {
+                  scope: 'pages_show_list',
+                  data: 'List of Facebook Pages managed by the logged-in user.',
+                  justification: 'To let you choose which Facebook Page is linked to your target Instagram Professional Account during the onboarding wizard.'
+                },
+                {
+                  scope: 'pages_read_engagement',
+                  data: 'Page parameters, access tokens, and connection statuses.',
+                  justification: 'To verify the linked page configuration and metadata before establishing real-time data sync.'
+                },
+                {
+                  scope: 'pages_manage_metadata',
+                  data: 'None (subscription action only).',
+                  justification: 'To register Namma.ai webhook listeners on your Facebook page so comments and DMs can be routed to your workspace instantly.'
+                }
+              ].map((item, idx) => (
+                <div key={idx} className="bg-zinc-50/50 dark:bg-zinc-900/35 border border-zinc-200 dark:border-white/[0.06] rounded-xl p-4 space-y-2.5">
+                  <div className="flex flex-wrap items-center justify-between gap-1">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Permission Scope</span>
+                    <span className="font-mono text-xs font-bold text-purple-650 dark:text-purple-400 break-all">{item.scope}</span>
+                  </div>
+                  <div className="border-t border-zinc-100 dark:border-white/[0.04] pt-2 space-y-1">
+                    <span className="text-[9px] text-muted-foreground block font-semibold uppercase tracking-wider">Data Accessed</span>
+                    <p className="text-xs text-zinc-700 dark:text-zinc-300">{item.data}</p>
+                  </div>
+                  <div className="border-t border-zinc-100 dark:border-white/[0.04] pt-2 space-y-1">
+                    <span className="text-[9px] text-muted-foreground block font-semibold uppercase tracking-wider">Why We Need It</span>
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{item.justification}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </SectionCard>
