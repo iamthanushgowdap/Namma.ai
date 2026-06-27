@@ -86,13 +86,37 @@ export async function POST(request: NextRequest) {
       const igAccountId = entry.id // Instagram Business Account ID
 
       // 1. Fetch connected Instagram account from DB (bypass RLS using admin client)
-      const { data: igAccount, error: dbError } = await supabase
+      let { data: igAccount, error: dbError } = await supabase
         .from('instagram_accounts')
         .select('*')
         .eq('instagram_user_id', igAccountId)
         .single()
 
-      if (dbError || !igAccount) {
+      if (!igAccount) {
+        // Fallback: If igAccountId is a Facebook Page ID, resolve the connected account
+        // by verifying which decrypted access token matches this Page ID
+        const { data: allAccounts } = await supabase
+          .from('instagram_accounts')
+          .select('*')
+        
+        if (allAccounts) {
+          for (const acc of allAccounts) {
+            try {
+              const token = decrypt(acc.access_token_encrypted)
+              const meRes = await fetch(`https://graph.facebook.com/v21.0/me?access_token=${token}`)
+              const meData = await meRes.json()
+              if (meData.id === igAccountId) {
+                igAccount = acc
+                break
+              }
+            } catch (err) {
+              // Ignore decryption or network errors for specific rows
+            }
+          }
+        }
+      }
+
+      if (!igAccount) {
         console.warn(`Instagram account not connected for ID: ${igAccountId}`)
         continue
       }
