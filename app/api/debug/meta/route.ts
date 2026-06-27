@@ -136,6 +136,26 @@ export async function GET(request: NextRequest) {
       appSubscriptionsData = await appSubRes.json()
     }
 
+    // Fetch the connected Instagram account's recent media (to verify correct posts)
+    let igMediaData: any = { note: 'Could not fetch media' }
+    try {
+      const igMediaRes = await fetch(
+        `https://graph.facebook.com/v21.0/${linkedIgAccountId || dbIgAccountId}/media?fields=id,permalink,caption,timestamp&limit=5&access_token=${pageAccessToken}`
+      )
+      igMediaData = await igMediaRes.json()
+    } catch (e) {}
+
+    // Check App feature access levels (Advanced vs Standard)
+    let appFeaturesData: any = null
+    if (appId && appSecret) {
+      try {
+        const featuresRes = await fetch(
+          `https://graph.facebook.com/v21.0/${appId}?fields=permissions&access_token=${appId}|${appSecret}`
+        )
+        appFeaturesData = await featuresRes.json()
+      } catch (e) {}
+    }
+  
     return NextResponse.json({
       success: true,
       appId: appId || 'Not configured',
@@ -160,7 +180,9 @@ export async function GET(request: NextRequest) {
       },
       attemptedAppSubscriptionUpdate: attemptedUpdateResult,
       pageWebhookSubscription: subData.data || [],
-      appWebhookSubscriptions: appSubscriptionsData.data || []
+      appWebhookSubscriptions: appSubscriptionsData.data || [],
+      connectedAccountMedia: igMediaData.data || igMediaData,
+      appFeatures: appFeaturesData
     })
 
   } catch (err: any) {
