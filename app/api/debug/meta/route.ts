@@ -73,21 +73,39 @@ export async function GET(request: NextRequest) {
       const updateParam = request.nextUrl.searchParams.get('update')
       if (updateParam === 'true') {
         const verifyToken = process.env.META_VERIFY_TOKEN || 'namma_verify_token'
-        const params = new URLSearchParams({
+        
+        // Update Instagram Webhook Subscriptions
+        const paramsIg = new URLSearchParams({
           object: 'instagram',
           callback_url: 'https://namma-ai-topaz.vercel.app/api/webhooks/instagram',
           fields: 'comments,messages,messaging_postbacks',
           verify_token: verifyToken,
           access_token: `${appId}|${appSecret}`
         })
-        const updateRes = await fetch(
+        const updateIgRes = await fetch(
           `https://graph.facebook.com/v21.0/${appId}/subscriptions`,
-          {
-            method: 'POST',
-            body: params
-          }
+          { method: 'POST', body: paramsIg }
         )
-        attemptedUpdateResult = await updateRes.json()
+        const updateIgData = await updateIgRes.json()
+
+        // Update Page Webhook Subscriptions
+        const paramsPage = new URLSearchParams({
+          object: 'page',
+          callback_url: 'https://namma-ai-topaz.vercel.app/api/webhooks/instagram',
+          fields: 'feed,mention',
+          verify_token: verifyToken,
+          access_token: `${appId}|${appSecret}`
+        })
+        const updatePageRes = await fetch(
+          `https://graph.facebook.com/v21.0/${appId}/subscriptions`,
+          { method: 'POST', body: paramsPage }
+        )
+        const updatePageData = await updatePageRes.json()
+
+        attemptedUpdateResult = {
+          instagram: updateIgData,
+          page: updatePageData
+        }
       }
 
       // Get token details
