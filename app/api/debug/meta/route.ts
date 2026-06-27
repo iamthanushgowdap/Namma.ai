@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
         // This is SEPARATE from App-level subscriptions above.
         // Without this, Meta knows the app CAN receive events but won't DELIVER them for this Page.
         const pageSubParams = new URLSearchParams({
-          subscribed_fields: 'feed,mention',
+          subscribed_fields: 'feed,mention,comments,messages,messaging_postbacks',
           access_token: pageAccessToken
         })
         const pageSubRes = await fetch(
