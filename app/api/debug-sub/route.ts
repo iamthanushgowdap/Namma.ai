@@ -39,16 +39,13 @@ export async function GET(request: NextRequest) {
     const pageId = meData.id
     const pageName = meData.name
 
-    // 2. Try to run subscription POST request directly and capture response
-    const subscribeRes = await fetch(
-      `https://graph.facebook.com/v21.0/${pageId}/subscribed_apps?subscribed_fields=feed&access_token=${pageAccessToken}`,
-      { method: 'POST' }
-    )
-    const subscribeData = await subscribeRes.json()
-
-    // 3. Fetch subscribed apps again
+    // 2. Fetch subscribed apps
     const subRes = await fetch(`https://graph.facebook.com/v21.0/${pageId}/subscribed_apps?access_token=${pageAccessToken}`)
     const subData: any = await subRes.json()
+
+    // 3. Fetch permissions granted to this Page token
+    const permRes = await fetch(`https://graph.facebook.com/v21.0/${pageId}/permissions?access_token=${pageAccessToken}`)
+    const permData: any = await permRes.json()
 
     return NextResponse.json({
       success: true,
@@ -57,7 +54,7 @@ export async function GET(request: NextRequest) {
         name: pageName,
         username: account.username
       },
-      attemptedSubscriptionResponse: subscribeData,
+      pagePermissions: permData,
       subscribedApps: subData
     })
   } catch (err: any) {
