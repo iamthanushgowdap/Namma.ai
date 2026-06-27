@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import { decrypt } from '@/lib/crypto'
-import { sendInstagramMessage, replyToComment, sendInstagramPrivateReply, sendFollowGateCard, sendNotFollowingCard, sendInstagramImageAttachment } from '@/lib/meta/messages'
+import { 
+  sendInstagramMessage, 
+  replyToComment, 
+  sendInstagramPrivateReply, 
+  sendFollowGateCard, 
+  sendNotFollowingCard, 
+  sendInstagramImageAttachment,
+  sendInstagramGenericTemplate,
+  sendInstagramGenericTemplatePrivateReply
+} from '@/lib/meta/messages'
 import { checkUserFollowsAccount } from '@/lib/meta/instagram'
 import { getAIResponse } from '@/lib/ai-engine'
 import crypto from 'crypto'
@@ -150,35 +159,61 @@ export async function POST(request: NextRequest) {
               if (isFollowing) {
                 // ✅ FOLLOWING — Send the actual automation response DM
                 const rule = automation.automation_rules?.[0]
+                const responseCards = rule?.response_cards || []
                 
-                // Send photo attachment if configured
-                if (rule?.image_url) {
-                  try {
-                    await sendInstagramImageAttachment(senderId, rule.image_url, pageAccessToken)
-                  } catch (imgErr) {
-                    console.error('Failed to send image attachment in postback:', imgErr)
-                  }
-                }
+                if (rule) {
+                  if (Array.isArray(responseCards) && responseCards.length > 0) {
+                    // Send generic template carousel
+                    await sendInstagramGenericTemplate(senderId, responseCards, pageAccessToken)
 
-                if (rule?.response_message) {
-                  await sendInstagramMessage(senderId, rule.response_message, pageAccessToken)
+                    // Record in conversations/messages
+                    const { data: conv } = await supabase
+                      .from('conversations')
+                      .upsert(
+                        { workspace_id: workspaceId, instagram_user_id: senderId, status: 'active' },
+                        { onConflict: 'workspace_id, instagram_user_id' }
+                      )
+                      .select()
+                      .single()
 
-                  // Record in conversations/messages
-                  const { data: conv } = await supabase
-                    .from('conversations')
-                    .upsert(
-                      { workspace_id: workspaceId, instagram_user_id: senderId, status: 'active' },
-                      { onConflict: 'workspace_id, instagram_user_id' }
-                    )
-                    .select()
-                    .single()
+                    if (conv) {
+                      await supabase.from('messages').insert({
+                        conversation_id: conv.id,
+                        sender: 'ai',
+                        content: '[Interactive Cards Carousel sent]',
+                      })
+                    }
+                  } else {
+                    // Send photo attachment if configured
+                    if (rule.image_url) {
+                      try {
+                        await sendInstagramImageAttachment(senderId, rule.image_url, pageAccessToken)
+                      } catch (imgErr) {
+                        console.error('Failed to send image attachment in postback:', imgErr)
+                      }
+                    }
 
-                  if (conv) {
-                    await supabase.from('messages').insert({
-                      conversation_id: conv.id,
-                      sender: 'ai',
-                      content: rule.response_message,
-                    })
+                    if (rule.response_message) {
+                      await sendInstagramMessage(senderId, rule.response_message, pageAccessToken)
+
+                      // Record in conversations/messages
+                      const { data: conv } = await supabase
+                        .from('conversations')
+                        .upsert(
+                          { workspace_id: workspaceId, instagram_user_id: senderId, status: 'active' },
+                          { onConflict: 'workspace_id, instagram_user_id' }
+                        )
+                        .select()
+                        .single()
+
+                      if (conv) {
+                        await supabase.from('messages').insert({
+                          conversation_id: conv.id,
+                          sender: 'ai',
+                          content: rule.response_message,
+                        })
+                      }
+                    }
                   }
                 }
               } else {
@@ -251,23 +286,38 @@ export async function POST(request: NextRequest) {
                   
                   // Send Instagram Message reply
                   try {
-                    // Send photo attachment if configured
-                    if (rule.image_url) {
-                      try {
-                        await sendInstagramImageAttachment(senderId, rule.image_url, pageAccessToken)
-                      } catch (imgErr) {
-                        console.error('Failed to send image attachment in direct DM:', imgErr)
+                    const responseCards = rule.response_cards || []
+                    if (Array.isArray(responseCards) && responseCards.length > 0) {
+                      // Send generic template carousel
+                      await sendInstagramGenericTemplate(senderId, responseCards, pageAccessToken)
+
+                      // Save outbound message to DB
+                      await supabase.from('messages').insert({
+                        conversation_id: conversation.id,
+                        sender: 'ai',
+                        content: '[Interactive Cards Carousel sent]',
+                      })
+                    } else {
+                      // Send photo attachment if configured
+                      if (rule.image_url) {
+                        try {
+                          await sendInstagramImageAttachment(senderId, rule.image_url, pageAccessToken)
+                        } catch (imgErr) {
+                          console.error('Failed to send image attachment in direct DM:', imgErr)
+                        }
+                      }
+
+                      if (rule.response_message) {
+                        await sendInstagramMessage(senderId, rule.response_message, pageAccessToken)
+
+                        // Save outbound message to DB
+                        await supabase.from('messages').insert({
+                          conversation_id: conversation.id,
+                          sender: 'ai',
+                          content: rule.response_message,
+                        })
                       }
                     }
-
-                    await sendInstagramMessage(senderId, rule.response_message, pageAccessToken)
-
-                    // Save outbound message to DB
-                    await supabase.from('messages').insert({
-                      conversation_id: conversation.id,
-                      sender: 'ai',
-                      content: rule.response_message,
-                    })
                   } catch (sendErr) {
                     console.error('Failed to send Instagram DM reply for automation:', sendErr)
                   }
@@ -500,39 +550,68 @@ export async function POST(request: NextRequest) {
                     } else {
                       // 2b. No Follow-Gate: send the DM with the automated response directly
                       try {
-                        // Send the private reply text (opens the communication channel)
-                        await sendInstagramPrivateReply(commentId, rule.response_message, pageAccessToken)
+                        const responseCards = rule.response_cards || []
+                        if (Array.isArray(responseCards) && responseCards.length > 0) {
+                          // Send generic template carousel as private reply
+                          await sendInstagramGenericTemplatePrivateReply(commentId, responseCards, pageAccessToken)
 
-                        // Send photo attachment if configured
-                        if (rule.image_url) {
-                          try {
-                            await sendInstagramImageAttachment(commenterId, rule.image_url, pageAccessToken)
-                          } catch (imgErr) {
-                            console.error('Failed to send image attachment in comment reply:', imgErr)
+                          // Create a conversation for reporting in the Inbox
+                          const { data: conversation } = await supabase
+                            .from('conversations')
+                            .upsert(
+                              {
+                                workspace_id: workspaceId,
+                                instagram_user_id: commenterId,
+                                status: 'active',
+                              },
+                              { onConflict: 'workspace_id, instagram_user_id' }
+                            )
+                            .select()
+                            .single()
+
+                          if (conversation) {
+                            // Store the sent message in DB
+                            await supabase.from('messages').insert({
+                              conversation_id: conversation.id,
+                              sender: 'ai',
+                              content: '[Interactive Cards Carousel sent]',
+                            })
                           }
-                        }
+                        } else {
+                          // Send the private reply text (opens the communication channel)
+                          await sendInstagramPrivateReply(commentId, rule.response_message, pageAccessToken)
 
-                        // Create a conversation for reporting in the Inbox
-                        const { data: conversation } = await supabase
-                          .from('conversations')
-                          .upsert(
-                            {
-                              workspace_id: workspaceId,
-                              instagram_user_id: commenterId,
-                              status: 'active',
-                            },
-                            { onConflict: 'workspace_id, instagram_user_id' }
-                          )
-                          .select()
-                          .single()
+                          // Send photo attachment if configured
+                          if (rule.image_url) {
+                            try {
+                              await sendInstagramImageAttachment(commenterId, rule.image_url, pageAccessToken)
+                            } catch (imgErr) {
+                              console.error('Failed to send image attachment in comment reply:', imgErr)
+                            }
+                          }
 
-                        if (conversation) {
-                          // Store the sent message in DB
-                          await supabase.from('messages').insert({
-                            conversation_id: conversation.id,
-                            sender: 'ai',
-                            content: rule.response_message,
-                          })
+                          // Create a conversation for reporting in the Inbox
+                          const { data: conversation } = await supabase
+                            .from('conversations')
+                            .upsert(
+                              {
+                                workspace_id: workspaceId,
+                                instagram_user_id: commenterId,
+                                status: 'active',
+                              },
+                              { onConflict: 'workspace_id, instagram_user_id' }
+                            )
+                            .select()
+                            .single()
+
+                          if (conversation) {
+                            // Store the sent message in DB
+                            await supabase.from('messages').insert({
+                              conversation_id: conversation.id,
+                              sender: 'ai',
+                              content: rule.response_message,
+                            })
+                          }
                         }
                       } catch (dmErr) {
                         console.error('Failed to send DM to commenter:', dmErr)

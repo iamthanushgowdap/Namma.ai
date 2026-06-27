@@ -299,3 +299,130 @@ export async function sendInstagramImageAttachment(
   };
 }
 
+/**
+ * Sends a generic template carousel message.
+ * Each element in `elements` can have up to 3 buttons.
+ */
+export async function sendInstagramGenericTemplate(
+  recipientId: string,
+  elements: Array<{
+    title: string;
+    image_url: string;
+    subtitle?: string;
+    buttons: Array<{
+      type: 'web_url';
+      url: string;
+      title: string;
+    }>;
+  }>,
+  pageAccessToken: string
+): Promise<{ message_id: string }> {
+  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      recipient: {
+        id: recipientId,
+      },
+      message: {
+        attachment: {
+          type: 'template',
+          payload: {
+            template_type: 'generic',
+            image_aspect_ratio: 'horizontal', // 1.91:1 ratio
+            elements: elements.map(el => ({
+              title: el.title,
+              image_url: el.image_url,
+              subtitle: el.subtitle || '',
+              buttons: el.buttons.map(btn => ({
+                type: 'web_url',
+                url: btn.url,
+                title: btn.title,
+              })),
+            })),
+          },
+        },
+      },
+    }),
+  });
+
+  const data = await response.json();
+
+  if (data.error) {
+    console.error('Meta Graph send generic template error:', data.error);
+    throw new Error(`Failed to send Instagram generic template: ${data.error.message}`);
+  }
+
+  return {
+    message_id: data.message_id,
+  };
+}
+
+/**
+ * Sends a generic template carousel message as a private reply to a comment ID.
+ * Each element in `elements` can have up to 3 buttons.
+ */
+export async function sendInstagramGenericTemplatePrivateReply(
+  commentId: string,
+  elements: Array<{
+    title: string;
+    image_url: string;
+    subtitle?: string;
+    buttons: Array<{
+      type: 'web_url';
+      url: string;
+      title: string;
+    }>;
+  }>,
+  pageAccessToken: string
+): Promise<{ message_id: string }> {
+  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      recipient: {
+        comment_id: commentId,
+      },
+      message: {
+        attachment: {
+          type: 'template',
+          payload: {
+            template_type: 'generic',
+            image_aspect_ratio: 'horizontal', // 1.91:1 ratio
+            elements: elements.map(el => ({
+              title: el.title,
+              image_url: el.image_url,
+              subtitle: el.subtitle || '',
+              buttons: el.buttons.map(btn => ({
+                type: 'web_url',
+                url: btn.url,
+                title: btn.title,
+              })),
+            })),
+          },
+        },
+      },
+    }),
+  });
+
+  const data = await response.json();
+
+  if (data.error) {
+    console.error('Meta Graph send generic template private reply error:', data.error);
+    throw new Error(`Failed to send Instagram generic template private reply: ${data.error.message}`);
+  }
+
+  return {
+    message_id: data.message_id,
+  };
+}
+
+

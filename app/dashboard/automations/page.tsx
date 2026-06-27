@@ -25,12 +25,25 @@ import {
   ArrowUpDown 
 } from 'lucide-react'
 
+interface CardButton {
+  title: string
+  url: string
+}
+
+interface ResponseCard {
+  image_url: string
+  title: string
+  subtitle?: string
+  buttons: CardButton[]
+}
+
 interface AutomationRule {
   id: string
   automation_id: string
   keyword: string
   response_message: string
   image_url?: string | null
+  response_cards?: ResponseCard[] | null
 }
 
 interface Automation {
@@ -64,6 +77,13 @@ export default function AutomationsPage() {
   const [keyword, setKeyword] = useState('')
   const [responseMessage, setResponseMessage] = useState('')
   const [imageUrl, setImageUrl] = useState('')
+  
+  // Multi-Card Carousel State
+  const [responseType, setResponseType] = useState<'standard' | 'carousel'>('standard')
+  const [cards, setCards] = useState<ResponseCard[]>([])
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null) // null for standard, number for card index
+  const [uploadingStandard, setUploadingStandard] = useState(false)
+
   const [formLoading, setFormLoading] = useState(false)
 
   // Specific Post Selection State
@@ -83,7 +103,7 @@ export default function AutomationsPage() {
 
   // Search & Sort State
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name-asc' | 'name-desc' | 'status-active'>('newest')
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name-asc' | 'name-desc' | 'status-active' | 'status-inactive'>('newest')
 
   // Toggle Confirmation State
   const [confirmToggleAuto, setConfirmToggleAuto] = useState<{ id: string; status: string; name: string } | null>(null)
@@ -129,13 +149,74 @@ export default function AutomationsPage() {
     }
   }, [showForm, activeWorkspace])
 
+  const handleImageUpload = async (file: File, cardIndex?: number) => {
+    if (!activeWorkspace) return
+    
+    if (cardIndex !== undefined) {
+      setUploadingIndex(cardIndex)
+    } else {
+      setUploadingStandard(true)
+    }
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('workspaceId', activeWorkspace.id)
+
+    try {
+      const res = await fetch('/api/automations/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.error) throw new Error(data.error)
+
+      if (cardIndex !== undefined) {
+        setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, image_url: data.url } : c))
+      } else {
+        setImageUrl(data.url)
+      }
+    } catch (err: any) {
+      alert(`Upload failed: ${err.message || 'Unknown error'}`)
+    } finally {
+      setUploadingIndex(null)
+      setUploadingStandard(false)
+    }
+  }
+
   const handleCreateOrUpdateAutomation = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!activeWorkspace || !name || !keyword) return
+    if (!activeWorkspace || !name || (triggerType !== 'comment_any' && !keyword)) return
 
     if (mediaScope === 'specific' && !selectedMediaId) {
       setError('Please select a specific Instagram post for this automation.')
       return
+    }
+
+    if (responseType === 'carousel' && cards.length === 0) {
+      setError('Please add at least one card to your carousel.')
+      return
+    }
+
+    // Validate cards
+    if (responseType === 'carousel') {
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i]
+        if (!card.title || !card.image_url) {
+          setError(`Card #${i + 1} must have a title and an image.`)
+          return
+        }
+        if (card.buttons.length === 0) {
+          setError(`Card #${i + 1} must have at least one button.`)
+          return
+        }
+        for (let j = 0; j < card.buttons.length; j++) {
+          const btn = card.buttons[j]
+          if (!btn.title || !btn.url) {
+            setError(`Button #${j + 1} in Card #${i + 1} must have text and a URL link.`)
+            return
+          }
+        }
+      }
     }
 
     setFormLoading(true)
@@ -166,7 +247,8 @@ export default function AutomationsPage() {
           .update({
             keyword: triggerType === 'comment_any' ? '*' : keyword.trim(),
             response_message: responseMessage.trim(),
-            image_url: imageUrl.trim() || null,
+            image_url: responseType === 'standard' ? (imageUrl.trim() || null) : null,
+            response_cards: responseType === 'carousel' ? cards : [],
           })
           .eq('automation_id', editingAutomationId)
 
@@ -200,7 +282,8 @@ export default function AutomationsPage() {
             automation_id: autoData.id,
             keyword: triggerType === 'comment_any' ? '*' : keyword.trim(),
             response_message: responseMessage.trim(),
-            image_url: imageUrl.trim() || null,
+            image_url: responseType === 'standard' ? (imageUrl.trim() || null) : null,
+            response_cards: responseType === 'carousel' ? cards : [],
           })
 
         if (ruleError) throw ruleError
@@ -224,6 +307,10 @@ export default function AutomationsPage() {
     setKeyword('')
     setResponseMessage('')
     setImageUrl('')
+    setResponseType('standard')
+    setCards([])
+    setUploadingIndex(null)
+    setUploadingStandard(false)
     setMediaScope('all')
     setSelectedMediaId(null)
     setSelectedMediaUrl(null)
@@ -243,6 +330,16 @@ export default function AutomationsPage() {
     setKeyword(rule?.keyword === '*' ? '' : rule?.keyword || '')
     setResponseMessage(rule?.response_message || '')
     setImageUrl(rule?.image_url || '')
+
+    const responseCards = rule?.response_cards || []
+    if (Array.isArray(responseCards) && responseCards.length > 0) {
+      setResponseType('carousel')
+      setCards(responseCards)
+    } else {
+      setResponseType('standard')
+      setCards([])
+    }
+
     setMediaScope(auto.media_id ? 'specific' : 'all')
     setSelectedMediaId(auto.media_id || null)
     setSelectedMediaUrl(auto.media_thumbnail_url || null)
@@ -261,6 +358,16 @@ export default function AutomationsPage() {
     setKeyword(rule?.keyword === '*' ? '' : rule?.keyword || '')
     setResponseMessage(rule?.response_message || '')
     setImageUrl(rule?.image_url || '')
+
+    const responseCards = rule?.response_cards || []
+    if (Array.isArray(responseCards) && responseCards.length > 0) {
+      setResponseType('carousel')
+      setCards(responseCards)
+    } else {
+      setResponseType('standard')
+      setCards([])
+    }
+
     setMediaScope(auto.media_id ? 'specific' : 'all')
     setSelectedMediaId(auto.media_id || null)
     setSelectedMediaUrl(auto.media_thumbnail_url || null)
@@ -337,6 +444,10 @@ export default function AutomationsPage() {
       if (sortBy === 'status-active') {
         if (a.status === b.status) return 0
         return a.status === 'active' ? -1 : 1
+      }
+      if (sortBy === 'status-inactive') {
+        if (a.status === b.status) return 0
+        return a.status === 'inactive' ? -1 : 1
       }
       return 0
     })
@@ -553,46 +664,326 @@ export default function AutomationsPage() {
               )}
             </div>
 
-            {/* Photo Attachment URL Input */}
-            <div className="space-y-3 p-4 bg-muted/30 border border-border/60 rounded-xl">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                  <ImageIcon className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
-                  Photo Attachment (Optional)
-                </label>
-                <p className="text-[10px] text-muted-foreground">
-                  Provide a public image URL to send a photo along with your direct message response.
-                </p>
+            {/* DM Response Type Selector */}
+            <div className="space-y-1.5 border-b border-border/40 pb-4 mb-4">
+              <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
+                Response Type
+              </label>
+              <div className="flex bg-muted/60 p-1 rounded-xl border border-border/60 max-w-xs text-xs">
+                <button
+                  type="button"
+                  onClick={() => setResponseType('standard')}
+                  className={`flex-1 py-1.5 font-medium rounded-lg transition-all cursor-pointer text-center ${
+                    responseType === 'standard'
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Standard DM
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setResponseType('carousel')}
+                  className={`flex-1 py-1.5 font-medium rounded-lg transition-all cursor-pointer text-center ${
+                    responseType === 'carousel'
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Interactive Cards
+                </button>
               </div>
-              <input
-                type="url"
-                value={imageUrl}
-                onChange={e => setImageUrl(e.target.value)}
-                placeholder="e.g., https://example.com/image.jpg"
-                className="w-full px-3.5 py-2 glass-input rounded-lg text-sm placeholder-muted-foreground transition-colors"
-              />
-              {imageUrl && imageUrl.trim().startsWith('http') && (
-                <div className="relative w-24 h-24 rounded-lg overflow-hidden border border-border/60 mt-2">
-                  <img 
-                    src={imageUrl} 
-                    alt="Preview" 
-                    className="w-full h-full object-cover" 
-                    onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
-                  />
-                </div>
-              )}
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Automated DM Response Message (Text)</label>
-              <textarea
-                rows={4}
-                value={responseMessage}
-                onChange={e => setResponseMessage(e.target.value)}
-                placeholder="Hey 👋 thanks for reaching out. Here is our product details: namma.ai..."
-                className="w-full px-3.5 py-2 glass-input rounded-lg text-sm placeholder-muted-foreground transition-colors resize-none"
-              />
-            </div>
+            {responseType === 'standard' ? (
+              <>
+                {/* Photo Attachment URL Input (Upgraded with File Upload) */}
+                <div className="space-y-3 p-4 bg-muted/30 border border-border/60 rounded-xl">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <ImageIcon className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                      Photo Attachment (Optional)
+                    </label>
+                    <p className="text-[10px] text-muted-foreground">
+                      Upload an image or provide a public URL to send a photo with your DM response.
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      value={imageUrl}
+                      onChange={e => setImageUrl(e.target.value)}
+                      placeholder="e.g., https://example.com/image.jpg"
+                      className="flex-1 px-3.5 py-2 glass-input rounded-lg text-sm placeholder-muted-foreground transition-colors"
+                    />
+                    <label className="px-4 py-2 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-lg flex items-center justify-center cursor-pointer transition-all shrink-0">
+                      {uploadingStandard ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : (
+                        'Upload Image'
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) handleImageUpload(file)
+                        }}
+                        disabled={uploadingStandard}
+                      />
+                    </label>
+                  </div>
+
+                  {imageUrl && imageUrl.trim().startsWith('http') && (
+                    <div className="relative w-36 h-36 rounded-lg overflow-hidden border border-border/60 mt-2 bg-black/5 dark:bg-black/20">
+                      <img 
+                        src={imageUrl} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setImageUrl('')}
+                        className="absolute top-1.5 right-1.5 bg-black/60 hover:bg-black text-white rounded-full p-1 shadow transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">Automated DM Response Message (Text)</label>
+                  <textarea
+                    rows={4}
+                    value={responseMessage}
+                    onChange={e => setResponseMessage(e.target.value)}
+                    placeholder="Hey 👋 thanks for reaching out. Here is our product details: namma.ai..."
+                    className="w-full px-3.5 py-2 glass-input rounded-lg text-sm placeholder-muted-foreground transition-colors resize-none"
+                  />
+                </div>
+              </>
+            ) : (
+              /* Carousel Card Builder */
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <Grid className="w-3.5 h-3.5 text-indigo-500" />
+                    Cards Carousel ({cards.length}/10)
+                  </label>
+                  {cards.length < 10 && (
+                    <button
+                      type="button"
+                      onClick={() => setCards([...cards, { image_url: '', title: '', subtitle: '', buttons: [{ title: '', url: '' }] }])}
+                      className="flex items-center gap-1 py-1 px-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-[10px] font-semibold transition-all cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      Add Card
+                    </button>
+                  )}
+                </div>
+
+                {cards.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center p-8 border border-dashed border-border rounded-xl bg-zinc-500/5">
+                    <ImageIcon className="w-6 h-6 text-muted-foreground mb-2" />
+                    <p className="text-xs text-muted-foreground mb-2">No cards added to the carousel yet.</p>
+                    <button
+                      type="button"
+                      onClick={() => setCards([{ image_url: '', title: '', subtitle: '', buttons: [{ title: '', url: '' }] }])}
+                      className="py-1.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold cursor-pointer"
+                    >
+                      Add First Card
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
+                    {cards.map((card, cardIndex) => (
+                      <div key={cardIndex} className="p-4 bg-muted/20 border border-border/85 rounded-xl space-y-4 relative">
+                        {/* Remove Card Button */}
+                        <button
+                          type="button"
+                          onClick={() => setCards(cards.filter((_, i) => i !== cardIndex))}
+                          className="absolute top-3 right-3 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
+                          title="Remove Card"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+
+                        <span className="text-xs font-bold text-foreground block">Card #{cardIndex + 1}</span>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Card Inputs */}
+                          <div className="space-y-3">
+                            <div className="space-y-1.5">
+                              <label className="text-xs font-medium text-muted-foreground">Card Title *</label>
+                              <input
+                                type="text"
+                                maxLength={80}
+                                required
+                                value={card.title}
+                                onChange={(e) => setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, title: e.target.value } : c))}
+                                placeholder="e.g., Premium Hoodies Collection"
+                                className="w-full px-3 py-1.5 glass-input rounded-lg text-xs placeholder-muted-foreground transition-colors"
+                              />
+                            </div>
+                            
+                            <div className="space-y-1.5">
+                              <label className="text-xs font-medium text-muted-foreground">Card Subtitle (Optional)</label>
+                              <input
+                                type="text"
+                                maxLength={80}
+                                value={card.subtitle || ''}
+                                onChange={(e) => setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, subtitle: e.target.value } : c))}
+                                placeholder="e.g., Get up to 20% discount today!"
+                                className="w-full px-3 py-1.5 glass-input rounded-lg text-xs placeholder-muted-foreground transition-colors"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="text-xs font-medium text-muted-foreground">Card Image URL *</label>
+                              <div className="flex gap-2">
+                                <input
+                                  type="url"
+                                  required
+                                  value={card.image_url}
+                                  onChange={(e) => setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, image_url: e.target.value } : c))}
+                                  placeholder="e.g., https://example.com/image.jpg"
+                                  className="flex-1 px-3 py-1.5 glass-input rounded-lg text-xs placeholder-muted-foreground transition-colors"
+                                />
+                                <label className="px-3 py-1.5 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-lg flex items-center justify-center cursor-pointer transition-all shrink-0">
+                                  {uploadingIndex === cardIndex ? (
+                                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                  ) : (
+                                    'Upload'
+                                  )}
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0]
+                                      if (file) handleImageUpload(file, cardIndex)
+                                    }}
+                                    disabled={uploadingIndex === cardIndex}
+                                  />
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Live 1.91:1 Crop Mockup Preview */}
+                          <div className="flex flex-col items-center justify-center bg-zinc-950/5 dark:bg-zinc-950/20 p-3 rounded-lg border border-border/40">
+                            <span className="text-[10px] font-semibold text-muted-foreground mb-2 self-start flex items-center gap-1">
+                              <Instagram className="w-3 h-3 text-indigo-500" />
+                              Instagram DM Card Preview
+                            </span>
+                            <div className="w-full max-w-[240px] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-sm flex flex-col">
+                              {/* 1.91:1 Horizontal Image Preview */}
+                              <div className="aspect-[1.91/1] w-full bg-zinc-100 dark:bg-zinc-800 relative overflow-hidden flex items-center justify-center">
+                                {card.image_url && card.image_url.trim().startsWith('http') ? (
+                                  <img
+                                    src={card.image_url}
+                                    alt="Preview"
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+                                  />
+                                ) : (
+                                  <ImageIcon className="w-6 h-6 text-zinc-400 dark:text-zinc-600" />
+                                )}
+                              </div>
+                              <div className="p-3 space-y-1 text-left">
+                                <span className="text-[11px] font-bold text-zinc-900 dark:text-white block truncate">
+                                  {card.title || 'Card Title'}
+                                </span>
+                                <span className="text-[9px] text-zinc-550 dark:text-zinc-400 block truncate">
+                                  {card.subtitle || 'Card subtitle description'}
+                                </span>
+                                
+                                {/* Mock buttons inside preview */}
+                                {card.buttons.map((btn, btnIdx) => (
+                                  <div key={btnIdx} className="mt-2 text-center py-1.5 bg-zinc-100/50 dark:bg-zinc-800/80 rounded-md border border-zinc-200/50 dark:border-zinc-700/50 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 truncate">
+                                    {btn.title || `Button #${btnIdx + 1}`}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Card Buttons Builder */}
+                        <div className="border-t border-border/40 pt-4 mt-3 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-semibold text-muted-foreground">Buttons ({card.buttons.length}/3)</span>
+                            {card.buttons.length < 3 && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updatedButtons = [...card.buttons, { title: '', url: '' }]
+                                  setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, buttons: updatedButtons } : c))
+                                }}
+                                className="text-[10px] font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                              >
+                                + Add Button
+                              </button>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            {card.buttons.map((button, buttonIndex) => (
+                              <div key={buttonIndex} className="p-2.5 bg-muted/40 border border-border/60 rounded-lg space-y-2 relative">
+                                {card.buttons.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const updatedButtons = card.buttons.filter((_, idx) => idx !== buttonIndex)
+                                      setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, buttons: updatedButtons } : c))
+                                    }}
+                                    className="absolute top-1.5 right-1.5 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                )}
+                                <span className="text-[10px] font-bold text-muted-foreground block">Button #{buttonIndex + 1}</span>
+                                
+                                <div className="space-y-1.5">
+                                  <input
+                                    type="text"
+                                    maxLength={20}
+                                    required
+                                    value={button.title}
+                                    onChange={(e) => {
+                                      const updatedButtons = card.buttons.map((btn, idx) => idx === buttonIndex ? { ...btn, title: e.target.value } : btn)
+                                      setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, buttons: updatedButtons } : c))
+                                    }}
+                                    placeholder="Button Text (e.g., Shop Now)"
+                                    className="w-full px-2.5 py-1 glass-input rounded-md text-[10px] placeholder-muted-foreground"
+                                  />
+                                  <input
+                                    type="url"
+                                    required
+                                    value={button.url}
+                                    onChange={(e) => {
+                                      const updatedButtons = card.buttons.map((btn, idx) => idx === buttonIndex ? { ...btn, url: e.target.value } : btn)
+                                      setCards(prev => prev.map((c, i) => i === cardIndex ? { ...c, buttons: updatedButtons } : c))
+                                    }}
+                                    placeholder="Link URL (https://...)"
+                                    className="w-full px-2.5 py-1 glass-input rounded-md text-[10px] placeholder-muted-foreground"
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Follow-Gate Toggle */}
             <div className="space-y-3 p-4 bg-muted/30 border border-border/60 rounded-xl">
@@ -692,6 +1083,7 @@ export default function AutomationsPage() {
               <option value="name-asc" className="bg-background text-foreground">Name (A-Z)</option>
               <option value="name-desc" className="bg-background text-foreground">Name (Z-A)</option>
               <option value="status-active" className="bg-background text-foreground">Active First</option>
+              <option value="status-inactive" className="bg-background text-foreground">Inactive First</option>
             </select>
           </div>
         </div>
@@ -759,6 +1151,13 @@ export default function AutomationsPage() {
                           <div className="text-[10px] flex items-center gap-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 px-1.5 py-0.5 rounded-md font-medium">
                             <ImageIcon className="w-2.5 h-2.5" />
                             Photo Included
+                          </div>
+                        )}
+                        {/* Carousel template indicator */}
+                        {Array.isArray(rule?.response_cards) && rule.response_cards.length > 0 && (
+                          <div className="text-[10px] flex items-center gap-1 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/25 px-1.5 py-0.5 rounded-md font-medium">
+                            <Grid className="w-2.5 h-2.5 text-indigo-500" />
+                            {rule.response_cards.length} Cards Carousel
                           </div>
                         )}
                         {/* Same for Next Post Badge */}
@@ -834,15 +1233,35 @@ export default function AutomationsPage() {
                       </div>
                     )}
 
-                    <div className="p-3 bg-muted/40 border border-border/40 rounded-lg space-y-1.5">
-                      <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-semibold uppercase">
-                        <MessageSquare className="w-3.5 h-3.5 text-muted-foreground/85" />
-                        Auto DM Payload
+                    {Array.isArray(rule?.response_cards) && rule.response_cards.length > 0 ? (
+                      <div className="p-3 bg-muted/40 border border-border/40 rounded-lg space-y-2">
+                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-semibold uppercase">
+                          <Grid className="w-3.5 h-3.5 text-muted-foreground/85" />
+                          Auto DM Carousel Payload
+                        </div>
+                        <div className="flex gap-2 overflow-x-auto pb-1 max-w-full">
+                          {rule.response_cards.map((card, idx) => (
+                            <div key={idx} className="flex-shrink-0 w-36 border border-border/60 rounded-md overflow-hidden bg-black/5 dark:bg-black/20 p-2 space-y-1.5 text-[10px]">
+                              {card.image_url && (
+                                <img src={card.image_url} alt={card.title} className="w-full aspect-[1.91/1] object-cover rounded" />
+                              )}
+                              <span className="font-bold text-foreground truncate block">{card.title}</span>
+                              <span className="text-muted-foreground text-[8px] truncate block">{card.subtitle || '(No subtitle)'}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <p className="text-xs text-foreground/90 whitespace-pre-line">
-                        {rule?.response_message || '(No text response configured — only photo will be sent)'}
-                      </p>
-                    </div>
+                    ) : (
+                      <div className="p-3 bg-muted/40 border border-border/40 rounded-lg space-y-1.5">
+                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-semibold uppercase">
+                          <MessageSquare className="w-3.5 h-3.5 text-muted-foreground/85" />
+                          Auto DM Payload
+                        </div>
+                        <p className="text-xs text-foreground/90 whitespace-pre-line">
+                          {rule?.response_message || '(No text response configured — only photo will be sent)'}
+                        </p>
+                      </div>
+                    )}
 
                     <div className="flex items-center justify-between text-[9px] text-muted-foreground border-t border-border/20 pt-2">
                       <span>Type: comment_keyword</span>
