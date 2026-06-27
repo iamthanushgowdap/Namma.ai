@@ -11,7 +11,7 @@ import {
   sendInstagramGenericTemplate,
   sendInstagramGenericTemplatePrivateReply
 } from '@/lib/meta/messages'
-import { checkUserFollowsAccount } from '@/lib/meta/instagram'
+import { checkUserFollowsAccount, getMessageContent } from '@/lib/meta/instagram'
 import { getAIResponse } from '@/lib/ai-engine'
 import crypto from 'crypto'
 
@@ -227,8 +227,22 @@ export async function POST(request: NextRequest) {
             continue // Done processing this postback event
           }
 
-          // ── 2b. Handle Regular DMs ───────────────────────────────────────────
-          const messageText = messagingEvent.message?.text
+          // ── 2b. Handle Regular DMs & Edits ───────────────────────────────────
+          let messageText = messagingEvent.message?.text
+          const messageId = messagingEvent.message?.mid || messagingEvent.message_edit?.mid
+
+          if (!messageText && messageId) {
+            console.log(`Message text missing from payload, fetching via Graph API for ID: ${messageId}`)
+            try {
+              const fetchedText = await getMessageContent(messageId, pageAccessToken)
+              if (fetchedText) {
+                messageText = fetchedText
+                console.log(`Successfully fetched message text: "${messageText}"`)
+              }
+            } catch (fetchErr) {
+              console.error('Failed to fetch message text content:', fetchErr)
+            }
+          }
 
           // Ignore self-sent webhook notifications to prevent infinite reply loops
           if (senderId === igAccountId || !messageText) {

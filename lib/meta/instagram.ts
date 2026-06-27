@@ -255,3 +255,28 @@ export async function checkUserFollowsAccount(
     return true;
   }
 }
+
+/**
+ * Retrieves the text content of a message from Meta Graph API using its message ID.
+ * Required in regions (like Europe/EEA) or scenarios where Meta strips the message text 
+ * from the webhook payload due to privacy policies.
+ */
+export async function getMessageContent(
+  messageId: string,
+  pageAccessToken: string
+): Promise<string | null> {
+  try {
+    const response = await fetch(
+      `${META_GRAPH_URL}/${messageId}?fields=message&access_token=${pageAccessToken}`
+    );
+    const data = await response.json();
+    if (data.error) {
+      console.error('Failed to fetch message content from Meta Graph API:', data.error);
+      return null;
+    }
+    return data.message || null;
+  } catch (err) {
+    console.error('Failed to fetch message content due to error:', err);
+    return null;
+  }
+}
