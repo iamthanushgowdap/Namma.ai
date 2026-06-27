@@ -47,15 +47,36 @@ export async function GET(request: NextRequest) {
     }
 
     // Calculate balances
-    let withdrawable = 0
-    let promo = 0
     const ledgerEntries = ledger || []
     
-    for (const entry of ledgerEntries) {
-      if (['referral_commission', 'withdrawal', 'friend_transfer_sent'].includes(entry.transaction_type)) {
-        withdrawable += entry.amount // debit is negative, credit is positive
-      } else if (['friend_transfer_received', 'subscription_purchase'].includes(entry.transaction_type)) {
-        promo += entry.amount
+    // Sort oldest first to calculate balances chronologically
+    const sorted = [...ledgerEntries].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    )
+
+    let withdrawable = 0
+    let promo = 0
+
+    for (const entry of sorted) {
+      if (entry.amount > 0) {
+        if (entry.transaction_type === 'referral_commission') {
+          withdrawable += entry.amount
+        } else {
+          promo += entry.amount
+        }
+      } else {
+        const debit = Math.abs(entry.amount)
+        if (entry.transaction_type === 'withdrawal' || entry.transaction_type === 'friend_transfer_sent') {
+          withdrawable -= debit
+        } else if (entry.transaction_type === 'subscription_purchase') {
+          if (promo >= debit) {
+            promo -= debit
+          } else {
+            const remaining = debit - promo
+            promo = 0
+            withdrawable -= remaining
+          }
+        }
       }
     }
 
@@ -133,16 +154,41 @@ export async function POST(request: NextRequest) {
 
     console.log('[DEBUG POST /api/referral] Ledger entries count:', ledger?.length, 'Ledger Error:', ledgerError)
 
-    let withdrawable = 0
     const ledgerEntries = ledger || []
+    
+    // Sort oldest first to calculate balances chronologically
+    const sorted = [...ledgerEntries].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    )
+
+    let withdrawable = 0
+    let promo = 0
     let cumulativeWithdrawals = 0
 
-    for (const entry of ledgerEntries) {
-      if (['referral_commission', 'withdrawal', 'friend_transfer_sent'].includes(entry.transaction_type)) {
-        withdrawable += entry.amount
-      }
-      if (entry.transaction_type === 'withdrawal') {
-        cumulativeWithdrawals += Math.abs(entry.amount) // sum of absolute withdrawal debits
+    for (const entry of sorted) {
+      if (entry.amount > 0) {
+        if (entry.transaction_type === 'referral_commission') {
+          withdrawable += entry.amount
+        } else {
+          promo += entry.amount
+        }
+      } else {
+        const debit = Math.abs(entry.amount)
+        if (entry.transaction_type === 'withdrawal' || entry.transaction_type === 'friend_transfer_sent') {
+          withdrawable -= debit
+        } else if (entry.transaction_type === 'subscription_purchase') {
+          if (promo >= debit) {
+            promo -= debit
+          } else {
+            const remaining = debit - promo
+            promo = 0
+            withdrawable -= remaining
+          }
+        }
+        
+        if (entry.transaction_type === 'withdrawal') {
+          cumulativeWithdrawals += debit
+        }
       }
     }
     withdrawable = Math.max(0, withdrawable)

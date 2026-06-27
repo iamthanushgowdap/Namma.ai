@@ -70,15 +70,36 @@ export async function POST(request: NextRequest) {
         .select('*')
         .eq('profile_id', user.id)
 
-      let withdrawable = 0
-      let promo = 0
       const ledgerEntries = ledger || []
       
-      for (const entry of ledgerEntries) {
-        if (['referral_commission', 'withdrawal', 'friend_transfer_sent'].includes(entry.transaction_type)) {
-          withdrawable += entry.amount
-        } else if (['friend_transfer_received', 'subscription_purchase'].includes(entry.transaction_type)) {
-          promo += entry.amount
+      // Sort oldest first to calculate balances chronologically
+      const sorted = [...ledgerEntries].sort(
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      )
+
+      let withdrawable = 0
+      let promo = 0
+
+      for (const entry of sorted) {
+        if (entry.amount > 0) {
+          if (entry.transaction_type === 'referral_commission') {
+            withdrawable += entry.amount
+          } else {
+            promo += entry.amount
+          }
+        } else {
+          const debit = Math.abs(entry.amount)
+          if (entry.transaction_type === 'withdrawal' || entry.transaction_type === 'friend_transfer_sent') {
+            withdrawable -= debit
+          } else if (entry.transaction_type === 'subscription_purchase') {
+            if (promo >= debit) {
+              promo -= debit
+            } else {
+              const remaining = debit - promo
+              promo = 0
+              withdrawable -= remaining
+            }
+          }
         }
       }
       
