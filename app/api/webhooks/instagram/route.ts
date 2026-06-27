@@ -525,6 +525,7 @@ export async function POST(request: NextRequest) {
               for (const auto of automations) {
                 // Skip if this automation is configured for a specific post and it doesn't match
                 if (auto.media_id && commentValue.media?.id !== auto.media_id) {
+                  console.log(`Automation "${auto.name}" skipped: media_id mismatch (comment: ${commentValue.media?.id}, auto: ${auto.media_id})`)
                   continue
                 }
 
