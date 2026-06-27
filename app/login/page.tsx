@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Mail, Lock, User, ArrowRight, Activity } from 'lucide-react'
@@ -17,6 +17,19 @@ export default function LoginPage() {
   
   const router = useRouter()
   const supabase = createClient()
+  const [isReferralReadOnly, setIsReferralReadOnly] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const ref = params.get('ref') || params.get('code') || params.get('referral')
+      if (ref) {
+        setReferralCodeInput(ref.trim())
+        setIsReferralReadOnly(true)
+        setMode('signup') // Automatically switch to sign-up mode if coming via referral link
+      }
+    }
+  }, [])
 
   const handleAuth = async (e?: React.FormEvent | React.MouseEvent) => {
     e?.preventDefault()
@@ -187,9 +200,12 @@ export default function LoginPage() {
                     id="referralCode"
                     type="text"
                     value={referralCodeInput}
-                    onChange={(e) => setReferralCodeInput(e.target.value)}
+                    onChange={(e) => !isReferralReadOnly && setReferralCodeInput(e.target.value)}
+                    disabled={isReferralReadOnly}
                     placeholder="e.g., john1234"
-                    className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
+                    className={`glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors ${
+                      isReferralReadOnly ? 'bg-zinc-100 dark:bg-zinc-800/40 text-zinc-500 dark:text-zinc-400 cursor-not-allowed opacity-80' : ''
+                    }`}
                   />
                 </div>
               </div>
