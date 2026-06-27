@@ -30,8 +30,7 @@ export function getOAuthUrl(redirectUri: string): string {
     'pages_show_list',
     'pages_read_engagement',
     'business_management',
-    'pages_manage_metadata',
-    'pages_messaging'
+    'pages_manage_metadata'
   ];
 
   return `https://www.facebook.com/${META_GRAPH_VERSION}/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(
