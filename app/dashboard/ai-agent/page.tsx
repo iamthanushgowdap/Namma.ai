@@ -57,17 +57,19 @@ export default function AIAgentPage() {
 
   const supabase = createClient()
   const [confirmToggleActive, setConfirmToggleActive] = useState<{
-    type: 'ai_enabled' | 'respond_on_comments';
+    type: 'ai_enabled' | 'respond_on_comments' | 'respond_on_dms';
     currentVal: boolean;
     name: string;
   } | null>(null)
 
-  const handleToggleActiveSetting = async (type: 'ai_enabled' | 'respond_on_comments', currentVal: boolean) => {
+  const handleToggleActiveSetting = async (type: 'ai_enabled' | 'respond_on_comments' | 'respond_on_dms', currentVal: boolean) => {
     const newVal = !currentVal
     if (type === 'ai_enabled') {
       setAiEnabled(newVal)
     } else if (type === 'respond_on_comments') {
       setRespondOnComments(newVal)
+    } else if (type === 'respond_on_dms') {
+      setRespondOnDms(newVal)
     }
 
     if (!activeWorkspace) return
@@ -89,7 +91,7 @@ export default function AIAgentPage() {
         .upsert({
           workspace_id: activeWorkspace.id,
           ai_enabled: type === 'ai_enabled' ? newVal : aiEnabled,
-          respond_on_dms: respondOnDms,
+          respond_on_dms: type === 'respond_on_dms' ? newVal : respondOnDms,
           respond_on_comments: type === 'respond_on_comments' ? newVal : respondOnComments,
           reply_delay_seconds: replyDelay,
           
@@ -112,7 +114,7 @@ export default function AIAgentPage() {
         })
 
       if (upsertError) throw upsertError
-      setSuccess(`${type === 'ai_enabled' ? 'AI Agent' : 'Response to Comments'} status updated successfully.`)
+      setSuccess(`${type === 'ai_enabled' ? 'AI Agent' : type === 'respond_on_dms' ? 'Response to DMs' : 'Response to Comments'} status updated successfully.`)
     } catch (err: any) {
       setError(err.message || 'Failed to update settings')
     }
@@ -301,20 +303,39 @@ export default function AIAgentPage() {
         <div className="grid sm:grid-cols-3 gap-6">
           {/* DM Channel Selection */}
           <div 
-            onClick={() => setRespondOnDms(!respondOnDms)}
-            className={`glass-panel rounded-2xl p-5 border flex flex-col justify-between h-32 transition-all cursor-pointer select-none ${
+            className={`glass-panel rounded-2xl p-5 border flex flex-col justify-between h-32 transition-all select-none ${
               respondOnDms && aiEnabled
                 ? 'border-indigo-500/30 bg-indigo-50/10 dark:bg-indigo-950/5 shadow-indigo-500/5' 
-                : 'opacity-70 hover:opacity-100'
+                : 'opacity-70'
             }`}
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">DM Responses</span>
-              {respondOnDms && aiEnabled ? (
-                <ToggleRight className="w-5 h-5 text-indigo-500" />
-              ) : (
-                <ToggleLeft className="w-5 h-5 text-zinc-400" />
-              )}
+              <button
+                type="button"
+                onClick={() => setConfirmToggleActive({ type: 'respond_on_dms', currentVal: respondOnDms, name: 'Response to DMs' })}
+                title={respondOnDms ? 'Deactivate' : 'Activate'}
+                className="cursor-pointer focus:outline-none"
+              >
+                <div className={`w-14 h-7 rounded-full border-2 flex items-center relative transition-all duration-300 select-none ${
+                  respondOnDms 
+                    ? 'border-emerald-500/80 bg-emerald-500/5' 
+                    : 'border-red-500/80 bg-red-500/5'
+                }`}>
+                  <span className={`text-[8px] font-extrabold tracking-wider absolute transition-all duration-300 ${
+                    respondOnDms 
+                      ? 'left-2 text-emerald-600 dark:text-emerald-400 opacity-100' 
+                      : 'right-2 text-red-650 dark:text-red-400 opacity-100'
+                  }`}>
+                    {respondOnDms ? 'ON' : 'OFF'}
+                  </span>
+                  <div className={`w-4 h-4 rounded-full absolute left-1 transition-all duration-300 ${
+                    respondOnDms 
+                      ? 'translate-x-7 bg-emerald-500 dark:bg-emerald-400 shadow-sm' 
+                      : 'translate-x-0 bg-red-500 dark:bg-red-400 shadow-sm'
+                  }`} />
+                </div>
+              </button>
             </div>
             <div>
               <h4 className="text-xs font-bold text-foreground">Respond to DMs</h4>
