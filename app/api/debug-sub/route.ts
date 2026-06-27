@@ -43,9 +43,18 @@ export async function GET(request: NextRequest) {
     const subRes = await fetch(`https://graph.facebook.com/v21.0/${pageId}/subscribed_apps?access_token=${pageAccessToken}`)
     const subData: any = await subRes.json()
 
-    // 3. Fetch permissions granted to this Page token
-    const permRes = await fetch(`https://graph.facebook.com/v21.0/${pageId}/permissions?access_token=${pageAccessToken}`)
-    const permData: any = await permRes.json()
+    // 3. Debug the token using the App Access Token
+    const appId = process.env.META_APP_ID
+    const appSecret = process.env.META_APP_SECRET
+    
+    let tokenDebugData: any = { note: 'Missing App ID or App Secret to debug token' }
+    
+    if (appId && appSecret) {
+      const debugRes = await fetch(
+        `https://graph.facebook.com/v21.0/debug_token?input_token=${pageAccessToken}&access_token=${appId}|${appSecret}`
+      )
+      tokenDebugData = await debugRes.json()
+    }
 
     return NextResponse.json({
       success: true,
@@ -54,7 +63,7 @@ export async function GET(request: NextRequest) {
         name: pageName,
         username: account.username
       },
-      pagePermissions: permData,
+      tokenDebug: tokenDebugData,
       subscribedApps: subData
     })
   } catch (err: any) {
