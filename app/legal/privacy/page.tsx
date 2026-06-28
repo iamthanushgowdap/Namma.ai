@@ -47,9 +47,9 @@ function SectionCard({
 
 function DataRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-4 py-2.5 border-b border-zinc-200 dark:border-white/[0.05] last:border-0">
-      <span className="text-zinc-800 dark:text-zinc-300 font-medium w-48 shrink-0">{label}</span>
-      <span className="text-zinc-600 dark:text-zinc-400">{value}</span>
+    <div className="flex flex-col sm:flex-row gap-1 sm:gap-4 py-2.5 border-b border-zinc-200 dark:border-white/[0.05] last:border-0">
+      <span className="text-zinc-800 dark:text-zinc-300 font-semibold sm:font-medium w-full sm:w-48 shrink-0 text-xs sm:text-sm">{label}</span>
+      <span className="text-zinc-600 dark:text-zinc-400 text-xs sm:text-sm leading-relaxed">{value}</span>
     </div>
   )
 }
