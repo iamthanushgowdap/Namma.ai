@@ -308,17 +308,17 @@ export default function LandingClient() {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-auto animate-pulse" />
             </div>
             
-            <div className="flex-1 bg-zinc-50 dark:bg-zinc-955 p-2 flex flex-col justify-between gap-1.5 text-[8px] text-left">
+            <div className="flex-1 bg-zinc-50 dark:bg-zinc-955 p-1.5 flex flex-col justify-between gap-1 text-[7px] sm:text-[7.5px] text-left">
               {/* Active Agent Welcome Box */}
-              <div className="bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-white/[0.05] rounded-xl p-2 text-center shadow-sm">
+              <div className="bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-white/[0.05] rounded-xl py-1 px-1.5 text-center shadow-sm">
                 <div className="flex items-center justify-center gap-1">
                   <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
                   <span className="text-[5px] font-bold text-zinc-400 uppercase tracking-wider">System Online</span>
                 </div>
-                <div className="h-4 flex items-center justify-center mt-1">
+                <div className="h-3 flex items-center justify-center mt-0.5">
                   <span 
                     id="hero-title-target" 
-                    className="font-dirty text-[10px] font-black tracking-wider bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent transition-opacity duration-150"
+                    className="font-dirty text-[9px] font-black tracking-wider bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent transition-opacity duration-150"
                     style={{
                       opacity: scrollProgress > 0.95 ? 1 : 0
                     }}
@@ -329,12 +329,18 @@ export default function LandingClient() {
               </div>
 
               {/* Chat bubbles */}
-              <div className="flex flex-col gap-1.5 mt-auto">
-                <div className="bg-zinc-200/80 text-zinc-800 dark:bg-zinc-900/90 dark:text-zinc-300 rounded-xl rounded-bl-sm p-1.5 max-w-[85%] self-start">
+              <div className="flex flex-col gap-1 mt-auto">
+                <div className="bg-zinc-200/80 text-zinc-800 dark:bg-zinc-900/90 dark:text-zinc-300 rounded-lg rounded-bl-sm py-1 px-1.5 max-w-[85%] self-start leading-tight">
                   Hey, send me the info! 🙌
                 </div>
-                <div className="bg-gradient-to-tr from-[#B41DE6] to-[#0052cc] text-white rounded-xl rounded-br-sm p-1.5 max-w-[85%] self-end">
+                <div className="bg-gradient-to-tr from-[#B41DE6] to-[#0052cc] text-white rounded-lg rounded-br-sm py-1 px-1.5 max-w-[85%] self-end leading-tight">
                   Here you go 👉 namma.ai/join
+                </div>
+                <div className="bg-zinc-200/80 text-zinc-800 dark:bg-zinc-900/90 dark:text-zinc-300 rounded-lg rounded-bl-sm py-1 px-1.5 max-w-[85%] self-start leading-tight">
+                  Does this work 24/7?
+                </div>
+                <div className="bg-gradient-to-tr from-[#B41DE6] to-[#0052cc] text-white rounded-lg rounded-br-sm py-1 px-1.5 max-w-[85%] self-end leading-tight">
+                  Yes, fully automated! ⚡
                 </div>
               </div>
             </div>
