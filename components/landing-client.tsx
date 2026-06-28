@@ -823,15 +823,12 @@ export default function LandingClient() {
             
             {/* Logo + Tagline */}
             <div className="col-span-2">
-              <div className="flex items-center mb-4">
-                {/* overflow-hidden crops ~25% whitespace padding in the PNG */}
-                <div className="overflow-hidden" style={{ width: '160px', height: '52px' }}>
-                  <img
-                    src="/AutoEngage_logo.png"
-                    alt="AutoEngage"
-                    style={{ width: '247px', height: 'auto', marginTop: '-16px', marginLeft: '-24px' }}
-                  />
-                </div>
+              <div style={{ overflow: 'hidden', height: '52px', display: 'flex', alignItems: 'center' }}>
+                <img
+                  src="/AutoEngage_logo.png"
+                  alt="AutoEngage"
+                  style={{ height: '130px', width: 'auto', marginTop: '-39px', marginBottom: '-39px', marginLeft: '-10px' }}
+                />
               </div>
               <p className="text-zinc-550 dark:text-zinc-500 text-xs leading-relaxed max-w-xs mb-4">
                 AI-powered Instagram DM &amp; comment automation platform. Convert comments into customers &mdash; automatically.
