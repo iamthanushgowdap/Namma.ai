@@ -130,9 +130,9 @@ export default function LandingClient() {
       </div>
 
       {/* ── 2. Hero Section ──────────────────────────────────────────────────── */}
-      <section className="relative z-10 min-h-screen lg:h-[100vh] flex flex-col items-center justify-center px-6 pt-24 pb-20 text-center max-w-5xl mx-auto overflow-hidden">
+      <section className="relative z-10 min-h-[80vh] sm:min-h-screen lg:h-[100vh] flex flex-col items-center justify-center px-6 pt-12 sm:pt-24 pb-12 sm:pb-20 text-center max-w-5xl mx-auto overflow-hidden">
         {/* Content Wrapper to push content upwards */}
-        <div className="flex flex-col items-center w-full -translate-y-6 lg:-translate-y-12">
+        <div className="flex flex-col items-center w-full -translate-y-2 sm:-translate-y-12">
           {/* Big Brand Header */}
           <div className={`mb-6 animate-fade-in relative ${scrollProgress > 0 ? '' : 'animate-float'}`}>
             {/* Invisible placeholder to reserve layout height/width */}
