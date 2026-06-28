@@ -95,9 +95,20 @@ export default function LandingClient() {
           className="h-16 rounded-full border border-zinc-200 dark:border-white/[0.08] flex items-center justify-between px-6 shadow-2xl transition-all duration-300 hover:border-purple-500/30 hover:shadow-purple-500/10 bg-white/85 dark:bg-zinc-950/85"
           style={{ backdropFilter: 'blur(20px)' }}
         >
-          {/* Logo + Brand */}
+          {/* Logo + Brand — overflow-hidden crops the ~25% whitespace padding in the PNG */}
           <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
-            <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-14 w-auto object-contain" style={{ maxHeight: '56px' }} />
+            <div className="overflow-hidden" style={{ width: '120px', height: '40px' }}>
+              <img
+                src="/AutoEngage_logo.png"
+                alt="AutoEngage"
+                style={{
+                  width: '185px',
+                  height: 'auto',
+                  marginTop: '-12px',
+                  marginLeft: '-18px',
+                }}
+              />
+            </div>
           </Link>
 
           {/* Links */}
@@ -133,16 +144,27 @@ export default function LandingClient() {
       <section className="relative z-10 min-h-[80vh] sm:min-h-screen lg:h-[100vh] flex flex-col items-center justify-center px-6 pt-12 sm:pt-24 pb-12 sm:pb-20 text-center max-w-5xl mx-auto overflow-hidden">
         {/* Content Wrapper to push content upwards */}
         <div className="flex flex-col items-center w-full -translate-y-2 sm:-translate-y-12">
-          {/* Big Brand Header Logo */}
-          <div className="mb-6 animate-fade-in relative animate-float flex justify-center">
+          {/* Big Brand Header Logo — crops the whitespace padding inside the PNG */}
+          <div className="mb-2 animate-fade-in relative animate-float flex justify-center">
             <div className="relative">
-              {/* Glowing background behind the logo */}
+              {/* Glowing background */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#B41DE6] to-[#F94475] rounded-full blur-3xl opacity-20 pointer-events-none" />
-              <img 
-                src="/AutoEngage_logo.png" 
-                alt="AutoEngage Logo" 
-                className="h-20 sm:h-28 md:h-36 w-auto relative z-10 drop-shadow-[0_0_25px_rgba(180,29,230,0.35)] select-none pointer-events-none"
-              />
+              <div
+                className="relative z-10 overflow-hidden select-none pointer-events-none"
+                style={{ width: 'clamp(220px, 40vw, 380px)', height: 'clamp(72px, 13vw, 124px)' }}
+              >
+                <img
+                  src="/AutoEngage_logo.png"
+                  alt="AutoEngage Logo"
+                  className="drop-shadow-[0_0_25px_rgba(180,29,230,0.35)]"
+                  style={{
+                    width: '155%',
+                    height: 'auto',
+                    marginTop: '-12%',
+                    marginLeft: '-13%',
+                  }}
+                />
+              </div>
             </div>
           </div>
 
@@ -814,11 +836,15 @@ export default function LandingClient() {
             
             {/* Logo + Tagline */}
             <div className="col-span-2">
-              <div className="flex items-center gap-2.5 mb-4">
-                <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-12 w-auto object-contain" style={{ maxHeight: '48px' }} />
-                <span className="font-extrabold text-lg text-zinc-900 dark:text-white tracking-tight">
-                  AutoEngage
-                </span>
+              <div className="flex items-center mb-4">
+                {/* overflow-hidden crops ~25% whitespace padding in the PNG */}
+                <div className="overflow-hidden" style={{ width: '160px', height: '52px' }}>
+                  <img
+                    src="/AutoEngage_logo.png"
+                    alt="AutoEngage"
+                    style={{ width: '247px', height: 'auto', marginTop: '-16px', marginLeft: '-24px' }}
+                  />
+                </div>
               </div>
               <p className="text-zinc-550 dark:text-zinc-500 text-xs leading-relaxed max-w-xs mb-4">
                 AI-powered Instagram DM &amp; comment automation platform. Convert comments into customers &mdash; automatically.
