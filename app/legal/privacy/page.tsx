@@ -110,8 +110,8 @@ export default function PrivacyPage() {
             AutoEngage (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is an Instagram automation
             platform operated by <strong className="text-zinc-800 dark:text-zinc-200 font-semibold">Thanush Gowda P</strong>, an individual
             proprietor based in India. Our registered contact address for data-related matters is{' '}
-            <a href="mailto:contact@autoengage.ai" className="underline hover:text-zinc-900 dark:hover:text-white">
-              contact@autoengage.ai
+            <a href="mailto:contact@autoengage.in" className="underline hover:text-zinc-900 dark:hover:text-white">
+              contact@autoengage.in
             </a>
             .
           </p>
@@ -438,8 +438,8 @@ export default function PrivacyPage() {
           </div>
           <p className="mt-4">
             To exercise any of these rights, email us at{' '}
-            <a href="mailto:contact@autoengage.ai" className="text-zinc-800 dark:text-zinc-200 underline hover:text-zinc-900 dark:hover:text-white">
-              contact@autoengage.ai
+            <a href="mailto:contact@autoengage.in" className="text-zinc-800 dark:text-zinc-200 underline hover:text-zinc-900 dark:hover:text-white">
+              contact@autoengage.in
             </a>{' '}
             with the subject line <em>&quot;Data Rights Request&quot;</em>. We will verify your
             identity before processing the request.
@@ -475,8 +475,8 @@ export default function PrivacyPage() {
             AutoEngage is not directed at individuals under the age of 18. We do not knowingly
             collect personal data from minors. If you believe a minor has provided us with personal
             data, please contact{' '}
-            <a href="mailto:contact@autoengage.ai" className="underline hover:text-white">
-              contact@autoengage.ai
+            <a href="mailto:contact@autoengage.in" className="underline hover:text-white">
+              contact@autoengage.in
             </a>{' '}
             and we will delete that data promptly.
           </p>
@@ -509,8 +509,8 @@ export default function PrivacyPage() {
             </p>
             <p>
               <span className="text-zinc-500">Email:</span>{' '}
-              <a href="mailto:contact@autoengage.ai" className="text-zinc-800 dark:text-zinc-300 underline hover:text-zinc-950 dark:hover:text-white font-medium">
-                contact@autoengage.ai
+              <a href="mailto:contact@autoengage.in" className="text-zinc-800 dark:text-zinc-300 underline hover:text-zinc-950 dark:hover:text-white font-medium">
+                contact@autoengage.in
               </a>
             </p>
             <p>

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://autoengage.ai'),
+  metadataBase: new URL('https://autoengage.in'),
   title: "AutoEngage - Instagram AI Automation & DM Inbox",
   description: "Deploy AI response engines, auto-replies, keyword triggers, and manage your Instagram messaging inbox from a unified workspace.",
 };

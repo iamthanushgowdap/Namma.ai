@@ -781,7 +781,7 @@ export default function AutomationsPage() {
                     rows={4}
                     value={responseMessage}
                     onChange={e => setResponseMessage(e.target.value)}
-                    placeholder="Hey 👋 thanks for reaching out. Here is our product details: autoengage.ai..."
+                    placeholder="Hey 👋 thanks for reaching out. Here is our product details: autoengage.in..."
                     className="w-full px-3.5 py-2 glass-input rounded-lg text-sm placeholder-muted-foreground transition-colors resize-none"
                   />
                 </div>

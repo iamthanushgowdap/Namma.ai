@@ -47,7 +47,7 @@ export default function DataDeletionPage() {
             If you wish to completely wipe your account, user profile, billing history, and connected Instagram logs from our databases:
           </p>
           <ol className="list-decimal list-inside text-xs sm:text-sm text-zinc-650 dark:text-zinc-400 space-y-2">
-            <li>Log into your AutoEngage dashboard at <a href="https://autoengage.ai/login" className="text-indigo-600 dark:text-indigo-400 hover:underline">autoengage.ai/login</a>.</li>
+            <li>Log into your AutoEngage dashboard at <a href="https://autoengage.in/login" className="text-indigo-600 dark:text-indigo-400 hover:underline">autoengage.in/login</a>.</li>
             <li>Navigate to the <strong>Settings</strong> page.</li>
             <li>Scroll down to the <strong>Danger Zone</strong>.</li>
             <li>Click <strong>Delete Account</strong> and confirm your password.</li>
@@ -65,7 +65,7 @@ export default function DataDeletionPage() {
             If you are unable to access your account or prefer to have our support team delete your data manually, you can send an email request.
           </p>
           <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm leading-relaxed mb-3">
-            Please write to us at <a href="mailto:contact@autoengage.ai" className="text-indigo-600 dark:text-indigo-400 hover:underline">contact@autoengage.ai</a> with the subject line <strong>&quot;Data Deletion Request&quot;</strong>.
+            Please write to us at <a href="mailto:contact@autoengage.in" className="text-indigo-600 dark:text-indigo-400 hover:underline">contact@autoengage.in</a> with the subject line <strong>&quot;Data Deletion Request&quot;</strong>.
           </p>
           <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm leading-relaxed">
             Our compliance officer will verify your ownership of the email account and process the deletion of all database records within 24–48 hours, sending you a final confirmation email.

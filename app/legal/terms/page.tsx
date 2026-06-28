@@ -170,8 +170,8 @@ export default function TermsPage() {
             <li>
               <strong>Cancellation:</strong> You can cancel your subscription at any time through the Billing
               dashboard or by contacting us at{' '}
-              <a href="mailto:contact@autoengage.ai" className="underline hover:text-foreground">
-                contact@autoengage.ai
+              <a href="mailto:contact@autoengage.in" className="underline hover:text-foreground">
+                contact@autoengage.in
               </a>
               . Upon cancellation, you will continue to have access to paid features until the end of your
               billing cycle.
@@ -285,8 +285,8 @@ export default function TermsPage() {
             <p className="text-foreground font-semibold mb-1">AutoEngage Support</p>
             <p className="text-muted-foreground">
               Email:{' '}
-              <a href="mailto:contact@autoengage.ai" className="underline hover:text-foreground">
-                contact@autoengage.ai
+              <a href="mailto:contact@autoengage.in" className="underline hover:text-foreground">
+                contact@autoengage.in
               </a>
             </p>
             <p className="text-muted-foreground">Operator: Thanush Gowda P</p>

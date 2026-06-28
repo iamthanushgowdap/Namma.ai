@@ -319,7 +319,7 @@ export default function LandingClient() {
                   Hey, send me the info! 🙌
                 </div>
                 <div className="bg-gradient-to-tr from-[#B41DE6] to-[#0052cc] text-white rounded-lg rounded-br-sm py-1 px-1.5 max-w-[85%] self-end leading-tight">
-                  Here you go 👉 autoengage.ai/join
+                  Here you go 👉 autoengage.in/join
                 </div>
                 <div className="bg-zinc-200/80 text-zinc-800 dark:bg-zinc-900/90 dark:text-zinc-300 rounded-lg rounded-bl-sm py-1 px-1.5 max-w-[85%] self-start leading-tight">
                   Does this work 24/7?
@@ -766,7 +766,7 @@ export default function LandingClient() {
                 </span>
               </summary>
               <div className="px-6 pb-6 text-xs sm:text-sm text-zinc-550 dark:text-zinc-400 leading-relaxed border-t border-zinc-150 dark:border-zinc-800/30 pt-4">
-                We offer a 7-day refund window if you encounter technical difficulties that prevent our service from operating. Please read our complete Refund Policy or contact support at contact@autoengage.ai for assistance.
+                We offer a 7-day refund window if you encounter technical difficulties that prevent our service from operating. Please read our complete Refund Policy or contact support at contact@autoengage.in for assistance.
               </div>
             </details>
 
@@ -860,8 +860,8 @@ export default function LandingClient() {
               <h4 className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest mb-4">Contact</h4>
               <ul className="space-y-2.5 text-xs text-zinc-500 dark:text-zinc-500">
                 <li>
-                  <a href="mailto:contact@autoengage.ai" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
-                    contact@autoengage.ai
+                  <a href="mailto:contact@autoengage.in" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
+                    contact@autoengage.in
                   </a>
                 </li>
                 <li className="text-[10px] text-zinc-500 dark:text-zinc-600 leading-normal">
