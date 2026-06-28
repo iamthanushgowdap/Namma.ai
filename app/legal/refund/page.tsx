@@ -62,7 +62,7 @@ export default function RefundPage() {
 
       {/* ── Table of contents ───────────────────────────────────────────────── */}
       <nav
-        className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] p-6 mb-10 bg-zinc-50/50 dark:bg-zinc-955/25"
+        className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] p-6 mb-10 bg-zinc-50/50 dark:bg-zinc-900/25"
         aria-label="Table of contents"
       >
         <p className="text-xs font-semibold tracking-widest uppercase text-zinc-550 dark:text-zinc-500 mb-4">

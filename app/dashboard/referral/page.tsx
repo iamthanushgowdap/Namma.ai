@@ -98,7 +98,7 @@ export default function ReferralDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-2 mt-6">
-            <div className="flex-1 px-4 py-2.5 bg-zinc-100/60 dark:bg-zinc-955/50 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-xs text-zinc-650 dark:text-zinc-350 truncate">
+            <div className="flex-1 px-4 py-2.5 bg-zinc-100/60 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800/80 rounded-xl text-xs text-zinc-650 dark:text-zinc-350 truncate">
               {data ? `${window.location.origin}/login?ref=${data.referralCode}` : ''}
             </div>
             <button
@@ -121,7 +121,7 @@ export default function ReferralDashboard() {
               <span className="text-[10px] uppercase font-semibold text-zinc-400">Signups</span>
               <p className="text-xl font-extrabold text-zinc-850 dark:text-zinc-100 mt-1">{data?.stats?.signups || 0}</p>
             </div>
-            <div className="p-3 bg-zinc-50 dark:bg-zinc-955/20 border border-zinc-200/50 dark:border-zinc-800/50 rounded-xl">
+            <div className="p-3 bg-zinc-50 dark:bg-zinc-950/20 border border-zinc-200/50 dark:border-zinc-800/50 rounded-xl">
               <span className="text-[10px] uppercase font-semibold text-zinc-400">Paying Users</span>
               <p className="text-xl font-extrabold text-zinc-850 dark:text-zinc-100 mt-1">{data?.stats?.converted || 0}</p>
             </div>

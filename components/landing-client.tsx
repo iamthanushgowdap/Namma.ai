@@ -92,7 +92,7 @@ export default function LandingClient() {
       {/* ── 1. Floating Bottom Navbar ────────────────────────────────────────── */}
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[850px]">
         <div 
-          className="h-16 rounded-full border border-zinc-200 dark:border-white/[0.08] flex items-center justify-between px-6 shadow-2xl transition-all duration-300 hover:border-purple-500/30 hover:shadow-purple-500/10 bg-white/85 dark:bg-zinc-955/85"
+          className="h-16 rounded-full border border-zinc-200 dark:border-white/[0.08] flex items-center justify-between px-6 shadow-2xl transition-all duration-300 hover:border-purple-500/30 hover:shadow-purple-500/10 bg-white/85 dark:bg-zinc-950/85"
           style={{ backdropFilter: 'blur(20px)' }}
         >
           {/* Logo + Brand */}
@@ -188,7 +188,7 @@ export default function LandingClient() {
             </Link>
             <a 
               href="#mockup-showcase"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-2xl font-semibold bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-955 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/80 transition-all duration-200"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-2xl font-semibold bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800/80 transition-all duration-200"
             >
               See how it works
             </a>
@@ -275,7 +275,7 @@ export default function LandingClient() {
                 <div className="text-[10px] text-zinc-550">commented on your post</div>
               </div>
             </div>
-            <div className="bg-zinc-50 dark:bg-zinc-955/60 border border-zinc-100 dark:border-zinc-800/40 rounded-xl p-2.5 text-xs text-zinc-700 dark:text-zinc-300 text-left font-medium">
+            <div className="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 rounded-xl p-2.5 text-xs text-zinc-700 dark:text-zinc-300 text-left font-medium">
               &quot;Send me the link! &bull;&bull;&quot;
             </div>
             <div className="text-[10px] text-purple-600 dark:text-purple-400 font-bold text-left flex items-center gap-1.5">
@@ -298,7 +298,7 @@ export default function LandingClient() {
 
           {/* Center phone preview */}
           <div className="w-[170px] h-[260px] bg-zinc-200 dark:bg-black border-4 border-zinc-300 dark:border-zinc-800 rounded-[32px] shadow-2xl overflow-hidden flex flex-col z-10 shrink-0">
-            <div className="h-6 bg-zinc-100 dark:bg-zinc-955 flex items-center justify-center shrink-0">
+            <div className="h-6 bg-zinc-100 dark:bg-zinc-950 flex items-center justify-center shrink-0">
               <div className="w-12 h-3.5 bg-zinc-350 dark:bg-black rounded-full" />
             </div>
             {/* Branded Header inside Phone */}
@@ -308,7 +308,7 @@ export default function LandingClient() {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-auto animate-pulse" />
             </div>
             
-            <div className="flex-1 bg-zinc-50 dark:bg-zinc-955 p-1.5 flex flex-col justify-between gap-1 text-[7px] sm:text-[7.5px] text-left">
+            <div className="flex-1 bg-zinc-50 dark:bg-zinc-950 p-1.5 flex flex-col justify-between gap-1 text-[7px] sm:text-[7.5px] text-left">
               {/* Active Agent Welcome Box */}
               <div className="bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-white/[0.05] rounded-xl py-1 px-1.5 text-center shadow-sm">
                 <div className="flex items-center justify-center gap-1">
@@ -369,7 +369,7 @@ export default function LandingClient() {
                 <div className="text-[10px] text-zinc-550">just now via DM</div>
               </div>
             </div>
-            <div className="bg-zinc-50 dark:bg-zinc-955/60 border border-zinc-100 dark:border-zinc-850/40 rounded-xl p-2.5 text-xs text-zinc-700 dark:text-zinc-300 text-left font-semibold">
+            <div className="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-850/40 rounded-xl p-2.5 text-xs text-zinc-700 dark:text-zinc-300 text-left font-semibold">
               Replied successfully to alex_creates
             </div>
           </div>

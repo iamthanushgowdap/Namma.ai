@@ -107,7 +107,7 @@ function DashboardLayoutInner({
         <div className="relative px-4 py-4 border-b border-zinc-200 dark:border-zinc-800/40">
           <button
             onClick={() => setWorkspaceDropdownOpen(!workspaceDropdownOpen)}
-            className="flex items-center justify-between w-full px-3 py-2 bg-white dark:bg-zinc-955/40 border border-zinc-200 dark:border-zinc-800/60 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-900/40 transition-colors text-sm text-left font-medium cursor-pointer"
+            className="flex items-center justify-between w-full px-3 py-2 bg-white dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/80 transition-colors text-sm text-left font-medium cursor-pointer"
           >
             <span className="truncate text-zinc-800 dark:text-zinc-200">{activeWorkspace?.name || 'Loading...'}</span>
             <ChevronDown className="w-4 h-4 text-zinc-500 shrink-0" />
