@@ -714,7 +714,7 @@ export default function SubscriptionPage() {
           order_id: orderId,
           name: 'AutoEngage',
           description: `Upgrade to ${plans.find((p) => p.id === planId)?.name} Plan`,
-          image: '/AutoEngageai_logo.png',
+          image: '/AutoEngage_logo.png',
           prefill: {
             email: user?.email || '',
           },

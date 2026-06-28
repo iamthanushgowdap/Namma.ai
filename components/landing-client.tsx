@@ -97,7 +97,7 @@ export default function LandingClient() {
         >
           {/* Logo + Brand */}
           <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
-            <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-11 w-auto" />
+            <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-11 w-auto" />
           </Link>
 
           {/* Links */}
@@ -139,7 +139,7 @@ export default function LandingClient() {
               {/* Glowing background behind the logo */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#B41DE6] to-[#F94475] rounded-full blur-3xl opacity-20 pointer-events-none" />
               <img 
-                src="/AutoEngageai_logo.png" 
+                src="/AutoEngage_logo.png" 
                 alt="AutoEngage Logo" 
                 className="h-20 sm:h-28 md:h-36 w-auto relative z-10 drop-shadow-[0_0_25px_rgba(180,29,230,0.35)] select-none pointer-events-none"
               />
@@ -291,7 +291,7 @@ export default function LandingClient() {
             </div>
             {/* Branded Header inside Phone */}
             <div className="h-8 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800/60 flex items-center gap-1.5 px-3 shrink-0">
-              <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-4.5 w-auto" />
+              <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-4.5 w-auto" />
               <span className="font-bold text-[8px] text-zinc-850 dark:text-zinc-200 tracking-tight">AutoEngage</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-auto animate-pulse" />
             </div>
@@ -306,7 +306,7 @@ export default function LandingClient() {
                 <div className="h-3 flex items-center justify-center mt-0.5">
                   <img 
                     id="hero-title-target" 
-                    src="/AutoEngageai_logo.png" 
+                    src="/AutoEngage_logo.png" 
                     alt="AutoEngage" 
                     className="h-2.5 w-auto opacity-100 select-none pointer-events-none"
                   />
@@ -815,7 +815,7 @@ export default function LandingClient() {
             {/* Logo + Tagline */}
             <div className="col-span-2">
               <div className="flex items-center gap-2.5 mb-4">
-                <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-9 w-auto" />
+                <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-9 w-auto" />
                 <span className="font-extrabold text-lg text-zinc-900 dark:text-white tracking-tight">
                   AutoEngage
                 </span>

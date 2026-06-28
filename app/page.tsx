@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: 'AutoEngage: Automate Instagram DMs & Comments',
     description:
       'Auto-reply to Instagram comments & DMs in seconds. Use Follow-Gate to grow followers automatically.',
-    images: [{ url: '/AutoEngageai_logo.png' }],
+    images: [{ url: '/AutoEngage_logo.png' }],
   },
 }
 

@@ -15,7 +15,7 @@ export default function LegalLayout({
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo + Brand */}
           <Link href="/" className="flex items-center gap-3">
-            <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-11 w-auto" />
+            <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-11 w-auto" />
             <span
               className="text-xl font-bold bg-clip-text text-transparent"
               style={{
@@ -60,7 +60,7 @@ export default function LegalLayout({
             {/* Brand */}
             <div>
               <Link href="/" className="flex items-center gap-3 mb-3">
-                <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-10 w-auto" />
+                <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-10 w-auto" />
                 <span
                   className="text-lg font-bold bg-clip-text text-transparent"
                   style={{

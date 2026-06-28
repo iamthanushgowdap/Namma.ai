@@ -74,7 +74,7 @@ export default function ResetPasswordPage() {
         
         {/* Brand Header */}
         <div className="flex flex-col items-center mb-8">
-          <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-16 w-auto mb-4" />
+          <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-16 w-auto mb-4" />
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">AutoEngage</h1>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">Create New Password</p>
         </div>
