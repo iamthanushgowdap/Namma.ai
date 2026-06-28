@@ -33,6 +33,7 @@ export default async function DashboardLayout({
       .insert({
         id: user.id,
         name: profileName,
+        username: (user.email?.split('@')[0] || 'user').toLowerCase().replace(/[^a-zA-Z0-9_.]/g, '') + Math.floor(1000 + Math.random() * 9000),
       })
       .select()
       .single()

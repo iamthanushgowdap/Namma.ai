@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [username, setUsername] = useState('')
   const [referralCodeInput, setReferralCodeInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -48,12 +49,24 @@ export default function LoginPage() {
         
         window.location.href = '/dashboard'
       } else {
+        if (!username || username.trim().length < 3) {
+          throw new Error('Username must be at least 3 characters long.')
+        }
+
+        // Check username availability
+        const checkRes = await fetch(`/api/auth/check-username?username=${encodeURIComponent(username.trim())}`)
+        const checkData = await checkRes.json()
+        if (checkData.error || !checkData.available) {
+          throw new Error(checkData.error || 'This username has already been taken.')
+        }
+
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
               name: name || email.split('@')[0],
+              username: username.toLowerCase().trim(),
               referral_code_input: referralCodeInput.trim() || null,
             },
           },
@@ -127,25 +140,50 @@ export default function LoginPage() {
             )}
 
             {mode === 'signup' && (
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="name">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
-                    <User className="w-4 h-4" />
-                  </span>
-                  <input
-                    id="name"
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="John Doe"
-                    className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
-                  />
+              <>
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="name">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
+                      <User className="w-4 h-4" />
+                    </span>
+                    <input
+                      id="name"
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="John Doe"
+                      className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
+                    />
+                  </div>
                 </div>
-              </div>
+
+                <div className="space-y-1.5 animate-in fade-in duration-200">
+                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="username">
+                    Username
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
+                      <User className="w-4 h-4 text-[#B41DE6]" />
+                    </span>
+                    <input
+                      id="username"
+                      type="text"
+                      required
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_.]/g, '').toLowerCase())}
+                      placeholder="username"
+                      className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
+                    />
+                  </div>
+                  <p className="text-[10px] text-zinc-500 dark:text-zinc-450 leading-tight">
+                    Only lowercase letters, numbers, underscores, and periods.
+                  </p>
+                </div>
+              </>
             )}
 
             <div className="space-y-1.5">

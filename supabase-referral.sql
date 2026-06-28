@@ -3,6 +3,7 @@
 -- 1. Update Profiles table with referral columns
 alter table public.profiles
   add column if not exists referral_code text unique,
+  add column if not exists username text unique,
   add column if not exists kyc_status text default 'unverified' not null, -- 'unverified', 'pending', 'verified'
   add column if not exists kyc_data jsonb default '{}'::jsonb not null,
   add column if not exists email text;
@@ -73,10 +74,11 @@ begin
   end loop;
 
   -- Create profile
-  insert into public.profiles (id, name, avatar_url, referral_code, kyc_status, kyc_data, email)
+  insert into public.profiles (id, name, username, avatar_url, referral_code, kyc_status, kyc_data, email)
   values (
     new.id, 
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)), 
+    coalesce(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1) || floor(random() * 9000 + 1000)::text),
     new.raw_user_meta_data->>'avatar_url',
     gen_code,
     'unverified',

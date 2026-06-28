@@ -208,10 +208,11 @@ returns trigger as $$
 declare
   new_workspace_id uuid;
 begin
-  insert into public.profiles (id, name, avatar_url)
+  insert into public.profiles (id, name, username, avatar_url)
   values (
     new.id, 
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)), 
+    coalesce(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1) || floor(random() * 9000 + 1000)::text),
     new.raw_user_meta_data->>'avatar_url'
   );
   
