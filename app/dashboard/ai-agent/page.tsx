@@ -503,7 +503,7 @@ export default function AIAgentPage() {
                   rows={3}
                   value={productResponse}
                   onChange={e => setProductResponse(e.target.value)}
-                  placeholder="Namma.ai is an intelligent automation platform designed to scale conversations."
+                  placeholder="AutoEngage is an intelligent automation platform designed to scale conversations."
                   className="w-full px-3.5 py-2 glass-input rounded-lg text-xs placeholder-muted-foreground transition-colors resize-none"
                 />
               </div>

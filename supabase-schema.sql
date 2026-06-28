@@ -1,4 +1,4 @@
--- Namma.ai Supabase Database Schema DDL
+-- AutoEngage Supabase Database Schema DDL
 -- This file configures the tables, triggers, indexes, and RLS policies.
 
 -- Enable UUID extension if not enabled

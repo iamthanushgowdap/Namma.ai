@@ -540,7 +540,7 @@ export default function WalletPage() {
               Transfer Promo Credits to Friend
             </h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-normal mb-4">
-              Instantly transfer promotional wallet balance to another registered Namma.ai user via their email.
+              Instantly transfer promotional wallet balance to another registered AutoEngage user via their email.
             </p>
             <form onSubmit={handleTransfer} className="space-y-4">
               <div className="space-y-1.5">

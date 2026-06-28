@@ -1,4 +1,4 @@
--- Namma.ai Billing Tables Migration
+-- AutoEngage Billing Tables Migration
 -- Run this after supabase-schema.sql
 -- Adds plans, subscriptions tables with full RLS
 

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Refund & Cancellation Policy | Namma.ai',
+  title: 'Refund & Cancellation Policy | AutoEngage',
   description:
     'Read our Refund and Cancellation Policy. Learn about billing cycles, cancellation terms, and Razorpay-processed refund eligibility.',
 }
@@ -50,7 +50,7 @@ export default function RefundPage() {
         </p>
         <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-white mb-4">Refund &amp; Cancellation Policy</h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-base max-w-2xl leading-relaxed">
-          Thank you for using Namma.ai. We strive to provide the best Instagram automation experience. Please read
+          Thank you for using AutoEngage. We strive to provide the best Instagram automation experience. Please read
           our cancellation and refund policy below.
         </p>
         <div className="mt-4 flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-650">
@@ -92,7 +92,7 @@ export default function RefundPage() {
       <div className="space-y-6">
         <SectionCard id="subscriptions" title="01. Subscription Billing">
           <p>
-            Namma.ai offers a Free plan which requires no credit card or payment information.
+            AutoEngage offers a Free plan which requires no credit card or payment information.
           </p>
           <p>
             For paid tiers (Starter, Pro, and Agency), we offer monthly and annual subscriptions. All payments
@@ -108,7 +108,7 @@ export default function RefundPage() {
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Navigate to the <strong className="text-foreground font-semibold">Billing</strong> section in your dashboard and click <strong className="text-foreground font-semibold">Cancel Subscription</strong>.</li>
-            <li>Alternatively, send an email to <a href="mailto:contact@namma.ai" className="underline hover:text-foreground">contact@namma.ai</a> from your registered email address requesting cancellation.</li>
+            <li>Alternatively, send an email to <a href="mailto:contact@autoengage.ai" className="underline hover:text-foreground">contact@autoengage.ai</a> from your registered email address requesting cancellation.</li>
           </ul>
           <p>
             Upon cancellation, your subscription will remain active, and you will continue to have full access to
@@ -118,7 +118,7 @@ export default function RefundPage() {
 
         <SectionCard id="refund-eligibility" title="03. Refund Eligibility">
           <p>
-            As a general rule, all fees paid to Namma.ai are non-refundable. We do not provide prorated refunds
+            As a general rule, all fees paid to AutoEngage are non-refundable. We do not provide prorated refunds
             for partial months or unused limits. However, we offer exceptions under the following conditions:
           </p>
           <div className="mt-4 space-y-3">
@@ -141,7 +141,7 @@ export default function RefundPage() {
             <div className="rounded-xl border border-border/40 p-4 bg-muted/20">
               <p className="font-semibold text-foreground mb-1">Wallet & Referral Balance Purchases</p>
               <p className="text-muted-foreground text-xs leading-relaxed">
-                Refunds for subscriptions purchased using your referral wallet balance will only be credited back to your promo balance in your Namma.ai wallet. Under no circumstances will wallet-funded purchases be refunded to a credit card, bank account, or as withdrawable cash. Furthermore, if a cash payment is refunded, any associated referral commission earned by your referrer for that transaction will be debited (clawed back) from their wallet balance.
+                Refunds for subscriptions purchased using your referral wallet balance will only be credited back to your promo balance in your AutoEngage wallet. Under no circumstances will wallet-funded purchases be refunded to a credit card, bank account, or as withdrawable cash. Furthermore, if a cash payment is refunded, any associated referral commission earned by your referrer for that transaction will be debited (clawed back) from their wallet balance.
               </p>
             </div>
           </div>
@@ -161,7 +161,7 @@ export default function RefundPage() {
               to credit the refund amount back to your bank account, credit card, or UPI wallet.
             </li>
             <li>
-              You will receive an automated email confirmation from Razorpay and Namma.ai once the refund is initiated.
+              You will receive an automated email confirmation from Razorpay and AutoEngage once the refund is initiated.
             </li>
           </ul>
         </SectionCard>
@@ -171,11 +171,11 @@ export default function RefundPage() {
             For cancellation assistance, billing queries, or refund requests, please email us:
           </p>
           <div className="mt-4 rounded-xl border border-border/40 p-5 bg-muted/20">
-            <p className="text-foreground font-semibold mb-1">Namma.ai Support</p>
+            <p className="text-foreground font-semibold mb-1">AutoEngage Support</p>
             <p className="text-muted-foreground">
               Email:{' '}
-              <a href="mailto:contact@namma.ai" className="underline hover:text-foreground">
-                contact@namma.ai
+              <a href="mailto:contact@autoengage.ai" className="underline hover:text-foreground">
+                contact@autoengage.ai
               </a>
             </p>
             <p className="text-muted-foreground">Operator: Thanush Gowda P</p>

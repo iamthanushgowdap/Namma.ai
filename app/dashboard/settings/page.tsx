@@ -368,7 +368,7 @@ export default function SettingsPage() {
 
         <div className="space-y-4">
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Permanently delete your Namma.ai account. This will immediately disconnect your Instagram accounts, deactivate all active automations, clear your billing details, and permanently delete all data from our database.
+            Permanently delete your AutoEngage account. This will immediately disconnect your Instagram accounts, deactivate all active automations, clear your billing details, and permanently delete all data from our database.
           </p>
 
           <div className="flex justify-start">

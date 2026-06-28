@@ -15,14 +15,14 @@ export default function LegalLayout({
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo + Brand */}
           <Link href="/" className="flex items-center gap-3">
-            <img src="/Nammaai_logo.png" alt="Namma.ai" className="h-11 w-auto" />
+            <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-11 w-auto" />
             <span
               className="text-xl font-bold bg-clip-text text-transparent"
               style={{
                 backgroundImage: 'linear-gradient(135deg, #B41DE6 0%, #0052cc 100%)',
               }}
             >
-              Namma.ai
+              AutoEngage
             </span>
           </Link>
 
@@ -60,14 +60,14 @@ export default function LegalLayout({
             {/* Brand */}
             <div>
               <Link href="/" className="flex items-center gap-3 mb-3">
-                <img src="/Nammaai_logo.png" alt="Namma.ai" className="h-10 w-auto" />
+                <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-10 w-auto" />
                 <span
                   className="text-lg font-bold bg-clip-text text-transparent"
                   style={{
                     backgroundImage: 'linear-gradient(135deg, #B41DE6 0%, #0052cc 100%)',
                   }}
                 >
-                  Namma.ai
+                  AutoEngage
                 </span>
               </Link>
               <p className="text-xs text-zinc-500 max-w-xs leading-relaxed">
@@ -122,17 +122,17 @@ export default function LegalLayout({
                 Contact
               </p>
               <a
-                href="mailto:contact@namma.ai"
+                href="mailto:contact@autoengage.ai"
                 className="text-sm text-zinc-550 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
               >
-                contact@namma.ai
+                contact@autoengage.ai
               </a>
             </div>
           </div>
 
           <div className="mt-10 pt-6 border-t border-zinc-200 dark:border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-zinc-500">
-              &copy; {new Date().getFullYear()} Namma.ai. All rights reserved.
+              &copy; {new Date().getFullYear()} AutoEngage. All rights reserved.
             </p>
             <p className="text-xs text-zinc-650">
               Governed by Indian law &middot; Karnataka jurisdiction

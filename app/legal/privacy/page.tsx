@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Namma.ai',
+  title: 'Privacy Policy | AutoEngage',
   description:
-    'Learn how Namma.ai collects, uses, and protects your personal data in accordance with the Information Technology Act 2000 and the Digital Personal Data Protection Act 2023.',
+    'Learn how AutoEngage collects, uses, and protects your personal data in accordance with the Information Technology Act 2000 and the Digital Personal Data Protection Act 2023.',
 }
 
 const sections = [
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
         </p>
         <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-white mb-4">Privacy Policy</h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-base max-w-2xl leading-relaxed">
-          This policy explains what personal data Namma.ai collects, why we collect it, and how we
+          This policy explains what personal data AutoEngage collects, why we collect it, and how we
           protect it. We are committed to transparency and to complying with Indian data protection
           law.
         </p>
@@ -107,16 +107,16 @@ export default function PrivacyPage() {
       <div className="space-y-6">
         <SectionCard id="overview" title="01. Overview">
           <p>
-            Namma.ai (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is an Instagram automation
+            AutoEngage (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is an Instagram automation
             platform operated by <strong className="text-zinc-800 dark:text-zinc-200 font-semibold">Thanush Gowda P</strong>, an individual
             proprietor based in India. Our registered contact address for data-related matters is{' '}
-            <a href="mailto:contact@namma.ai" className="underline hover:text-zinc-900 dark:hover:text-white">
-              contact@namma.ai
+            <a href="mailto:contact@autoengage.ai" className="underline hover:text-zinc-900 dark:hover:text-white">
+              contact@autoengage.ai
             </a>
             .
           </p>
           <p>
-            By creating an account or using any feature of Namma.ai, you agree to the collection
+            By creating an account or using any feature of AutoEngage, you agree to the collection
             and use of your information as described in this Privacy Policy. This policy is
             governed by the{' '}
             <strong className="text-zinc-800 dark:text-zinc-200 font-semibold">
@@ -181,7 +181,7 @@ export default function PrivacyPage() {
               Meta Platform Permission Scopes & Justification
             </h3>
             <p className="text-xs text-zinc-550 dark:text-zinc-400 leading-relaxed mb-4">
-              To operate Instagram automations via official Meta Graph APIs, Namma.ai requests the following granular permissions during the Facebook OAuth connection flow. Here is why they are required and how they are used:
+              To operate Instagram automations via official Meta Graph APIs, AutoEngage requests the following granular permissions during the Facebook OAuth connection flow. Here is why they are required and how they are used:
             </p>
             {/* Desktop Table View */}
             <div className="hidden md:block overflow-x-auto">
@@ -222,7 +222,7 @@ export default function PrivacyPage() {
                   <tr className="hover:bg-zinc-50/50 dark:hover:bg-zinc-900/10">
                     <td className="p-3 font-mono font-bold text-purple-600 dark:text-purple-400">pages_manage_metadata</td>
                     <td className="p-3">None (subscription action only).</td>
-                    <td className="p-3">To register Namma.ai webhook listeners on your Facebook page so comments and DMs can be routed to your workspace instantly.</td>
+                    <td className="p-3">To register AutoEngage webhook listeners on your Facebook page so comments and DMs can be routed to your workspace instantly.</td>
                   </tr>
                 </tbody>
               </table>
@@ -259,7 +259,7 @@ export default function PrivacyPage() {
                 {
                   scope: 'pages_manage_metadata',
                   data: 'None (subscription action only).',
-                  justification: 'To register Namma.ai webhook listeners on your Facebook page so comments and DMs can be routed to your workspace instantly.'
+                  justification: 'To register AutoEngage webhook listeners on your Facebook page so comments and DMs can be routed to your workspace instantly.'
                 }
               ].map((item, idx) => (
                 <div key={idx} className="bg-zinc-50/50 dark:bg-zinc-900/35 border border-zinc-200 dark:border-white/[0.06] rounded-xl p-4 space-y-2.5">
@@ -284,7 +284,7 @@ export default function PrivacyPage() {
         <SectionCard id="how-we-use" title="03. How We Use Your Data">
           <ul className="space-y-2.5 list-none">
             {[
-              'Provide, operate, and maintain the Namma.ai platform and all automation features.',
+              'Provide, operate, and maintain the AutoEngage platform and all automation features.',
               'Authenticate your account and connect to your Instagram profile via the Meta Graph API.',
               'Execute the DM reply, comment-reply, keyword-trigger, and broadcast automations you configure.',
               'Process subscription payments and send billing receipts through Razorpay.',
@@ -438,8 +438,8 @@ export default function PrivacyPage() {
           </div>
           <p className="mt-4">
             To exercise any of these rights, email us at{' '}
-            <a href="mailto:contact@namma.ai" className="text-zinc-800 dark:text-zinc-200 underline hover:text-zinc-900 dark:hover:text-white">
-              contact@namma.ai
+            <a href="mailto:contact@autoengage.ai" className="text-zinc-800 dark:text-zinc-200 underline hover:text-zinc-900 dark:hover:text-white">
+              contact@autoengage.ai
             </a>{' '}
             with the subject line <em>&quot;Data Rights Request&quot;</em>. We will verify your
             identity before processing the request.
@@ -448,7 +448,7 @@ export default function PrivacyPage() {
 
         <SectionCard id="cookies" title="07. Cookies">
           <p>
-            Namma.ai uses the following types of cookies and similar browser storage:
+            AutoEngage uses the following types of cookies and similar browser storage:
           </p>
           <ul className="mt-3 space-y-2">
             <li>
@@ -472,11 +472,11 @@ export default function PrivacyPage() {
 
         <SectionCard id="children" title="08. Children's Privacy">
           <p>
-            Namma.ai is not directed at individuals under the age of 18. We do not knowingly
+            AutoEngage is not directed at individuals under the age of 18. We do not knowingly
             collect personal data from minors. If you believe a minor has provided us with personal
             data, please contact{' '}
-            <a href="mailto:contact@namma.ai" className="underline hover:text-white">
-              contact@namma.ai
+            <a href="mailto:contact@autoengage.ai" className="underline hover:text-white">
+              contact@autoengage.ai
             </a>{' '}
             and we will delete that data promptly.
           </p>
@@ -490,7 +490,7 @@ export default function PrivacyPage() {
             effect, and update the &quot;Last updated&quot; date at the top of this page.
           </p>
           <p>
-            Your continued use of Namma.ai after any change constitutes acceptance of the updated
+            Your continued use of AutoEngage after any change constitutes acceptance of the updated
             policy.
           </p>
         </SectionCard>
@@ -502,15 +502,15 @@ export default function PrivacyPage() {
           <div
             className="mt-4 rounded-xl border border-zinc-200 dark:border-white/[0.06] p-5 bg-zinc-50/50 dark:bg-white/[0.02]"
           >
-            <p className="text-zinc-800 dark:text-zinc-250 font-semibold mb-2">Namma.ai Data Controller</p>
+            <p className="text-zinc-800 dark:text-zinc-250 font-semibold mb-2">AutoEngage Data Controller</p>
             <p>
               <span className="text-zinc-500">Name:</span>{' '}
               <span className="text-zinc-800 dark:text-zinc-300 font-medium">Thanush Gowda P</span>
             </p>
             <p>
               <span className="text-zinc-500">Email:</span>{' '}
-              <a href="mailto:contact@namma.ai" className="text-zinc-800 dark:text-zinc-300 underline hover:text-zinc-950 dark:hover:text-white font-medium">
-                contact@namma.ai
+              <a href="mailto:contact@autoengage.ai" className="text-zinc-800 dark:text-zinc-300 underline hover:text-zinc-950 dark:hover:text-white font-medium">
+                contact@autoengage.ai
               </a>
             </p>
             <p>

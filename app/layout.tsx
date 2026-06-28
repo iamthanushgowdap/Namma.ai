@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://namma.ai'),
-  title: "Namma.ai - Instagram AI Automation & DM Inbox",
+  metadataBase: new URL('https://autoengage.ai'),
+  title: "AutoEngage - Instagram AI Automation & DM Inbox",
   description: "Deploy AI response engines, auto-replies, keyword triggers, and manage your Instagram messaging inbox from a unified workspace.",
 };
 

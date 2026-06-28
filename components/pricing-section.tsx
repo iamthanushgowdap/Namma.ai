@@ -90,7 +90,7 @@ export default function PricingSection() {
         'SLA delivery guarantee'
       ],
       cta: 'Contact Sales',
-      href: 'mailto:contact@namma.ai?subject=Inquiry%20about%20Namma.ai%20Agency%20Plan',
+      href: 'mailto:contact@autoengage.ai?subject=Inquiry%20about%20AutoEngage%20Agency%20Plan',
       badge: null,
       color: 'amber'
     }

@@ -18,7 +18,7 @@ const DEFAULT_INTENT_KEYWORDS: IntentKeywordMap[] = [
   },
   {
     intent: 'product',
-    keywords: ['product', 'features', 'what is', 'details', 'service', 'automation', 'tool', 'platform', 'namma', 'app'],
+    keywords: ['product', 'features', 'what is', 'details', 'service', 'automation', 'tool', 'platform', 'autoengage', 'app'],
   },
   {
     intent: 'support',
@@ -121,7 +121,7 @@ export async function getAIResponse(
     greeting: 'Hello! 👋 How can we help you today?',
     pricing: 'Thanks for asking! Our subscription starts at just $29/month. Let me know if you would like a link to our pricing plans!',
     support: 'We have logged your support request, and an agent will be with you shortly. 🛠️',
-    product: 'Namma.ai is a state-of-the-art Instagram automation tool that handles your DMs and comments automatically using AI!',
+    product: 'AutoEngage is a state-of-the-art Instagram automation tool that handles your DMs and comments automatically using AI!',
     unknown: 'Thanks for reaching out! We will review your message and get back to you as soon as possible.',
   };
 

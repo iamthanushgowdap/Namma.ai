@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | Namma.ai',
+  title: 'Terms of Service | AutoEngage',
   description:
-    'Read the Terms of Service for Namma.ai, governing your use of our Instagram automation platform. Managed under Karnataka jurisdiction, India.',
+    'Read the Terms of Service for AutoEngage, governing your use of our Instagram automation platform. Managed under Karnataka jurisdiction, India.',
 }
 
 const sections = [
@@ -57,7 +57,7 @@ export default function TermsPage() {
         </p>
         <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-white mb-4">Terms of Service</h1>
         <p className="text-zinc-600 dark:text-zinc-400 text-base max-w-2xl leading-relaxed">
-          Please read these terms carefully before using Namma.ai. By accessing or using the platform,
+          Please read these terms carefully before using AutoEngage. By accessing or using the platform,
           you agree to be bound by these terms.
         </p>
         <div className="mt-4 flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-650">
@@ -99,11 +99,11 @@ export default function TermsPage() {
       <div className="space-y-6">
         <SectionCard id="acceptance" title="01. Acceptance of Terms">
           <p>
-            Welcome to Namma.ai (&quot;the Service&quot;), an Instagram DM and comment automation platform
+            Welcome to AutoEngage (&quot;the Service&quot;), an Instagram DM and comment automation platform
             operated by <strong className="text-foreground font-semibold">Thanush Gowda P</strong>, residing in Karnataka, India.
           </p>
           <p>
-            By registering for an account, connecting an Instagram account, or using Namma.ai in any manner,
+            By registering for an account, connecting an Instagram account, or using AutoEngage in any manner,
             you agree to these Terms of Service, all applicable laws, and our Privacy Policy. If you are
             entering into these terms on behalf of a company or legal entity, you represent that you have the
             authority to bind such entity.
@@ -112,7 +112,7 @@ export default function TermsPage() {
 
         <SectionCard id="service-desc" title="02. Description of Service">
           <p>
-            Namma.ai is a cloud-based software service (SaaS) that provides tools for automating replies,
+            AutoEngage is a cloud-based software service (SaaS) that provides tools for automating replies,
             broadcasts, and workflows on connected Instagram accounts. Features include:
           </p>
           <ul className="list-disc pl-5 space-y-1">
@@ -131,7 +131,7 @@ export default function TermsPage() {
 
         <SectionCard id="user-responsibilities" title="03. User Responsibilities & Instagram Compliance">
           <p>
-            To use Namma.ai, you must connect a valid, authorized Instagram Professional (Business or Creator)
+            To use AutoEngage, you must connect a valid, authorized Instagram Professional (Business or Creator)
             account. You agree that:
           </p>
           <ul className="list-disc pl-5 space-y-1">
@@ -142,14 +142,14 @@ export default function TermsPage() {
               Policies.
             </li>
             <li>
-              Namma.ai is built using the official Meta Graph API. We are not responsible for any changes,
+              AutoEngage is built using the official Meta Graph API. We are not responsible for any changes,
               restrictions, or blocks imposed on your account by Meta for violation of their platform rules.
             </li>
             <li>You are solely responsible for maintaining the confidentiality of your account credentials.</li>
           </ul>
           <p className="mt-3 p-4 rounded-xl border border-purple-500/20 text-xs leading-relaxed" style={{ background: 'rgba(180,29,230,0.04)' }}>
             <strong className="text-foreground font-semibold">Follow-Gate Automation:</strong>{' '}
-            The Follow-Gate feature checks Instagram follower relationships in real-time via the Meta Graph API to conditionally deliver content to followers only. Users acknowledge that this feature is intended to incentivize organic following and must not be used to deceive, spam, or violate Meta&apos;s Platform Policies. Namma.ai is not responsible for API availability or accuracy of follower relationship data returned by the Instagram Graph API.
+            The Follow-Gate feature checks Instagram follower relationships in real-time via the Meta Graph API to conditionally deliver content to followers only. Users acknowledge that this feature is intended to incentivize organic following and must not be used to deceive, spam, or violate Meta&apos;s Platform Policies. AutoEngage is not responsible for API availability or accuracy of follower relationship data returned by the Instagram Graph API.
           </p>
         </SectionCard>
 
@@ -170,8 +170,8 @@ export default function TermsPage() {
             <li>
               <strong>Cancellation:</strong> You can cancel your subscription at any time through the Billing
               dashboard or by contacting us at{' '}
-              <a href="mailto:contact@namma.ai" className="underline hover:text-foreground">
-                contact@namma.ai
+              <a href="mailto:contact@autoengage.ai" className="underline hover:text-foreground">
+                contact@autoengage.ai
               </a>
               . Upon cancellation, you will continue to have access to paid features until the end of your
               billing cycle.
@@ -188,7 +188,7 @@ export default function TermsPage() {
 
         <SectionCard id="referral-wallet" title="05. Refer & Earn Program & Wallet Balances">
           <p>
-            Namma.ai offers a Referral Program allowing users to earn wallet credits by referring new users:
+            AutoEngage offers a Referral Program allowing users to earn wallet credits by referring new users:
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li>
@@ -198,13 +198,13 @@ export default function TermsPage() {
               <strong>Discounts:</strong> Referred users receive a 15% discount on their first paid subscription purchase when signing up with a valid referral code.
             </li>
             <li>
-              <strong>Wallet Balance Usage:</strong> Wallet balances can be used to purchase Namma.ai subscriptions. Payments made using wallet balances receive an additional 10% discount on the plan price.
+              <strong>Wallet Balance Usage:</strong> Wallet balances can be used to purchase AutoEngage subscriptions. Payments made using wallet balances receive an additional 10% discount on the plan price.
             </li>
             <li>
               <strong>Withdrawals & Transfers:</strong> Withdrawals to a bank account are permitted once the withdrawable balance reaches a minimum of ₹500, subject to verification of at least 2 converted referrals, compliance checks, and applicable TDS deductions (3% or 6% based on total limits). Users may also transfer promo credits to peer wallets.
             </li>
             <li>
-              <strong>Anti-Abuse & Fraud Policy:</strong> Self-referrals, creating duplicate accounts, or using identical payment instruments (hashing checks) to exploit referral credits is strictly prohibited. Namma.ai reserves the right to freeze wallets, forfeit balances, and terminate accounts found engaging in fraudulent referral behavior.
+              <strong>Anti-Abuse & Fraud Policy:</strong> Self-referrals, creating duplicate accounts, or using identical payment instruments (hashing checks) to exploit referral credits is strictly prohibited. AutoEngage reserves the right to freeze wallets, forfeit balances, and terminate accounts found engaging in fraudulent referral behavior.
             </li>
           </ul>
         </SectionCard>
@@ -215,7 +215,7 @@ export default function TermsPage() {
             <li>Send spam, bulk messages, unsolicited promotional content, or engage in phishing.</li>
             <li>Distribute content that is illegal, defamatory, offensive, harassing, or violates any third-party intellectual property rights.</li>
             <li>Impersonate any person or entity or misrepresent your affiliation.</li>
-            <li>Attempt to bypass, reverse engineer, or hack any security, rate-limits, or billing mechanisms of Namma.ai.</li>
+            <li>Attempt to bypass, reverse engineer, or hack any security, rate-limits, or billing mechanisms of AutoEngage.</li>
             <li>Violate the Digital Personal Data Protection Act (DPDP), 2023 or any other consumer privacy regulations by collecting sensitive information via automated replies without consent.</li>
           </ul>
         </SectionCard>
@@ -234,7 +234,7 @@ export default function TermsPage() {
 
         <SectionCard id="termination" title="08. Account Termination">
           <p>
-            We reserve the right to suspend or terminate your access to Namma.ai, without prior notice or
+            We reserve the right to suspend or terminate your access to AutoEngage, without prior notice or
             liability, if you violate these terms or fail to pay subscription fees when due.
           </p>
           <p>
@@ -253,7 +253,7 @@ export default function TermsPage() {
 
         <SectionCard id="limitation-liability" title="10. Limitation of Liability">
           <p>
-            To the maximum extent permitted by applicable Indian law, Thanush Gowda P and Namma.ai shall not be liable for
+            To the maximum extent permitted by applicable Indian law, Thanush Gowda P and AutoEngage shall not be liable for
             any indirect, incidental, special, consequential, or punitive damages, or any loss of profits,
             revenues, data, use, goodwill, or other intangible losses resulting from:
           </p>
@@ -282,11 +282,11 @@ export default function TermsPage() {
         <SectionCard id="contact" title="12. Contact Information">
           <p>If you have any questions or feedback about these Terms of Service, please contact us:</p>
           <div className="mt-4 rounded-xl border border-border/40 p-5 bg-muted/20">
-            <p className="text-foreground font-semibold mb-1">Namma.ai Support</p>
+            <p className="text-foreground font-semibold mb-1">AutoEngage Support</p>
             <p className="text-muted-foreground">
               Email:{' '}
-              <a href="mailto:contact@namma.ai" className="underline hover:text-foreground">
-                contact@namma.ai
+              <a href="mailto:contact@autoengage.ai" className="underline hover:text-foreground">
+                contact@autoengage.ai
               </a>
             </p>
             <p className="text-muted-foreground">Operator: Thanush Gowda P</p>

@@ -712,9 +712,9 @@ export default function SubscriptionPage() {
           amount,
           currency,
           order_id: orderId,
-          name: 'Namma.ai',
+          name: 'AutoEngage',
           description: `Upgrade to ${plans.find((p) => p.id === planId)?.name} Plan`,
-          image: '/Nammaai_logo.png',
+          image: '/AutoEngageai_logo.png',
           prefill: {
             email: user?.email || '',
           },

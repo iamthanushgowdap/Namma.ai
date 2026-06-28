@@ -1,6 +1,6 @@
-# Namma.ai — Instagram DM & Comment AI Automation Platform
+# AutoEngage — Instagram DM & Comment AI Automation Platform
 
-Namma.ai is a full-stack SaaS application built to automate Instagram Direct Messages (DMs) and comments. It features real Meta OAuth integration, secure symmetric token encryption, an internal AI intent-classification response engine, a unified live inbox utilizing Supabase Realtime, and custom keyword-triggered comment replies.
+AutoEngage is a full-stack SaaS application built to automate Instagram Direct Messages (DMs) and comments. It features real Meta OAuth integration, secure symmetric token encryption, an internal AI intent-classification response engine, a unified live inbox utilizing Supabase Realtime, and custom keyword-triggered comment replies.
 
 ## Tech Stack
 - **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS, Lucide Icons, Recharts.
@@ -27,7 +27,7 @@ cp .env.example .env.local
 ## Supabase Database Setup
 
 1. Go to your **Supabase Dashboard** -> **SQL Editor**.
-2. Open the [supabase-schema.sql](file:///c:/Users/choco/OneDrive/Documents/Namma.ai/supabase-schema.sql) file.
+2. Open the [supabase-schema.sql](file:///c:/Users/choco/OneDrive/Documents/AutoEngage/supabase-schema.sql) file.
 3. Paste and run the DDL query. This will:
    - Create all necessary tables (`profiles`, `workspaces`, `instagram_accounts`, `automations`, `automation_rules`, `conversations`, `messages`, `webhook_events`, `ai_settings`).
    - Enable Row Level Security (RLS) policies isolating user data by workspace.

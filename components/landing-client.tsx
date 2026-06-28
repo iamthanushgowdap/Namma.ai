@@ -97,7 +97,7 @@ export default function LandingClient() {
         >
           {/* Logo + Brand */}
           <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
-            <img src="/Nammaai_logo.png" alt="Namma.ai" className="h-11 w-auto" />
+            <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-11 w-auto" />
           </Link>
 
           {/* Links */}
@@ -139,8 +139,8 @@ export default function LandingClient() {
               {/* Glowing background behind the logo */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#B41DE6] to-[#F94475] rounded-full blur-3xl opacity-20 pointer-events-none" />
               <img 
-                src="/Nammaai_logo.png" 
-                alt="Namma.ai Logo" 
+                src="/AutoEngageai_logo.png" 
+                alt="AutoEngage Logo" 
                 className="h-20 sm:h-28 md:h-36 w-auto relative z-10 drop-shadow-[0_0_25px_rgba(180,29,230,0.35)] select-none pointer-events-none"
               />
             </div>
@@ -202,7 +202,7 @@ export default function LandingClient() {
             Real-time Activity
           </span>
           <h3 className="text-2xl sm:text-4xl font-bold text-zinc-900 dark:text-white mb-2">
-            See Namma.ai in action
+            See AutoEngage in action
           </h3>
           <p className="text-zinc-550 dark:text-zinc-400 text-xs sm:text-sm max-w-md mx-auto">
             Our intelligent engine connects DMs, comments, and conversions seamlessly.
@@ -291,8 +291,8 @@ export default function LandingClient() {
             </div>
             {/* Branded Header inside Phone */}
             <div className="h-8 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800/60 flex items-center gap-1.5 px-3 shrink-0">
-              <img src="/Nammaai_logo.png" alt="Namma.ai" className="h-4.5 w-auto" />
-              <span className="font-bold text-[8px] text-zinc-850 dark:text-zinc-200 tracking-tight">Namma.ai</span>
+              <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-4.5 w-auto" />
+              <span className="font-bold text-[8px] text-zinc-850 dark:text-zinc-200 tracking-tight">AutoEngage</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-auto animate-pulse" />
             </div>
             
@@ -306,8 +306,8 @@ export default function LandingClient() {
                 <div className="h-3 flex items-center justify-center mt-0.5">
                   <img 
                     id="hero-title-target" 
-                    src="/Nammaai_logo.png" 
-                    alt="Namma.ai" 
+                    src="/AutoEngageai_logo.png" 
+                    alt="AutoEngage" 
                     className="h-2.5 w-auto opacity-100 select-none pointer-events-none"
                   />
                 </div>
@@ -319,7 +319,7 @@ export default function LandingClient() {
                   Hey, send me the info! 🙌
                 </div>
                 <div className="bg-gradient-to-tr from-[#B41DE6] to-[#0052cc] text-white rounded-lg rounded-br-sm py-1 px-1.5 max-w-[85%] self-end leading-tight">
-                  Here you go 👉 namma.ai/join
+                  Here you go 👉 autoengage.ai/join
                 </div>
                 <div className="bg-zinc-200/80 text-zinc-800 dark:bg-zinc-900/90 dark:text-zinc-300 rounded-lg rounded-bl-sm py-1 px-1.5 max-w-[85%] self-start leading-tight">
                   Does this work 24/7?
@@ -427,7 +427,7 @@ export default function LandingClient() {
               <div className="absolute top-6 right-6 text-3xl font-extrabold text-zinc-200 dark:text-zinc-800 font-mono">03</div>
               <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">Replies Sent Instantly</h3>
               <p className="text-zinc-555 dark:text-zinc-400 text-sm leading-relaxed">
-                When someone comments, Namma.ai automatically delivers your custom DM and replies to the comment.
+                When someone comments, AutoEngage automatically delivers your custom DM and replies to the comment.
               </p>
             </div>
 
@@ -618,7 +618,7 @@ export default function LandingClient() {
               Trusted by 60,000+ creators
             </h2>
             <p className="text-zinc-550 dark:text-zinc-400 text-sm sm:text-base max-w-md mx-auto">
-              See how influencers, brands, and agencies use Namma.ai to scale their conversations automatically.
+              See how influencers, brands, and agencies use AutoEngage to scale their conversations automatically.
             </p>
           </div>
 
@@ -632,7 +632,7 @@ export default function LandingClient() {
                   ))}
                 </div>
                 <p className="text-zinc-750 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed mb-6 italic">
-                  &quot;Namma.ai helped me generate ₹1.2L in course sales in just 48 hours by auto-replying to DMs. Absolute game changer for creators!&quot;
+                  &quot;AutoEngage helped me generate ₹1.2L in course sales in just 48 hours by auto-replying to DMs. Absolute game changer for creators!&quot;
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -655,7 +655,7 @@ export default function LandingClient() {
                   ))}
                 </div>
                 <p className="text-zinc-750 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed mb-6 italic">
-                  &quot;We manage 12 client accounts. Switching to Namma.ai saved us 30+ hours/week and boosted client lead volume by 40%. The pricing is unbeatable.&quot;
+                  &quot;We manage 12 client accounts. Switching to AutoEngage saved us 30+ hours/week and boosted client lead volume by 40%. The pricing is unbeatable.&quot;
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -709,14 +709,14 @@ export default function LandingClient() {
               Frequently Asked Questions
             </h2>
             <p className="text-zinc-550 dark:text-zinc-400 text-sm sm:text-base max-w-md mx-auto">
-              Everything you need to know about safety, billing, and how Namma.ai works.
+              Everything you need to know about safety, billing, and how AutoEngage works.
             </p>
           </div>
 
           <div className="space-y-4">
             <details className="group border border-zinc-200 dark:border-zinc-800/80 rounded-2xl bg-zinc-50/50 dark:bg-zinc-900/35 transition-all duration-300 [&_summary::-webkit-details-marker]:hidden">
               <summary className="flex items-center justify-between p-6 text-sm sm:text-base font-bold text-zinc-900 dark:text-white cursor-pointer select-none">
-                <span>Is Namma.ai safe to use? Will my Instagram account get shadowbanned?</span>
+                <span>Is AutoEngage safe to use? Will my Instagram account get shadowbanned?</span>
                 <span className="ml-4 shrink-0 transition-transform duration-300 group-open:rotate-45 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -724,7 +724,7 @@ export default function LandingClient() {
                 </span>
               </summary>
               <div className="px-6 pb-6 text-xs sm:text-sm text-zinc-550 dark:text-zinc-400 leading-relaxed border-t border-zinc-150 dark:border-zinc-800/30 pt-4">
-                Yes, Namma.ai is 100% safe. We connect using official Meta Graph APIs and strictly follow Meta&apos;s Developer Terms. We never ask for your Instagram password, nor do we perform scraping or unofficial interactions that violate platform policies. Your account is completely secure.
+                Yes, AutoEngage is 100% safe. We connect using official Meta Graph APIs and strictly follow Meta&apos;s Developer Terms. We never ask for your Instagram password, nor do we perform scraping or unofficial interactions that violate platform policies. Your account is completely secure.
               </div>
             </details>
 
@@ -766,7 +766,7 @@ export default function LandingClient() {
                 </span>
               </summary>
               <div className="px-6 pb-6 text-xs sm:text-sm text-zinc-550 dark:text-zinc-400 leading-relaxed border-t border-zinc-150 dark:border-zinc-800/30 pt-4">
-                We offer a 7-day refund window if you encounter technical difficulties that prevent our service from operating. Please read our complete Refund Policy or contact support at contact@namma.ai for assistance.
+                We offer a 7-day refund window if you encounter technical difficulties that prevent our service from operating. Please read our complete Refund Policy or contact support at contact@autoengage.ai for assistance.
               </div>
             </details>
 
@@ -815,9 +815,9 @@ export default function LandingClient() {
             {/* Logo + Tagline */}
             <div className="col-span-2">
               <div className="flex items-center gap-2.5 mb-4">
-                <img src="/Nammaai_logo.png" alt="Namma.ai" className="h-9 w-auto" />
+                <img src="/AutoEngageai_logo.png" alt="AutoEngage" className="h-9 w-auto" />
                 <span className="font-extrabold text-lg text-zinc-900 dark:text-white tracking-tight">
-                  Namma.ai
+                  AutoEngage
                 </span>
               </div>
               <p className="text-zinc-550 dark:text-zinc-500 text-xs leading-relaxed max-w-xs mb-4">
@@ -860,8 +860,8 @@ export default function LandingClient() {
               <h4 className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest mb-4">Contact</h4>
               <ul className="space-y-2.5 text-xs text-zinc-500 dark:text-zinc-500">
                 <li>
-                  <a href="mailto:contact@namma.ai" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
-                    contact@namma.ai
+                  <a href="mailto:contact@autoengage.ai" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
+                    contact@autoengage.ai
                   </a>
                 </li>
                 <li className="text-[10px] text-zinc-500 dark:text-zinc-600 leading-normal">
@@ -875,7 +875,7 @@ export default function LandingClient() {
           {/* Copyright Bar */}
           <div className="pt-8 border-t border-zinc-200 dark:border-zinc-900/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-500 dark:text-zinc-650">
             <div>
-              &copy; {new Date().getFullYear()} Namma.ai. All rights reserved.
+              &copy; {new Date().getFullYear()} AutoEngage. All rights reserved.
             </div>
             <div className="flex items-center gap-1.5">
               <span>Governed by Indian law</span>

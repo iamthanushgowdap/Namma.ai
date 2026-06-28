@@ -286,7 +286,7 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (targetError || !targetProfile) {
-        return NextResponse.json({ error: 'Recipient account email not found on Namma.ai' }, { status: 404 })
+        return NextResponse.json({ error: 'Recipient account email not found on AutoEngage' }, { status: 404 })
       }
 
       if (targetProfile.id === user.id) {

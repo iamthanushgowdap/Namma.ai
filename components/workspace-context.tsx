@@ -31,7 +31,7 @@ export function WorkspaceProvider({
   useEffect(() => {
     if (initialWorkspaces.length > 0) {
       // Look in localStorage first
-      const savedWorkspaceId = localStorage.getItem('namma_active_workspace_id')
+      const savedWorkspaceId = localStorage.getItem('autoengage_active_workspace_id')
       const matched = initialWorkspaces.find((w) => w.id === savedWorkspaceId)
       
       if (matched) {
@@ -45,7 +45,7 @@ export function WorkspaceProvider({
 
   const setActiveWorkspace = (workspace: Workspace) => {
     setActiveWorkspaceState(workspace)
-    localStorage.setItem('namma_active_workspace_id', workspace.id)
+    localStorage.setItem('autoengage_active_workspace_id', workspace.id)
   }
 
   return (
