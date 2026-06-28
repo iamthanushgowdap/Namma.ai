@@ -451,6 +451,105 @@ export default function ReferralDashboard() {
         </div>
       )}
 
+      {/* Referred Friends List */}
+      <div className="glass-panel rounded-3xl border border-zinc-200 dark:border-zinc-800/80 bg-white/50 dark:bg-zinc-900/40 p-6 overflow-hidden">
+        <h3 className="font-bold text-zinc-900 dark:text-white text-base mb-4 flex items-center gap-2">
+          <Users className="w-4.5 h-4.5 text-indigo-500" />
+          Referred Accounts &amp; Status
+        </h3>
+        <div>
+          {data?.referrals?.length > 0 ? (
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full border-collapse text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-border/40 text-muted-foreground">
+                      <th className="py-3 font-semibold w-1/3">User Details</th>
+                      <th className="py-3 font-semibold w-1/3">Joined Date</th>
+                      <th className="py-3 font-semibold text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.referrals.map((entry: any) => {
+                      const joinedDate = entry.referred?.created_at 
+                        ? new Date(entry.referred.created_at).toLocaleDateString()
+                        : new Date(entry.created_at).toLocaleDateString()
+                      return (
+                        <tr key={entry.id} className="border-b border-border/20 last:border-0 text-zinc-650 dark:text-zinc-350 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/10">
+                          <td className="py-3.5">
+                            <div className="font-semibold text-zinc-900 dark:text-white">{entry.referred?.name || 'User Signed Up'}</div>
+                            <div className="text-muted-foreground text-[10px]">{entry.referred?.email || 'N/A'}</div>
+                          </td>
+                          <td className="py-3.5 text-zinc-550 dark:text-zinc-450">{joinedDate}</td>
+                          <td className="py-3.5 text-right">
+                            {entry.status === 'converted' ? (
+                              <span className="inline-flex bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold text-[10px]">
+                                Paying Customer
+                              </span>
+                            ) : entry.status === 'fraudulent' ? (
+                              <span className="inline-flex bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full font-bold text-[10px]">
+                                Flagged (Abuse)
+                              </span>
+                            ) : (
+                              <span className="inline-flex bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border border-zinc-500/20 px-2 py-0.5 rounded-full font-bold text-[10px]">
+                                Joined (Free)
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards View */}
+              <div className="block md:hidden space-y-4">
+                {data.referrals.map((entry: any) => {
+                  const joinedDate = entry.referred?.created_at 
+                    ? new Date(entry.referred.created_at).toLocaleDateString()
+                    : new Date(entry.created_at).toLocaleDateString()
+                  return (
+                    <div key={entry.id} className="bg-zinc-50/50 dark:bg-zinc-900/35 border border-zinc-200 dark:border-white/[0.06] rounded-xl p-4 space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="font-semibold text-zinc-900 dark:text-white text-xs">{entry.referred?.name || 'User Signed Up'}</div>
+                          <div className="text-[10px] text-muted-foreground">{entry.referred?.email || 'N/A'}</div>
+                        </div>
+                        <div>
+                          {entry.status === 'converted' ? (
+                            <span className="inline-flex bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded-full font-bold text-[9px]">
+                              Paying
+                            </span>
+                          ) : entry.status === 'fraudulent' ? (
+                            <span className="inline-flex bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 px-1.5 py-0.5 rounded-full font-bold text-[9px]">
+                              Flagged
+                            </span>
+                          ) : (
+                            <span className="inline-flex bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border border-zinc-500/20 px-1.5 py-0.5 rounded-full font-bold text-[9px]">
+                              Free
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2 border-t border-dashed border-zinc-100 dark:border-white/[0.04]">
+                        <span className="font-semibold uppercase tracking-wider">Joined Date</span>
+                        <span className="font-medium text-zinc-650 dark:text-zinc-300">{joinedDate}</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          ) : (
+            <div className="py-12 text-center text-muted-foreground">
+              No referred friends signed up yet. Share your referral link to get started!
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Ledger History List */}
       <div className="glass-panel rounded-3xl border border-zinc-200 dark:border-zinc-800/80 bg-white/50 dark:bg-zinc-900/40 p-6 overflow-hidden">
         <h3 className="font-bold text-zinc-900 dark:text-white text-base mb-4 flex items-center gap-2">
