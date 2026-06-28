@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Mail, Lock, User, ArrowRight, Activity } from 'lucide-react'
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<'login' | 'signup'>('login')
+  const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -48,6 +48,23 @@ export default function LoginPage() {
         if (signInError) throw signInError
         
         window.location.href = '/dashboard'
+      } else if (mode === 'forgot') {
+        if (!username || username.trim().length === 0) {
+          throw new Error('Username is required to request a password reset.')
+        }
+
+        const resetRes = await fetch('/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: username.trim() })
+        })
+        const resetData = await resetRes.json()
+        if (resetData.error) {
+          throw new Error(resetData.error)
+        }
+
+        setMessage('A password reset link has been sent to the email address connected to this username.')
+        setUsername('')
       } else {
         if (!username || username.trim().length < 3) {
           throw new Error('Username must be at least 3 characters long.')
@@ -102,29 +119,36 @@ export default function LoginPage() {
         {/* Auth Glass Card */}
         <div className="glass-panel rounded-2xl shadow-2xl p-8 border border-zinc-200 dark:border-zinc-800/80">
           
-          {/* Tab Selector */}
-          <div className="flex items-center justify-center bg-zinc-100 dark:bg-zinc-900/60 p-1 rounded-lg border border-zinc-200 dark:border-zinc-800/40 mb-6">
-            <button
-              onClick={() => { setMode('login'); setError(null); setMessage(null); }}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                mode === 'login'
-                  ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200/50 dark:border-zinc-700/30'
-                  : 'text-zinc-550 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => { setMode('signup'); setError(null); setMessage(null); }}
-              className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                mode === 'signup'
-                  ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200/50 dark:border-zinc-700/30'
-                  : 'text-zinc-555 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
-              }`}
-            >
-              Sign Up
-            </button>
-          </div>
+          {/* Tab Selector / Header */}
+          {mode === 'forgot' ? (
+            <div className="mb-6 text-center animate-in fade-in duration-200">
+              <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Reset Password</h2>
+              <p className="text-xs text-zinc-550 dark:text-zinc-400 mt-1">Enter your username to request a reset link.</p>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center bg-zinc-100 dark:bg-zinc-900/60 p-1 rounded-lg border border-zinc-200 dark:border-zinc-800/40 mb-6">
+              <button
+                onClick={() => { setMode('login'); setError(null); setMessage(null); }}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                  mode === 'login'
+                    ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200/50 dark:border-zinc-700/30'
+                    : 'text-zinc-550 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => { setMode('signup'); setError(null); setMessage(null); }}
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                  mode === 'signup'
+                    ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200/50 dark:border-zinc-700/30'
+                    : 'text-zinc-555 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                }`}
+              >
+                Sign Up
+              </button>
+            </div>
+          )}
 
           {/* Form */}
           <div className="space-y-4">
@@ -186,71 +210,108 @@ export default function LoginPage() {
               </>
             )}
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="email">
-                Email Address
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
-                  <Mail className="w-4 h-4" />
-                </span>
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@company.com"
-                  className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
-                />
-              </div>
-            </div>
+            {mode !== 'forgot' && (
+              <>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="email">
+                    Email Address
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
+                      <Mail className="w-4 h-4" />
+                    </span>
+                    <input
+                      id="email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@company.com"
+                      className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
+                    />
+                  </div>
+                </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="password">
-                Password
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
-                  <Lock className="w-4 h-4" />
-                </span>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
-                />
-              </div>
-            </div>
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="password">
+                      Password
+                    </label>
+                    {mode === 'login' && (
+                      <button
+                        type="button"
+                        onClick={() => { setMode('forgot'); setError(null); setMessage(null); }}
+                        className="text-[10px] text-indigo-500 hover:text-indigo-400 font-semibold cursor-pointer transition-colors"
+                      >
+                        Forgot Password?
+                      </button>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
+                      <Lock className="w-4 h-4" />
+                    </span>
+                    <input
+                      id="password"
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
+                    />
+                  </div>
+                </div>
 
-            {mode === 'signup' && (
+                {mode === 'signup' && (
+                  <div className="space-y-1.5 animate-in fade-in duration-200">
+                    <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="referralCode">
+                      Referral Code (Optional)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
+                        <User className="w-4 h-4" />
+                      </span>
+                      <input
+                        id="referralCode"
+                        type="text"
+                        value={referralCodeInput}
+                        onChange={(e) => !isReferralReadOnly && setReferralCodeInput(e.target.value)}
+                        disabled={isReferralReadOnly}
+                        placeholder="e.g., john1234"
+                        className={`glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors ${
+                          isReferralReadOnly ? 'bg-zinc-100 dark:bg-zinc-800/40 text-zinc-500 dark:text-zinc-400 cursor-not-allowed opacity-80' : ''
+                        }`}
+                      />
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {mode === 'forgot' && (
               <div className="space-y-1.5 animate-in fade-in duration-200">
-                <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400" htmlFor="referralCode">
-                  Referral Code (Optional)
+                <label className="text-xs font-medium text-zinc-650 dark:text-zinc-400" htmlFor="forgotUsername">
+                  Username
                 </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
-                    <User className="w-4 h-4" />
+                    <User className="w-4 h-4 text-[#B41DE6]" />
                   </span>
                   <input
-                    id="referralCode"
+                    id="forgotUsername"
                     type="text"
-                    value={referralCodeInput}
-                    onChange={(e) => !isReferralReadOnly && setReferralCodeInput(e.target.value)}
-                    disabled={isReferralReadOnly}
-                    placeholder="e.g., john1234"
-                    className={`glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors ${
-                      isReferralReadOnly ? 'bg-zinc-100 dark:bg-zinc-800/40 text-zinc-500 dark:text-zinc-400 cursor-not-allowed opacity-80' : ''
-                    }`}
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_.]/g, '').toLowerCase())}
+                    placeholder="Enter your username"
+                    className="glass-input w-full pl-9 pr-3 py-2 rounded-lg text-sm placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
                   />
                 </div>
               </div>
             )}
 
-            <button
+             <button
               type="button"
               onClick={() => handleAuth()}
               disabled={loading}
@@ -260,11 +321,21 @@ export default function LoginPage() {
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  {mode === 'login' ? 'Sign In' : 'Create Account'}
+                  {mode === 'login' ? 'Sign In' : mode === 'forgot' ? 'Send Reset Link' : 'Create Account'}
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
+
+            {mode === 'forgot' && (
+              <button
+                type="button"
+                onClick={() => { setMode('login'); setError(null); setMessage(null); }}
+                className="text-xs text-indigo-500 hover:text-indigo-400 font-semibold cursor-pointer underline text-center w-full mt-4 block"
+              >
+                Back to Sign In
+              </button>
+            )}
           </div>
         </div>
 
