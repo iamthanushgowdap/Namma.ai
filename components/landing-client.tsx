@@ -304,30 +304,38 @@ export default function LandingClient() {
             {/* Branded Header inside Phone */}
             <div className="h-8 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800/60 flex items-center gap-1.5 px-3 shrink-0">
               <img src="/Nammaai_logo.png" alt="Namma.ai" className="h-4.5 w-auto" />
-              {/* Dynamic target that is transparent until flying header approaches */}
-              <span 
-                id="hero-title-target" 
-                className="font-bold text-[8px] text-zinc-850 dark:text-zinc-200 tracking-tight transition-opacity duration-150"
-                style={{
-                  opacity: scrollProgress > 0.95 ? 1 : 0
-                }}
-              >
-                Namma.ai
-              </span>
+              <span className="font-bold text-[8px] text-zinc-850 dark:text-zinc-200 tracking-tight">Namma.ai</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-auto animate-pulse" />
             </div>
-            <div className="flex-1 bg-zinc-50 dark:bg-zinc-955 p-2 flex flex-col justify-end gap-1.5 text-[8px] text-left">
-              <div className="bg-zinc-200/80 text-zinc-800 dark:bg-zinc-900/90 dark:text-zinc-300 rounded-xl rounded-bl-sm p-1.5 max-w-[85%] self-start">
-                Hey, send me the info! 🙌
+            
+            <div className="flex-1 bg-zinc-50 dark:bg-zinc-955 p-2 flex flex-col justify-between gap-1.5 text-[8px] text-left">
+              {/* Active Agent Welcome Box */}
+              <div className="bg-white/80 dark:bg-zinc-900/80 border border-zinc-200 dark:border-white/[0.05] rounded-xl p-2 text-center shadow-sm">
+                <div className="flex items-center justify-center gap-1">
+                  <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-[5px] font-bold text-zinc-400 uppercase tracking-wider">System Online</span>
+                </div>
+                <div className="h-4 flex items-center justify-center mt-1">
+                  <span 
+                    id="hero-title-target" 
+                    className="font-dirty text-[10px] font-black tracking-wider bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent transition-opacity duration-150"
+                    style={{
+                      opacity: scrollProgress > 0.95 ? 1 : 0
+                    }}
+                  >
+                    Namma.ai
+                  </span>
+                </div>
               </div>
-              <div className="bg-gradient-to-tr from-[#B41DE6] to-[#0052cc] text-white rounded-xl rounded-br-sm p-1.5 max-w-[85%] self-end">
-                Here you go 👉 namma.ai/join
-              </div>
-              <div className="bg-zinc-200/80 text-zinc-800 dark:bg-zinc-900/90 dark:text-zinc-300 rounded-xl rounded-bl-sm p-1.5 max-w-[85%] self-start">
-                Does this work 24/7?
-              </div>
-              <div className="bg-gradient-to-tr from-[#B41DE6] to-[#0052cc] text-white rounded-xl rounded-br-sm p-1.5 max-w-[85%] self-end">
-                Yes, fully automated! ⚡
+
+              {/* Chat bubbles */}
+              <div className="flex flex-col gap-1.5 mt-auto">
+                <div className="bg-zinc-200/80 text-zinc-800 dark:bg-zinc-900/90 dark:text-zinc-300 rounded-xl rounded-bl-sm p-1.5 max-w-[85%] self-start">
+                  Hey, send me the info! 🙌
+                </div>
+                <div className="bg-gradient-to-tr from-[#B41DE6] to-[#0052cc] text-white rounded-xl rounded-br-sm p-1.5 max-w-[85%] self-end">
+                  Here you go 👉 namma.ai/join
+                </div>
               </div>
             </div>
           </div>
