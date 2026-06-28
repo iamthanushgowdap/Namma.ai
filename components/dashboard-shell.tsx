@@ -23,6 +23,7 @@ import {
   Sparkles,
   Share2,
   Link2,
+  Wallet,
 } from 'lucide-react'
 
 interface ShellProps {
@@ -38,6 +39,7 @@ interface ShellProps {
 const NAV_ITEMS = [
   { label: 'Connections', href: '/dashboard/connections', icon: Link2 },
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Wallet', href: '/dashboard/wallet', icon: Wallet },
   { label: 'Automations', href: '/dashboard/automations', icon: Cpu },
   { label: 'AI Agent', href: '/dashboard/ai-agent', icon: Sparkles },
   { label: 'Inbox', href: '/dashboard/inbox', icon: MessageSquare },
