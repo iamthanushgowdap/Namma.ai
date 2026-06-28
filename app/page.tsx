@@ -86,7 +86,7 @@ export default function HomePage() {
         <div className="flex flex-col items-center w-full -translate-y-6 lg:-translate-y-12">
           {/* Big Brand Header */}
           <div className="mb-6 animate-fade-in animate-float">
-            <h1 className="font-dirty text-7xl sm:text-8xl md:text-9xl font-black tracking-[0.1em] bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent leading-none drop-shadow-sm select-none">
+            <h1 className="font-dirty text-7xl sm:text-8xl md:text-9xl font-black tracking-[0.1em] bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent leading-none drop-shadow-sm select-none animate-gradient-flow">
               Namma.ai
             </h1>
             <p className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-zinc-550 dark:text-zinc-400 font-bold mt-3">
