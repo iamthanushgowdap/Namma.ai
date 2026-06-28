@@ -105,20 +105,15 @@ export default function SettingsPage() {
           throw new Error('Current password is required to verify your identity before changing your email address.')
         }
 
-        // Verify password by attempting to sign in
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: originalEmail,
-          password: confirmPassword,
+        const updateEmailRes = await fetch('/api/auth/update-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ newEmail: cleanEmail, password: confirmPassword })
         })
-        if (signInError) {
-          throw new Error('Verification failed: Incorrect current password.')
+        const updateEmailData = await updateEmailRes.json()
+        if (updateEmailData.error) {
+          throw new Error(updateEmailData.error)
         }
-
-        // Request email update in Supabase Auth
-        const { error: emailUpdateError } = await supabase.auth.updateUser({
-          email: cleanEmail,
-        })
-        if (emailUpdateError) throw emailUpdateError
       }
 
       // 3. Update Profiles Table (Name + Username)
@@ -137,9 +132,7 @@ export default function SettingsPage() {
       setOriginalEmail(cleanEmail)
       setConfirmPassword('')
 
-      setSuccess(emailChanged 
-        ? 'Profile updated. A verification link has been sent to your new email. Please confirm it to complete the change.' 
-        : 'Profile settings updated successfully.')
+      setSuccess('Profile settings updated successfully.')
       router.refresh()
     } catch (err: any) {
       setError(err.message || 'Failed to update profile settings')
