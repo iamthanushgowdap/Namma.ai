@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Mail, Lock, User, ArrowRight, Activity } from 'lucide-react'
 
@@ -231,7 +232,14 @@ export default function LoginPage() {
 
         {/* Footer info */}
         <p className="text-center text-xs text-zinc-500 mt-6 px-4">
-          By signing in, you agree to our Terms of Service and Privacy Policy. Secure authentication provided by Supabase.
+          By signing in, you agree to our{' '}
+          <Link href="/legal/terms" className="font-bold text-zinc-800 dark:text-zinc-200 hover:text-[#B41DE6] dark:hover:text-[#d97aff] transition-colors underline decoration-zinc-300 dark:decoration-zinc-700">
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link href="/legal/privacy" className="font-bold text-zinc-800 dark:text-zinc-200 hover:text-[#B41DE6] dark:hover:text-[#d97aff] transition-colors underline decoration-zinc-300 dark:decoration-zinc-700">
+            Privacy Policy
+          </Link>.
         </p>
       </div>
     </div>
