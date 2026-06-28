@@ -104,6 +104,30 @@ export default function AutomationsPage() {
   // Search & Sort State
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name-asc' | 'name-desc' | 'status-active' | 'status-inactive'>('newest')
+  const [timeFormat, setTimeFormat] = useState<'12h' | '24h'>('12h')
+  const [liveTime, setLiveTime] = useState('')
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date()
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: timeFormat === '12h',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      }
+      const formatter = new Intl.DateTimeFormat('en-US', options)
+      setLiveTime(formatter.format(now))
+    }
+
+    updateTime()
+    const interval = setInterval(updateTime, 1000)
+    return () => clearInterval(interval)
+  }, [timeFormat])
 
   // Toggle Confirmation State
   const [confirmToggleAuto, setConfirmToggleAuto] = useState<{ id: string; status: string; name: string } | null>(null)
@@ -1067,22 +1091,40 @@ export default function AutomationsPage() {
             />
           </div>
 
-          {/* Sort By selector */}
-          <div className="flex items-center gap-2">
-            <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground font-medium">Sort By:</span>
-            <select
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value as any)}
-              className="px-3 py-1.5 glass-input rounded-xl text-xs cursor-pointer focus:outline-none"
-            >
-              <option value="newest" className="bg-background text-foreground">Newly Added</option>
-              <option value="oldest" className="bg-background text-foreground">Oldest First</option>
-              <option value="name-asc" className="bg-background text-foreground">Name (A-Z)</option>
-              <option value="name-desc" className="bg-background text-foreground">Name (Z-A)</option>
-              <option value="status-active" className="bg-background text-foreground">Active First</option>
-              <option value="status-inactive" className="bg-background text-foreground">Inactive First</option>
-            </select>
+          {/* Sort By selector & Live Clock */}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground font-medium">Sort By:</span>
+              <select
+                value={sortBy}
+                onChange={e => setSortBy(e.target.value as any)}
+                className="px-3 py-1.5 glass-input rounded-xl text-xs cursor-pointer focus:outline-none"
+              >
+                <option value="newest" className="bg-background text-foreground">Newly Added</option>
+                <option value="oldest" className="bg-background text-foreground">Oldest First</option>
+                <option value="name-asc" className="bg-background text-foreground">Name (A-Z)</option>
+                <option value="name-desc" className="bg-background text-foreground">Name (Z-A)</option>
+                <option value="status-active" className="bg-background text-foreground">Active First</option>
+                <option value="status-inactive" className="bg-background text-foreground">Inactive First</option>
+              </select>
+            </div>
+
+            {/* Live India clock & format selector */}
+            <div className="flex items-center gap-3 bg-indigo-500/5 dark:bg-indigo-500/10 border border-indigo-500/15 py-1 px-3 rounded-xl">
+              <div className="flex flex-col text-left">
+                <span className="text-[9px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-wider">India Time (IST)</span>
+                <span className="text-xs font-mono font-bold text-foreground/90">{liveTime}</span>
+              </div>
+              <div className="h-6 w-px bg-indigo-500/20" />
+              <button
+                type="button"
+                onClick={() => setTimeFormat(prev => prev === '12h' ? '24h' : '12h')}
+                className="px-2 py-0.5 bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-350 dark:hover:bg-zinc-700 text-[10px] font-black rounded-md transition-colors cursor-pointer text-foreground"
+              >
+                {timeFormat === '12h' ? '12H' : '24H'}
+              </button>
+            </div>
           </div>
         </div>
       )}

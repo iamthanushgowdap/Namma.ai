@@ -47,7 +47,7 @@ export default function LoginPage() {
         })
         if (signInError) throw signInError
         
-        window.location.href = '/dashboard'
+        window.location.href = '/dashboard/automations'
       } else if (mode === 'forgot') {
         if (!username || username.trim().length === 0) {
           throw new Error('Username is required to request a password reset.')

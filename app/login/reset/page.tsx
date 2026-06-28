@@ -54,7 +54,7 @@ export default function ResetPasswordPage() {
 
       setSuccess('Your password has been successfully updated!')
       setTimeout(() => {
-        router.push('/dashboard')
+        router.push('/dashboard/automations')
       }, 2000)
     } catch (err: any) {
       setError(err.message || 'Failed to reset password.')

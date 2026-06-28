@@ -201,6 +201,25 @@ export default function ConnectionsPage() {
               </div>
             </div>
 
+            {/* Step-by-Step Connection Guidelines */}
+            <div className="bg-indigo-500/5 dark:bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-5 text-left space-y-3">
+              <h4 className="text-xs font-bold text-indigo-650 dark:text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-500 text-white text-[10px] font-black">!</span>
+                Step-by-Step Connection Guidelines
+              </h4>
+              <ol className="list-decimal pl-4 space-y-2 text-xs text-zinc-650 dark:text-zinc-350">
+                <li>
+                  First, open <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="font-bold text-indigo-500 hover:underline">instagram.com</a> in a Chrome, Safari, or whatever browser you are using right now.
+                </li>
+                <li>
+                  Log in to your Instagram account in that browser tab, then come back to our page.
+                </li>
+                <li>
+                  Then proceed to tap the <strong className="text-zinc-800 dark:text-white">Connect Instagram via Facebook</strong> button below.
+                </li>
+              </ol>
+            </div>
+
             <div className="border-t border-border/60 pt-6">
               <button
                 onClick={handleConnect}
