@@ -95,20 +95,13 @@ export default function LandingClient() {
           className="h-16 rounded-full border border-zinc-200 dark:border-white/[0.08] flex items-center justify-between px-6 shadow-2xl transition-all duration-300 hover:border-purple-500/30 hover:shadow-purple-500/10 bg-white/85 dark:bg-zinc-950/85"
           style={{ backdropFilter: 'blur(20px)' }}
         >
-          {/* Logo + Brand — overflow-hidden crops the ~25% whitespace padding in the PNG */}
-          <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
-            <div className="overflow-hidden" style={{ width: '120px', height: '40px' }}>
-              <img
-                src="/AutoEngage_logo.png"
-                alt="AutoEngage"
-                style={{
-                  width: '185px',
-                  height: 'auto',
-                  marginTop: '-12px',
-                  marginLeft: '-18px',
-                }}
-              />
-            </div>
+          {/* Logo — negative margins bleed the PNG whitespace outside the pill border */}
+          <Link href="/" className="flex items-center hover:opacity-90 transition-opacity overflow-hidden" style={{ height: '64px' }}>
+            <img
+              src="/AutoEngage_logo.png"
+              alt="AutoEngage"
+              style={{ height: '130px', width: 'auto', marginTop: '-33px', marginBottom: '-33px', marginLeft: '-10px' }}
+            />
           </Link>
 
           {/* Links */}
@@ -144,27 +137,21 @@ export default function LandingClient() {
       <section className="relative z-10 min-h-[80vh] sm:min-h-screen lg:h-[100vh] flex flex-col items-center justify-center px-6 pt-12 sm:pt-24 pb-12 sm:pb-20 text-center max-w-5xl mx-auto overflow-hidden">
         {/* Content Wrapper to push content upwards */}
         <div className="flex flex-col items-center w-full -translate-y-2 sm:-translate-y-12">
-          {/* Big Brand Header Logo — crops the whitespace padding inside the PNG */}
-          <div className="mb-2 animate-fade-in relative animate-float flex justify-center">
+          {/* Big Brand Header Logo — negative margins collapse PNG whitespace */}
+          <div className="mb-4 animate-fade-in animate-float flex justify-center">
             <div className="relative">
-              {/* Glowing background */}
               <div className="absolute inset-0 bg-gradient-to-r from-[#B41DE6] to-[#F94475] rounded-full blur-3xl opacity-20 pointer-events-none" />
-              <div
-                className="relative z-10 overflow-hidden select-none pointer-events-none"
-                style={{ width: 'clamp(220px, 40vw, 380px)', height: 'clamp(72px, 13vw, 124px)' }}
-              >
-                <img
-                  src="/AutoEngage_logo.png"
-                  alt="AutoEngage Logo"
-                  className="drop-shadow-[0_0_25px_rgba(180,29,230,0.35)]"
-                  style={{
-                    width: '155%',
-                    height: 'auto',
-                    marginTop: '-12%',
-                    marginLeft: '-13%',
-                  }}
-                />
-              </div>
+              <img
+                src="/AutoEngage_logo.png"
+                alt="AutoEngage Logo"
+                className="relative z-10 select-none pointer-events-none drop-shadow-[0_0_30px_rgba(180,29,230,0.4)]"
+                style={{
+                  height: 'clamp(220px, 30vw, 340px)',
+                  width: 'auto',
+                  marginTop: 'clamp(-55px, -7.5vw, -85px)',
+                  marginBottom: 'clamp(-55px, -7.5vw, -85px)',
+                }}
+              />
             </div>
           </div>
 
