@@ -281,7 +281,7 @@ export default function SettingsPage() {
                 Current Password Required
               </label>
               <p className="text-[10px] text-muted-foreground leading-normal mb-2">
-                To update your email address, you must enter your current password to verify your identity. A confirmation link will be sent to the new email.
+                To update your email address, you must enter your current password to verify your identity. The change will take effect immediately.
               </p>
               <input
                 type="password"
