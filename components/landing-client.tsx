@@ -97,7 +97,7 @@ export default function LandingClient() {
         >
           {/* Logo + Brand */}
           <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
-            <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-11 w-auto" />
+            <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-14 w-auto object-contain" style={{ maxHeight: '56px' }} />
           </Link>
 
           {/* Links */}
@@ -815,7 +815,7 @@ export default function LandingClient() {
             {/* Logo + Tagline */}
             <div className="col-span-2">
               <div className="flex items-center gap-2.5 mb-4">
-                <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-9 w-auto" />
+                <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-12 w-auto object-contain" style={{ maxHeight: '48px' }} />
                 <span className="font-extrabold text-lg text-zinc-900 dark:text-white tracking-tight">
                   AutoEngage
                 </span>

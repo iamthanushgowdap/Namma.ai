@@ -80,7 +80,7 @@ function DashboardLayoutInner({
       {/* MOBILE HEADER */}
       <header className="md:hidden relative flex items-center justify-between px-6 py-4 bg-zinc-50/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800/80 z-40 w-full">
         <div className="flex items-center gap-2.5">
-          <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-8 w-auto" />
+          <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-10 w-auto object-contain" />
           <span className="font-bold text-lg tracking-tight text-zinc-900 dark:text-white">AutoEngage</span>
         </div>
         <button
@@ -99,7 +99,7 @@ function DashboardLayoutInner({
       >
         {/* Logo and Header */}
         <div className="hidden md:flex items-center gap-2.5 px-6 py-6 border-b border-zinc-200 dark:border-zinc-800/60">
-          <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-10 w-auto" />
+          <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-12 w-auto object-contain" />
           <span className="font-bold text-lg tracking-tight text-zinc-900 dark:text-white">AutoEngage</span>
         </div>
 
