@@ -133,13 +133,17 @@ export default function LandingClient() {
       <section className="relative z-10 min-h-[80vh] sm:min-h-screen lg:h-[100vh] flex flex-col items-center justify-center px-6 pt-12 sm:pt-24 pb-12 sm:pb-20 text-center max-w-5xl mx-auto overflow-hidden">
         {/* Content Wrapper to push content upwards */}
         <div className="flex flex-col items-center w-full -translate-y-2 sm:-translate-y-12">
-          {/* Big Brand Header */}
-          <div className="mb-6 animate-fade-in relative animate-float">
-            <h1 
-              className="font-fantastic text-glow text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-tight bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent leading-none select-none animate-gradient-flow py-4"
-            >
-              Namma.ai
-            </h1>
+          {/* Big Brand Header Logo */}
+          <div className="mb-6 animate-fade-in relative animate-float flex justify-center">
+            <div className="relative">
+              {/* Glowing background behind the logo */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#B41DE6] to-[#F94475] rounded-full blur-3xl opacity-20 pointer-events-none" />
+              <img 
+                src="/Nammaai_logo.png" 
+                alt="Namma.ai Logo" 
+                className="h-20 sm:h-28 md:h-36 w-auto relative z-10 drop-shadow-[0_0_25px_rgba(180,29,230,0.35)] select-none pointer-events-none"
+              />
+            </div>
           </div>
 
           {/* Animated Pulsing Badge */}
@@ -300,12 +304,12 @@ export default function LandingClient() {
                   <span className="text-[5px] font-bold text-zinc-400 uppercase tracking-wider">System Online</span>
                 </div>
                 <div className="h-3 flex items-center justify-center mt-0.5">
-                  <span 
+                  <img 
                     id="hero-title-target" 
-                    className="font-fantastic text-[9px] font-black tracking-wider bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent opacity-100"
-                  >
-                    Namma.ai
-                  </span>
+                    src="/Nammaai_logo.png" 
+                    alt="Namma.ai" 
+                    className="h-2.5 w-auto opacity-100 select-none pointer-events-none"
+                  />
                 </div>
               </div>
 
