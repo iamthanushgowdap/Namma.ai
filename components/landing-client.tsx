@@ -134,25 +134,9 @@ export default function LandingClient() {
         {/* Content Wrapper to push content upwards */}
         <div className="flex flex-col items-center w-full -translate-y-2 sm:-translate-y-12">
           {/* Big Brand Header */}
-          <div className={`mb-6 animate-fade-in relative ${scrollProgress > 0 ? '' : 'animate-float'}`}>
-            {/* Invisible placeholder to reserve layout height/width */}
+          <div className="mb-6 animate-fade-in relative animate-float">
             <h1 
-              id="hero-title-placeholder"
-              className="font-dirty text-7xl sm:text-8xl md:text-9xl font-black tracking-[0.1em] opacity-0 select-none leading-none pointer-events-none"
-            >
-              Namma.ai
-            </h1>
-            
-            {/* Actual animating/floating title */}
-            <h1 
-              id="hero-title-floating"
-              className="font-dirty text-7xl sm:text-8xl md:text-9xl font-black tracking-[0.1em] bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent leading-none drop-shadow-sm select-none animate-gradient-flow absolute inset-0 z-50 transform-gpu"
-              style={{
-                transform: `translate3d(${coords.x}px, ${coords.y}px, 0) scale(${coords.scale})`,
-                transformOrigin: 'center center',
-                pointerEvents: 'none',
-                opacity: coords.opacity,
-              }}
+              className="font-fantastic text-glow text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-tight bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent leading-none select-none animate-gradient-flow py-4"
             >
               Namma.ai
             </h1>
@@ -318,10 +302,7 @@ export default function LandingClient() {
                 <div className="h-3 flex items-center justify-center mt-0.5">
                   <span 
                     id="hero-title-target" 
-                    className="font-dirty text-[9px] font-black tracking-wider bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent transition-opacity duration-150"
-                    style={{
-                      opacity: scrollProgress > 0.95 ? 1 : 0
-                    }}
+                    className="font-fantastic text-[9px] font-black tracking-wider bg-gradient-to-r from-[#B41DE6] via-[#D331AC] to-[#F94475] bg-clip-text text-transparent opacity-100"
                   >
                     Namma.ai
                   </span>

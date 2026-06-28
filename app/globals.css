@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@800;900&family=Syne:wght@800&family=Righteous&display=swap');
 
 @font-face {
   font-family: 'Dirty Enough';
@@ -267,6 +268,15 @@ body {
 
 .font-dirty {
   font-family: 'Dirty Enough', 'Satoshi', sans-serif;
+}
+
+.font-fantastic {
+  font-family: 'Unbounded', 'Righteous', 'Syne', sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(180, 29, 230, 0.45), 0 0 40px rgba(249, 68, 117, 0.25);
 }
 
 @keyframes gradientFlow {
