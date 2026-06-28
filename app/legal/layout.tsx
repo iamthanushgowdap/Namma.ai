@@ -14,16 +14,12 @@ export default function LegalLayout({
       >
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo + Brand */}
-          <Link href="/" className="flex items-center gap-3">
-            <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-11 w-auto" />
-            <span
-              className="text-xl font-bold bg-clip-text text-transparent"
-              style={{
-                backgroundImage: 'linear-gradient(135deg, #B41DE6 0%, #0052cc 100%)',
-              }}
-            >
-              AutoEngage
-            </span>
+          <Link href="/" className="flex items-center overflow-hidden" style={{ height: '64px' }}>
+            <img
+              src="/AutoEngage_logo.png"
+              alt="AutoEngage"
+              style={{ height: '130px', width: 'auto', marginTop: '-33px', marginBottom: '-33px', marginLeft: '-10px' }}
+            />
           </Link>
 
           {/* Nav links */}
@@ -59,16 +55,12 @@ export default function LegalLayout({
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
             {/* Brand */}
             <div>
-              <Link href="/" className="flex items-center gap-3 mb-3">
-                <img src="/AutoEngage_logo.png" alt="AutoEngage" className="h-10 w-auto" />
-                <span
-                  className="text-lg font-bold bg-clip-text text-transparent"
-                  style={{
-                    backgroundImage: 'linear-gradient(135deg, #B41DE6 0%, #0052cc 100%)',
-                  }}
-                >
-                  AutoEngage
-                </span>
+              <Link href="/" className="flex items-center mb-3" style={{ overflow: 'hidden', height: '52px' }}>
+                <img
+                  src="/AutoEngage_logo.png"
+                  alt="AutoEngage"
+                  style={{ height: '130px', width: 'auto', marginTop: '-39px', marginBottom: '-39px', marginLeft: '-10px' }}
+                />
               </Link>
               <p className="text-xs text-zinc-500 max-w-xs leading-relaxed">
                 Instagram DM &amp; comment automation platform. Operated by Thanush Gowda P, India.
