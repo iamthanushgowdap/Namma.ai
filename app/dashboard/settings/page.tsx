@@ -11,7 +11,11 @@ export default function SettingsPage() {
   const router = useRouter()
   
   const [profileName, setProfileName] = useState('')
+  const [profileUsername, setProfileUsername] = useState('')
+  const [currentUsername, setCurrentUsername] = useState('')
   const [userEmail, setUserEmail] = useState('')
+  const [originalEmail, setOriginalEmail] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [workspaceName, setWorkspaceName] = useState('')
   
   const [loading, setLoading] = useState(true)
@@ -33,6 +37,7 @@ export default function SettingsPage() {
         throw new Error('User session not found')
       }
       setUserEmail(user.email || '')
+      setOriginalEmail(user.email || '')
 
       // 2. Fetch profile details
       const { data: profile, error: profileErr } = await supabase
@@ -45,6 +50,8 @@ export default function SettingsPage() {
 
       if (profile) {
         setProfileName(profile.name || '')
+        setProfileUsername(profile.username || '')
+        setCurrentUsername(profile.username || '')
       }
 
       // 3. Set workspace name details
@@ -71,16 +78,68 @@ export default function SettingsPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('User session not found')
 
+      const cleanUsername = profileUsername.trim().toLowerCase()
+
+      // 1. Username validation & availability check (only if username has changed)
+      if (cleanUsername !== currentUsername) {
+        if (cleanUsername.length < 3 || cleanUsername.length > 30) {
+          throw new Error('Username must be between 3 and 30 characters.')
+        }
+        const usernameRegex = /^[a-zA-Z0-9_.]+$/
+        if (!usernameRegex.test(cleanUsername)) {
+          throw new Error('Username can only contain lowercase letters, numbers, underscores, and periods.')
+        }
+
+        const checkRes = await fetch(`/api/auth/check-username?username=${encodeURIComponent(cleanUsername)}`)
+        const checkData = await checkRes.json()
+        if (checkData.error || !checkData.available) {
+          throw new Error(checkData.error || 'This username has already been taken.')
+        }
+      }
+
+      // 2. Email verification & update (only if email has changed)
+      const cleanEmail = userEmail.trim().toLowerCase()
+      let emailChanged = cleanEmail !== originalEmail
+      if (emailChanged) {
+        if (!confirmPassword) {
+          throw new Error('Current password is required to verify your identity before changing your email address.')
+        }
+
+        // Verify password by attempting to sign in
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: originalEmail,
+          password: confirmPassword,
+        })
+        if (signInError) {
+          throw new Error('Verification failed: Incorrect current password.')
+        }
+
+        // Request email update in Supabase Auth
+        const { error: emailUpdateError } = await supabase.auth.updateUser({
+          email: cleanEmail,
+        })
+        if (emailUpdateError) throw emailUpdateError
+      }
+
+      // 3. Update Profiles Table (Name + Username)
       const { error: updateErr } = await supabase
         .from('profiles')
         .update({
-          name: profileName,
+          name: profileName.trim(),
+          username: cleanUsername,
         })
         .eq('id', user.id)
 
       if (updateErr) throw updateErr
 
-      setSuccess('Profile settings updated successfully.')
+      // Update baseline states on success
+      setCurrentUsername(cleanUsername)
+      setOriginalEmail(cleanEmail)
+      setConfirmPassword('')
+
+      setSuccess(emailChanged 
+        ? 'Profile updated. A verification link has been sent to your new email. Please confirm it to complete the change.' 
+        : 'Profile settings updated successfully.')
       router.refresh()
     } catch (err: any) {
       setError(err.message || 'Failed to update profile settings')
@@ -198,15 +257,49 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground">Email Address (Read Only)</label>
+              <label className="text-xs font-semibold text-foreground">Username</label>
+              <input
+                type="text"
+                required
+                value={profileUsername}
+                onChange={e => setProfileUsername(e.target.value.replace(/[^a-zA-Z0-9_.]/g, '').toLowerCase())}
+                placeholder="username"
+                className="w-full px-3.5 py-2 glass-input rounded-lg text-xs placeholder-muted-foreground transition-colors"
+              />
+            </div>
+
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className="text-xs font-semibold text-foreground">Email Address</label>
               <input
                 type="email"
-                disabled
+                required
                 value={userEmail}
-                className="w-full px-3.5 py-2 bg-zinc-100 dark:bg-zinc-800/50 border border-border text-muted-foreground rounded-lg text-xs cursor-not-allowed opacity-75"
+                onChange={e => setUserEmail(e.target.value)}
+                placeholder="name@company.com"
+                className="w-full px-3.5 py-2 glass-input rounded-lg text-xs placeholder-muted-foreground transition-colors"
               />
             </div>
           </div>
+
+          {userEmail.trim().toLowerCase() !== originalEmail && (
+            <div className="space-y-1.5 p-4 bg-amber-550/5 border border-amber-500/20 rounded-xl animate-in fade-in slide-in-from-top-2 duration-200">
+              <label className="text-xs font-semibold text-amber-600 dark:text-amber-450 flex items-center gap-1.5">
+                <ShieldAlert className="w-4 h-4" />
+                Current Password Required
+              </label>
+              <p className="text-[10px] text-muted-foreground leading-normal mb-2">
+                To update your email address, you must enter your current password to verify your identity. A confirmation link will be sent to the new email.
+              </p>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                placeholder="Enter current password"
+                className="w-full px-3.5 py-2 glass-input rounded-lg text-xs placeholder-muted-foreground transition-colors"
+              />
+            </div>
+          )}
 
 
           <div className="border-t border-border/40 pt-4 flex justify-end">
