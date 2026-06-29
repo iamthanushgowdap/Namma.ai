@@ -99,7 +99,10 @@ export async function POST(request: NextRequest) {
           .from('instagram_accounts')
           .select('*')
         
-        if (allAccounts) {
+        if (igAccountId === '0' && allAccounts && allAccounts.length > 0) {
+          console.log('Test webhook event with ID "0" detected. Routing to first connected account:', allAccounts[0].username)
+          igAccount = allAccounts[0]
+        } else if (allAccounts) {
           for (const acc of allAccounts) {
             try {
               const token = decrypt(acc.access_token_encrypted)
