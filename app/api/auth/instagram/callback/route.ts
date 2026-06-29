@@ -54,8 +54,9 @@ export async function GET(request: NextRequest) {
 
     // 3. Exchange code for a long-lived Meta User Access Token
     const longLivedUserToken = await exchangeCodeForToken(code, redirectUri)
+    console.log(`[OAuth Callback] Long-lived token type: ${longLivedUserToken.startsWith('IGQ') ? 'Direct Instagram (IGQ)' : longLivedUserToken.startsWith('EAA') ? 'Facebook Page (EAA)' : 'Unknown'} | Token prefix: ${longLivedUserToken.substring(0, 10)}...`)
 
-    // 4. Retrieve all pages connected to Instagram Business Accounts
+    // 4. Retrieve Instagram Professional Account info
     const igAccounts = await getConnectedInstagramAccounts(longLivedUserToken)
 
     if (igAccounts.length === 0) {
@@ -64,6 +65,7 @@ export async function GET(request: NextRequest) {
 
     // 5. Connect all found Instagram accounts
     for (const account of igAccounts) {
+      console.log(`[OAuth Callback] Storing token for @${account.username} (ID: ${account.instagramUserId}) | Token type: ${account.pageAccessToken.startsWith('IGQ') ? 'Direct Instagram (IGQ)' : account.pageAccessToken.startsWith('EAA') ? 'Facebook Page (EAA)' : 'Unknown'} | Token prefix: ${account.pageAccessToken.substring(0, 10)}...`)
       const encryptedToken = encrypt(account.pageAccessToken)
 
       // Upsert record in database

@@ -79,6 +79,7 @@ export async function exchangeCodeForToken(
   }
 
   const shortLivedToken = data.access_token;
+  console.log(`[Token Exchange] Short-lived token type: ${shortLivedToken.startsWith('IGQ') ? 'Direct Instagram (IGQ)' : shortLivedToken.startsWith('EAA') ? 'Facebook Page (EAA)' : 'Unknown'} | Prefix: ${shortLivedToken.substring(0, 10)}...`);
 
   // 2. Exchange for long-lived Instagram Token (lasts 60 days)
   const longLivedResponse = await fetch(
@@ -89,6 +90,8 @@ export async function exchangeCodeForToken(
   if (longLivedData.error) {
     throw new Error(`Failed to get long-lived token: ${longLivedData.error.message}`);
   }
+
+  console.log(`[Token Exchange] Long-lived token type: ${longLivedData.access_token.startsWith('IGQ') ? 'Direct Instagram (IGQ)' : longLivedData.access_token.startsWith('EAA') ? 'Facebook Page (EAA)' : 'Unknown'} | Prefix: ${longLivedData.access_token.substring(0, 10)}...`);
 
   return longLivedData.access_token;
 }
