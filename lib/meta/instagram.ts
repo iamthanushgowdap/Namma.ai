@@ -14,7 +14,10 @@ const META_GRAPH_VERSION = 'v19.0';
 const META_GRAPH_URL = `https://graph.facebook.com/${META_GRAPH_VERSION}`;
 
 function getGraphUrl(accessToken: string): string {
-  return `https://graph.facebook.com/${META_GRAPH_VERSION}`;
+  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  return isDirectInstagram 
+    ? `https://graph.instagram.com/${META_GRAPH_VERSION}` 
+    : `https://graph.facebook.com/${META_GRAPH_VERSION}`;
 }
 
 /**
@@ -101,7 +104,7 @@ export async function getConnectedInstagramAccounts(
 
   try {
     const meResponse = await fetch(
-      `https://graph.facebook.com/v19.0/me?fields=id,username,name,profile_picture_url`,
+      `https://graph.instagram.com/v19.0/me?fields=user_id,username`,
       {
         headers: {
           'Authorization': `Bearer ${userAccessToken}`
@@ -113,13 +116,13 @@ export async function getConnectedInstagramAccounts(
       throw new Error(`Meta API error: ${meData.error.message}`);
     }
 
-    if (meData && meData.id && meData.username) {
+    if (meData && meData.user_id && meData.username) {
       console.log('Successfully retrieved Instagram Professional Account via direct login:', meData);
       return [{
-        instagramUserId: meData.id,
+        instagramUserId: meData.user_id,
         username: meData.username,
-        name: meData.name || meData.username,
-        profilePictureUrl: meData.profile_picture_url || undefined,
+        name: meData.username,
+        profilePictureUrl: undefined,
         pageId: 'instagram_direct',
         pageAccessToken: userAccessToken
       }];

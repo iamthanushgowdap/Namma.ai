@@ -16,7 +16,10 @@ import { getAIResponse } from '@/lib/ai-engine'
 import crypto from 'crypto'
 
 function getGraphUrl(accessToken: string): string {
-  return 'https://graph.facebook.com/v19.0';
+  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  return isDirectInstagram 
+    ? 'https://graph.instagram.com/v19.0' 
+    : 'https://graph.facebook.com/v19.0';
 }
 
 /**

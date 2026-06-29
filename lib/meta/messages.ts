@@ -5,7 +5,10 @@ const META_GRAPH_VERSION = 'v19.0';
 const META_GRAPH_URL = `https://graph.facebook.com/${META_GRAPH_VERSION}`;
 
 function getGraphUrl(accessToken: string): string {
-  return `https://graph.facebook.com/${META_GRAPH_VERSION}`;
+  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  return isDirectInstagram 
+    ? `https://graph.instagram.com/${META_GRAPH_VERSION}` 
+    : `https://graph.facebook.com/${META_GRAPH_VERSION}`;
 }
 
 /**
