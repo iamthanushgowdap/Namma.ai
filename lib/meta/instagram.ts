@@ -176,8 +176,10 @@ export async function getInstagramProfile(
   instagramUserId: string,
   accessToken: string
 ): Promise<{ username: string; name?: string; profilePictureUrl?: string }> {
+  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  const targetId = isDirectInstagram ? 'me' : instagramUserId;
   const response = await fetch(
-    `${getGraphUrl(accessToken)}/${instagramUserId}?fields=username,name,profile_picture_url&access_token=${accessToken}`
+    `${getGraphUrl(accessToken)}/${targetId}?fields=username,name,profile_picture_url&access_token=${accessToken}`
   );
 
   const data = await response.json();
@@ -231,8 +233,10 @@ export async function getInstagramMedia(
   instagramUserId: string,
   accessToken: string
 ): Promise<InstagramMediaItem[]> {
+  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  const targetId = isDirectInstagram ? 'me' : instagramUserId;
   const response = await fetch(
-    `${getGraphUrl(accessToken)}/${instagramUserId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=24&access_token=${accessToken}`
+    `${getGraphUrl(accessToken)}/${targetId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=24&access_token=${accessToken}`
   );
 
   const data = await response.json();
