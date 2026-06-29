@@ -35,16 +35,7 @@ export async function GET(request: NextRequest) {
 
     const isDirect = accessToken.startsWith('IG')
 
-    // 2. Query permissions from graph.facebook.com/me/permissions
-    let permissionsData: any = null
-    try {
-      const permRes = await fetch(`https://graph.facebook.com/v19.0/me/permissions?access_token=${accessToken}`)
-      permissionsData = await permRes.json()
-    } catch (e: any) {
-      permissionsData = { error: e.message }
-    }
-
-    // 3. Query me details from graph.instagram.com to verify token validity
+    // 2. Query me details from graph.instagram.com to verify token validity
     let meData: any = null
     try {
       const meRes = await fetch(`https://graph.instagram.com/v19.0/me?fields=user_id,username&access_token=${accessToken}`)
@@ -58,7 +49,6 @@ export async function GET(request: NextRequest) {
       username: account.username,
       instagram_user_id: account.instagram_user_id,
       token_type: isDirect ? 'Direct Instagram (IG)' : 'Facebook Page (EAA)',
-      facebook_permissions_info: permissionsData,
       instagram_me_info: meData
     })
 
