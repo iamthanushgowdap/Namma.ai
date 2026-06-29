@@ -28,7 +28,7 @@ async function metaFetch(
   
   const headers = new Headers(options.headers || {});
   
-  console.log(`[Meta API Request] Path: ${cleanPath} | Token type: ${isDirect ? 'Direct Instagram (IGQ)' : 'Facebook Page (EAA)'}`);
+  console.log(`[Meta API Request]\nHost: ${baseUrl}\nEndpoint: ${cleanPath}\nToken type: ${isDirect ? 'Direct Instagram (IGQ)' : 'Facebook Page (EAA)'}`);
 
   if (isDirect) {
     // Direct Instagram tokens require access_token in query string and do not support Authorization header
@@ -40,10 +40,14 @@ async function metaFetch(
     headers.set('Authorization', `Bearer ${accessToken}`);
   }
   
-  return fetch(finalUrl, {
+  const response = await fetch(finalUrl, {
     ...options,
     headers,
   });
+
+  console.log(`[Meta API Response]\nHost: ${baseUrl}\nEndpoint: ${cleanPath}\nStatus: ${response.status} ${response.statusText}`);
+
+  return response;
 }
 
 /**
