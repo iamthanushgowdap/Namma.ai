@@ -97,52 +97,14 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (!igAccount) {
-        // Fallback: If igAccountId is a Facebook Page ID or a global ID from direct connection, resolve the connected account
-        const { data: allAccounts } = await supabase
-          .from('instagram_accounts')
-          .select('*')
-        
-        if (igAccountId === '0' && allAccounts && allAccounts.length > 0) {
-          console.log('Test webhook event with ID "0" detected. Routing to first connected account:', allAccounts[0].username)
-          igAccount = allAccounts[0]
-        } else if (allAccounts) {
-          for (const acc of allAccounts) {
-            try {
-              const token = decrypt(acc.access_token_encrypted)
-              const isDirectIG = token && token.startsWith('IGQ')
-              
-              if (isDirectIG) {
-                // Direct Instagram token: verify by querying /me and checking username
-                const meRes = await fetch(`https://graph.facebook.com/v19.0/me?fields=id,username`, {
-                  headers: { 'Authorization': `Bearer ${token}` }
-                })
-                const meData = await meRes.json()
-                if (meData.username && meData.username.toLowerCase() === acc.username.toLowerCase()) {
-                  igAccount = acc
-                  
-                  // Self-healing: Update DB with the real global Instagram Business Account ID
-                  console.log(`Self-healing: Updating instagram_user_id for ${acc.username} from ${acc.instagram_user_id} to global ID ${igAccountId}`)
-                  await supabase
-                    .from('instagram_accounts')
-                    .update({ instagram_user_id: igAccountId })
-                    .eq('id', acc.id)
-                  
-                  break
-                }
-              } else {
-                // Facebook Page token: check /me for page ID match
-                const meRes = await fetch(`https://graph.facebook.com/v21.0/me`, {
-                  headers: { 'Authorization': `Bearer ${token}` }
-                })
-                const meData = await meRes.json()
-                if (meData.id === igAccountId) {
-                  igAccount = acc
-                  break
-                }
-              }
-            } catch (err) {
-              // Ignore decryption or network errors for specific rows
-            }
+        if (igAccountId === '0') {
+          const { data: allAccounts } = await supabase
+            .from('instagram_accounts')
+            .select('*')
+            .limit(1)
+          if (allAccounts && allAccounts.length > 0) {
+            console.log('Test webhook event with ID "0" detected. Routing to first connected account:', allAccounts[0].username)
+            igAccount = allAccounts[0]
           }
         }
       }

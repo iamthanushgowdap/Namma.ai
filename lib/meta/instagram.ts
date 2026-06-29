@@ -99,71 +99,37 @@ export async function getConnectedInstagramAccounts(
 ): Promise<MetaInstagramAccount[]> {
   console.log('--- DEBUG: Meta getConnectedInstagramAccounts ---');
 
-  // Path A: Try to query graph.instagram.com first (for direct Instagram Login for Business tokens)
   try {
     const meResponse = await fetch(
-      `https://graph.instagram.com/me?fields=id,username&access_token=${userAccessToken}`
+      `https://graph.facebook.com/v19.0/me?fields=id,username,name,profile_picture_url`,
+      {
+        headers: {
+          'Authorization': `Bearer ${userAccessToken}`
+        }
+      }
     );
     const meData = await meResponse.json();
+    if (meData.error) {
+      throw new Error(`Meta API error: ${meData.error.message}`);
+    }
+
     if (meData && meData.id && meData.username) {
-      console.log('Detected direct Instagram Login for Business token:', meData);
+      console.log('Successfully retrieved Instagram Professional Account via direct login:', meData);
       return [{
         instagramUserId: meData.id,
         username: meData.username,
         name: meData.name || meData.username,
-        profilePictureUrl: undefined,
+        profilePictureUrl: meData.profile_picture_url || undefined,
         pageId: 'instagram_direct',
         pageAccessToken: userAccessToken
       }];
     }
-  } catch (err) {
-    console.log('Not a direct Instagram token, trying Page flow:', err);
+  } catch (err: any) {
+    console.error('Failed to get Instagram Business Account from direct login token:', err);
+    throw err;
   }
 
-  // Path B: Fallback to Facebook Page connection query flow
-  const pagesResponse = await fetch(
-    `${META_GRAPH_URL}/me/accounts?fields=name,id,access_token&access_token=${userAccessToken}`
-  );
-
-  const pagesData = await pagesResponse.json();
-  console.log('pagesData response:', JSON.stringify(pagesData, null, 2));
-
-  if (pagesData.error) {
-    throw new Error(`Failed to fetch Facebook Pages: ${pagesData.error.message}`);
-  }
-
-  const pages = pagesData.data || [];
-  const instagramAccounts: MetaInstagramAccount[] = [];
-
-  // For each page, check if it has a linked Instagram Business Account
-  for (const page of pages) {
-    const pageId = page.id;
-    const pageAccessToken = page.access_token;
-
-    const igResponse = await fetch(
-      `${META_GRAPH_URL}/${pageId}?fields=instagram_business_account{id,username,name,profile_picture_url}&access_token=${pageAccessToken}`
-    );
-
-    const igData = await igResponse.json();
-    console.log(`igData response for Page ${page.name} (${pageId}):`, JSON.stringify(igData, null, 2));
-
-    if (igData.instagram_business_account) {
-      const igAcct = igData.instagram_business_account;
-      instagramAccounts.push({
-        instagramUserId: igAcct.id,
-        username: igAcct.username,
-        name: igAcct.name,
-        profilePictureUrl: igAcct.profile_picture_url,
-        pageId: pageId,
-        pageAccessToken: pageAccessToken,
-      });
-    }
-  }
-
-  console.log('Found instagram accounts count:', instagramAccounts.length);
-  console.log('-------------------------------------------------');
-
-  return instagramAccounts;
+  return [];
 }
 
 /**
@@ -190,31 +156,6 @@ export async function getInstagramProfile(
     name: data.name,
     profilePictureUrl: data.profile_picture_url,
   };
-}
-
-/**
- * Subscribes a Facebook Page to Instagram Webhooks.
- */
-export async function subscribePageToWebhooks(
-  pageId: string,
-  pageAccessToken: string
-): Promise<boolean> {
-  const response = await fetch(
-    `${getGraphUrl(pageAccessToken)}/${pageId}/subscribed_apps?subscribed_fields=feed,mention`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${pageAccessToken}`,
-      },
-    }
-  );
-
-  const data = await response.json();
-  if (data.error) {
-    throw new Error(`Failed to subscribe Page to webhooks: ${data.error.message}`);
-  }
-
-  return data.success === true;
 }
 
 export interface InstagramMediaItem {

@@ -3,7 +3,6 @@ import { createClient } from '@/lib/supabase/server'
 import {
   exchangeCodeForToken,
   getConnectedInstagramAccounts,
-  subscribePageToWebhooks,
 } from '@/lib/meta/instagram'
 import { encrypt } from '@/lib/crypto'
 
@@ -60,10 +59,10 @@ export async function GET(request: NextRequest) {
     const igAccounts = await getConnectedInstagramAccounts(longLivedUserToken)
 
     if (igAccounts.length === 0) {
-      return NextResponse.redirect(getRedirectUrl('error=No Instagram Business Accounts found connected to your Facebook Pages. Please check your Page settings.'))
+      return NextResponse.redirect(getRedirectUrl('error=No Instagram Professional Accounts found connected. Please check your settings.'))
     }
 
-    // 5. Connect and subscribe all found Instagram accounts
+    // 5. Connect all found Instagram accounts
     for (const account of igAccounts) {
       const encryptedToken = encrypt(account.pageAccessToken)
 
@@ -83,17 +82,6 @@ export async function GET(request: NextRequest) {
       if (upsertError) {
         console.error('Failed to store Instagram account in DB:', upsertError)
         continue
-      }
-
-      // Subscribe Facebook Page to Webhooks for comments, messages, etc.
-      try {
-        if (account.pageId !== 'instagram_direct') {
-          await subscribePageToWebhooks(account.pageId, account.pageAccessToken)
-        } else {
-          console.log(`Skipping Page webhook subscription for direct Instagram connection: ${account.instagramUserId}`)
-        }
-      } catch (webhookSubError: any) {
-        console.error(`Failed to subscribe Page ${account.pageId} to webhooks:`, webhookSubError)
       }
     }
 
