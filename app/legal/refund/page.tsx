@@ -108,7 +108,7 @@ export default function RefundPage() {
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Navigate to the <strong className="text-foreground font-semibold">Billing</strong> section in your dashboard and click <strong className="text-foreground font-semibold">Cancel Subscription</strong>.</li>
-            <li>Alternatively, send an email to <a href="mailto:contact@autoengage.in" className="underline hover:text-foreground">contact@autoengage.in</a> from your registered email address requesting cancellation.</li>
+            <li>Alternatively, send an email to <a href="mailto:support.autoengage@gmail.com" className="underline hover:text-foreground">support.autoengage@gmail.com</a> from your registered email address requesting cancellation.</li>
           </ul>
           <p>
             Upon cancellation, your subscription will remain active, and you will continue to have full access to
@@ -174,8 +174,8 @@ export default function RefundPage() {
             <p className="text-foreground font-semibold mb-1">AutoEngage Support</p>
             <p className="text-muted-foreground">
               Email:{' '}
-              <a href="mailto:contact@autoengage.in" className="underline hover:text-foreground">
-                contact@autoengage.in
+              <a href="mailto:support.autoengage@gmail.com" className="underline hover:text-foreground">
+                support.autoengage@gmail.com
               </a>
             </p>
             <p className="text-muted-foreground">Operator: Thanush Gowda P</p>

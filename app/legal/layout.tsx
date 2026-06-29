@@ -114,10 +114,10 @@ export default function LegalLayout({
                 Contact
               </p>
               <a
-                href="mailto:contact@autoengage.in"
+                href="mailto:support.autoengage@gmail.com"
                 className="text-sm text-zinc-550 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
               >
-                contact@autoengage.in
+                support.autoengage@gmail.com
               </a>
             </div>
           </div>

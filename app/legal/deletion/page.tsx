@@ -65,7 +65,7 @@ export default function DataDeletionPage() {
             If you are unable to access your account or prefer to have our support team delete your data manually, you can send an email request.
           </p>
           <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm leading-relaxed mb-3">
-            Please write to us at <a href="mailto:contact@autoengage.in" className="text-indigo-600 dark:text-indigo-400 hover:underline">contact@autoengage.in</a> with the subject line <strong>&quot;Data Deletion Request&quot;</strong>.
+            Please write to us at <a href="mailto:support.autoengage@gmail.com" className="text-indigo-600 dark:text-indigo-400 hover:underline">support.autoengage@gmail.com</a> with the subject line <strong>&quot;Data Deletion Request&quot;</strong>.
           </p>
           <p className="text-zinc-500 dark:text-zinc-400 text-xs sm:text-sm leading-relaxed">
             Our compliance officer will verify your ownership of the email account and process the deletion of all database records within 24–48 hours, sending you a final confirmation email.

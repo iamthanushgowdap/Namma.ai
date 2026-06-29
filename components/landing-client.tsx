@@ -775,7 +775,7 @@ export default function LandingClient() {
                 </span>
               </summary>
               <div className="px-6 pb-6 text-xs sm:text-sm text-zinc-550 dark:text-zinc-400 leading-relaxed border-t border-zinc-150 dark:border-zinc-800/30 pt-4">
-                We offer a 7-day refund window if you encounter technical difficulties that prevent our service from operating. Please read our complete Refund Policy or contact support at contact@autoengage.in for assistance.
+                We offer a 7-day refund window if you encounter technical difficulties that prevent our service from operating. Please read our complete Refund Policy or contact support at support.autoengage@gmail.com for assistance.
               </div>
             </details>
 
@@ -870,8 +870,8 @@ export default function LandingClient() {
               <h4 className="text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-widest mb-4">Contact</h4>
               <ul className="space-y-2.5 text-xs text-zinc-500 dark:text-zinc-500">
                 <li>
-                  <a href="mailto:contact@autoengage.in" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
-                    contact@autoengage.in
+                  <a href="mailto:support.autoengage@gmail.com" className="hover:text-zinc-900 dark:hover:text-white transition-colors">
+                    support.autoengage@gmail.com
                   </a>
                 </li>
                 <li className="text-[10px] text-zinc-500 dark:text-zinc-600 leading-normal">

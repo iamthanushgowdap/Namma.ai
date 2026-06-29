@@ -90,7 +90,7 @@ export default function PricingSection() {
         'SLA delivery guarantee'
       ],
       cta: 'Contact Sales',
-      href: 'mailto:contact@autoengage.in?subject=Inquiry%20about%20AutoEngage%20Agency%20Plan',
+      href: 'mailto:support.autoengage@gmail.com?subject=Inquiry%20about%20AutoEngage%20Agency%20Plan',
       badge: null,
       color: 'amber'
     }
