@@ -28,6 +28,8 @@ async function metaFetch(
   
   const headers = new Headers(options.headers || {});
   
+  console.log(`[Meta API Request] Path: ${cleanPath} | Token type: ${isDirect ? 'Direct Instagram (IGQ)' : 'Facebook Page (EAA)'}`);
+
   if (isDirect) {
     // Direct Instagram tokens require access_token in query string and do not support Authorization header
     const urlObj = new URL(finalUrl);
