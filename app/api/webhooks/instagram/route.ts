@@ -16,10 +16,7 @@ import { getAIResponse } from '@/lib/ai-engine'
 import crypto from 'crypto'
 
 function getGraphUrl(accessToken: string): string {
-  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
-  return isDirectInstagram 
-    ? 'https://graph.instagram.com/v19.0' 
-    : 'https://graph.facebook.com/v19.0';
+  return 'https://graph.facebook.com/v19.0';
 }
 
 /**
@@ -116,7 +113,7 @@ export async function POST(request: NextRequest) {
               
               if (isDirectIG) {
                 // Direct Instagram token: verify by querying /me and checking username
-                const meRes = await fetch(`https://graph.instagram.com/v19.0/me?fields=id,username`, {
+                const meRes = await fetch(`https://graph.facebook.com/v19.0/me?fields=id,username`, {
                   headers: { 'Authorization': `Bearer ${token}` }
                 })
                 const meData = await meRes.json()
