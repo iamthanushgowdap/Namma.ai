@@ -5,7 +5,7 @@ const META_GRAPH_VERSION = 'v19.0';
 const META_GRAPH_URL = `https://graph.facebook.com/${META_GRAPH_VERSION}`;
 
 function getGraphUrl(accessToken: string): string {
-  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  const isDirectInstagram = accessToken && accessToken.startsWith('IG');
   return isDirectInstagram 
     ? `https://graph.instagram.com/${META_GRAPH_VERSION}` 
     : `https://graph.facebook.com/${META_GRAPH_VERSION}`;
@@ -21,14 +21,14 @@ async function metaFetch(
   accessToken: string,
   options: RequestInit = {}
 ): Promise<Response> {
-  const isDirect = accessToken && accessToken.startsWith('IGQ');
+  const isDirect = accessToken && accessToken.startsWith('IG');
   const baseUrl = getGraphUrl(accessToken);
   const cleanPath = urlPath.startsWith('/') ? urlPath : `/${urlPath}`;
   let finalUrl = `${baseUrl}${cleanPath}`;
   
   const headers = new Headers(options.headers || {});
   
-  console.log(`[Meta API Request]\nHost: ${baseUrl}\nEndpoint: ${cleanPath}\nToken type: ${isDirect ? 'Direct Instagram (IGQ)' : 'Facebook Page (EAA)'}`);
+  console.log(`[Meta API Request]\nHost: ${baseUrl}\nEndpoint: ${cleanPath}\nToken type: ${isDirect ? 'Direct Instagram (IG)' : 'Facebook Page (EAA)'}`);
 
   if (isDirect) {
     // Direct Instagram tokens require access_token in query string and do not support Authorization header

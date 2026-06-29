@@ -14,7 +14,7 @@ const META_GRAPH_VERSION = 'v19.0';
 const META_GRAPH_URL = `https://graph.facebook.com/${META_GRAPH_VERSION}`;
 
 function getGraphUrl(accessToken: string): string {
-  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  const isDirectInstagram = accessToken && accessToken.startsWith('IG');
   return isDirectInstagram 
     ? `https://graph.instagram.com/${META_GRAPH_VERSION}` 
     : `https://graph.facebook.com/${META_GRAPH_VERSION}`;
@@ -79,7 +79,7 @@ export async function exchangeCodeForToken(
   }
 
   const shortLivedToken = data.access_token;
-  console.log(`[Token Exchange] Short-lived token type: ${shortLivedToken.startsWith('IGQ') ? 'Direct Instagram (IGQ)' : shortLivedToken.startsWith('EAA') ? 'Facebook Page (EAA)' : 'Unknown'} | Prefix: ${shortLivedToken.substring(0, 10)}...`);
+  console.log(`[Token Exchange] Short-lived token type: ${shortLivedToken.startsWith('IG') ? 'Direct Instagram (IG)' : shortLivedToken.startsWith('EAA') ? 'Facebook Page (EAA)' : 'Unknown'} | Prefix: ${shortLivedToken.substring(0, 10)}...`);
 
   // 2. Exchange for long-lived Instagram Token (lasts 60 days)
   const longLivedResponse = await fetch(
@@ -91,7 +91,7 @@ export async function exchangeCodeForToken(
     throw new Error(`Failed to get long-lived token: ${longLivedData.error.message}`);
   }
 
-  console.log(`[Token Exchange] Long-lived token type: ${longLivedData.access_token.startsWith('IGQ') ? 'Direct Instagram (IGQ)' : longLivedData.access_token.startsWith('EAA') ? 'Facebook Page (EAA)' : 'Unknown'} | Prefix: ${longLivedData.access_token.substring(0, 10)}...`);
+  console.log(`[Token Exchange] Long-lived token type: ${longLivedData.access_token.startsWith('IG') ? 'Direct Instagram (IG)' : longLivedData.access_token.startsWith('EAA') ? 'Facebook Page (EAA)' : 'Unknown'} | Prefix: ${longLivedData.access_token.substring(0, 10)}...`);
 
   return longLivedData.access_token;
 }
@@ -145,7 +145,7 @@ export async function getInstagramProfile(
   instagramUserId: string,
   accessToken: string
 ): Promise<{ username: string; name?: string; profilePictureUrl?: string }> {
-  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  const isDirectInstagram = accessToken && accessToken.startsWith('IG');
   const targetId = isDirectInstagram ? 'me' : instagramUserId;
   const response = await fetch(
     `${getGraphUrl(accessToken)}/${targetId}?fields=username,name,profile_picture_url`,
@@ -181,7 +181,7 @@ export async function getInstagramMedia(
   instagramUserId: string,
   accessToken: string
 ): Promise<InstagramMediaItem[]> {
-  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  const isDirectInstagram = accessToken && accessToken.startsWith('IG');
   const targetId = isDirectInstagram ? 'me' : instagramUserId;
   const response = await fetch(
     `${getGraphUrl(accessToken)}/${targetId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=24`,

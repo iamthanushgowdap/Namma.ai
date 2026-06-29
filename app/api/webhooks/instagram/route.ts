@@ -16,7 +16,7 @@ import { getAIResponse } from '@/lib/ai-engine'
 import crypto from 'crypto'
 
 function getGraphUrl(accessToken: string): string {
-  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  const isDirectInstagram = accessToken && accessToken.startsWith('IG');
   return isDirectInstagram 
     ? 'https://graph.instagram.com/v19.0' 
     : 'https://graph.facebook.com/v19.0';
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
 
       const workspaceId = igAccount.workspace_id
       const pageAccessToken = decrypt(igAccount.access_token_encrypted)
-      console.log(`[Webhook Event] Decrypted token for account @${igAccount.username} | Token type: ${pageAccessToken.startsWith('IGQ') ? 'Direct Instagram (IGQ)' : 'Facebook Page (EAA)'}`);
+      console.log(`[Webhook Event] Decrypted token for account @${igAccount.username} | Token type: ${pageAccessToken.startsWith('IG') ? 'Direct Instagram (IG)' : 'Facebook Page (EAA)'}`);
 
       // Fetch AI Settings to check channel toggles, master toggle, and reply delay
       const { data: settings } = await supabase
