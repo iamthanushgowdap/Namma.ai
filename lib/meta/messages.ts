@@ -4,6 +4,13 @@
 const META_GRAPH_VERSION = 'v19.0';
 const META_GRAPH_URL = `https://graph.facebook.com/${META_GRAPH_VERSION}`;
 
+function getGraphUrl(accessToken: string): string {
+  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  return isDirectInstagram 
+    ? `https://graph.instagram.com/${META_GRAPH_VERSION}` 
+    : `https://graph.facebook.com/${META_GRAPH_VERSION}`;
+}
+
 /**
  * Sends a direct message (DM) to an Instagram user.
  * @param recipientId The Instagram scoped user ID of the recipient.
@@ -15,7 +22,7 @@ export async function sendInstagramMessage(
   text: string,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
   
   const response = await fetch(url, {
     method: 'POST',
@@ -55,7 +62,7 @@ export async function replyToComment(
   text: string,
   pageAccessToken: string
 ): Promise<{ id: string }> {
-  const url = `${META_GRAPH_URL}/${commentId}/replies?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/${commentId}/replies?access_token=${pageAccessToken}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -90,7 +97,7 @@ export async function sendInstagramPrivateReply(
   text: string,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
   
   const response = await fetch(url, {
     method: 'POST',
@@ -135,7 +142,7 @@ export async function sendFollowGateCard(
   followGateMessage: string,
   pageAccessToken: string
 ): Promise<void> {
-  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -201,7 +208,7 @@ export async function sendNotFollowingCard(
   igAccountUsername: string,
   pageAccessToken: string
 ): Promise<void> {
-  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -264,7 +271,7 @@ export async function sendInstagramImageAttachment(
   imageUrl: string,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -317,7 +324,7 @@ export async function sendInstagramGenericTemplate(
   }>,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -380,7 +387,7 @@ export async function sendInstagramGenericTemplatePrivateReply(
   }>,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${META_GRAPH_URL}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
 
   const response = await fetch(url, {
     method: 'POST',

@@ -13,6 +13,13 @@ export interface MetaInstagramAccount {
 const META_GRAPH_VERSION = 'v19.0';
 const META_GRAPH_URL = `https://graph.facebook.com/${META_GRAPH_VERSION}`;
 
+function getGraphUrl(accessToken: string): string {
+  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  return isDirectInstagram 
+    ? `https://graph.instagram.com/${META_GRAPH_VERSION}` 
+    : `https://graph.facebook.com/${META_GRAPH_VERSION}`;
+}
+
 /**
  * Generates the Facebook OAuth login URL for Instagram messaging access.
  */
@@ -170,7 +177,7 @@ export async function getInstagramProfile(
   accessToken: string
 ): Promise<{ username: string; name?: string; profilePictureUrl?: string }> {
   const response = await fetch(
-    `${META_GRAPH_URL}/${instagramUserId}?fields=username,name,profile_picture_url&access_token=${accessToken}`
+    `${getGraphUrl(accessToken)}/${instagramUserId}?fields=username,name,profile_picture_url&access_token=${accessToken}`
   );
 
   const data = await response.json();
@@ -193,7 +200,7 @@ export async function subscribePageToWebhooks(
   pageAccessToken: string
 ): Promise<boolean> {
   const response = await fetch(
-    `${META_GRAPH_URL}/${pageId}/subscribed_apps?subscribed_fields=feed,mention&access_token=${pageAccessToken}`,
+    `${getGraphUrl(pageAccessToken)}/${pageId}/subscribed_apps?subscribed_fields=feed,mention&access_token=${pageAccessToken}`,
     {
       method: 'POST',
     }
@@ -225,7 +232,7 @@ export async function getInstagramMedia(
   accessToken: string
 ): Promise<InstagramMediaItem[]> {
   const response = await fetch(
-    `${META_GRAPH_URL}/${instagramUserId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=24&access_token=${accessToken}`
+    `${getGraphUrl(accessToken)}/${instagramUserId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=24&access_token=${accessToken}`
   );
 
   const data = await response.json();
@@ -263,7 +270,7 @@ export async function checkUserFollowsAccount(
     // Use the Instagram Graph API to fetch followers filtered by user_id
     // This endpoint works for both public and private Business/Creator accounts
     const response = await fetch(
-      `${META_GRAPH_URL}/${igBusinessAccountId}/followers?user_id=${commenterId}&access_token=${pageAccessToken}`
+      `${getGraphUrl(pageAccessToken)}/${igBusinessAccountId}/followers?user_id=${commenterId}&access_token=${pageAccessToken}`
     );
 
     const data = await response.json();
@@ -297,7 +304,7 @@ export async function getMessageDetails(
 ): Promise<{ text: string | null; senderId: string | null }> {
   try {
     const response = await fetch(
-      `${META_GRAPH_URL}/${messageId}?fields=message,from&access_token=${pageAccessToken}`
+      `${getGraphUrl(pageAccessToken)}/${messageId}?fields=message,from&access_token=${pageAccessToken}`
     );
     const data = await response.json();
     if (data.error) {
