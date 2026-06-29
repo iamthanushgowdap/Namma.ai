@@ -112,30 +112,36 @@ export async function POST(request: NextRequest) {
           for (const acc of allAccounts) {
             try {
               const token = decrypt(acc.access_token_encrypted)
+              const isDirectIG = token && token.startsWith('IGQ')
               
-              // 1. Try standard Facebook Page / User check
-              const meRes = await fetch(`https://graph.facebook.com/v21.0/me?access_token=${token}`)
-              const meData = await meRes.json()
-              if (meData.id === igAccountId) {
-                igAccount = acc
-                break
-              }
-
-              // 2. Try checking direct Instagram profile username mapping to support direct Instagram Login
-              const graphUrl = getGraphUrl(token)
-              const igCheckRes = await fetch(`${graphUrl}/${igAccountId}?fields=username&access_token=${token}`)
-              const igCheckData = await igCheckRes.json()
-              if (igCheckData.username && igCheckData.username.toLowerCase() === acc.username.toLowerCase()) {
-                igAccount = acc
-                
-                // Self-healing: Update DB with the real global Instagram Business Account ID
-                console.log(`Self-healing: Updating instagram_user_id for ${acc.username} to global ID ${igAccountId}`)
-                await supabase
-                  .from('instagram_accounts')
-                  .update({ instagram_user_id: igAccountId })
-                  .eq('id', acc.id)
-                
-                break
+              if (isDirectIG) {
+                // Direct Instagram token: verify by querying /me and checking username
+                const meRes = await fetch(`https://graph.instagram.com/v19.0/me?fields=id,username`, {
+                  headers: { 'Authorization': `Bearer ${token}` }
+                })
+                const meData = await meRes.json()
+                if (meData.username && meData.username.toLowerCase() === acc.username.toLowerCase()) {
+                  igAccount = acc
+                  
+                  // Self-healing: Update DB with the real global Instagram Business Account ID
+                  console.log(`Self-healing: Updating instagram_user_id for ${acc.username} from ${acc.instagram_user_id} to global ID ${igAccountId}`)
+                  await supabase
+                    .from('instagram_accounts')
+                    .update({ instagram_user_id: igAccountId })
+                    .eq('id', acc.id)
+                  
+                  break
+                }
+              } else {
+                // Facebook Page token: check /me for page ID match
+                const meRes = await fetch(`https://graph.facebook.com/v21.0/me`, {
+                  headers: { 'Authorization': `Bearer ${token}` }
+                })
+                const meData = await meRes.json()
+                if (meData.id === igAccountId) {
+                  igAccount = acc
+                  break
+                }
               }
             } catch (err) {
               // Ignore decryption or network errors for specific rows

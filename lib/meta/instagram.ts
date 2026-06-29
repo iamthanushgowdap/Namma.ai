@@ -179,7 +179,8 @@ export async function getInstagramProfile(
   const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
   const targetId = isDirectInstagram ? 'me' : instagramUserId;
   const response = await fetch(
-    `${getGraphUrl(accessToken)}/${targetId}?fields=username,name,profile_picture_url&access_token=${accessToken}`
+    `${getGraphUrl(accessToken)}/${targetId}?fields=username,name,profile_picture_url`,
+    { headers: { 'Authorization': `Bearer ${accessToken}` } }
   );
 
   const data = await response.json();
@@ -239,7 +240,8 @@ export async function getInstagramMedia(
   const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
   const targetId = isDirectInstagram ? 'me' : instagramUserId;
   const response = await fetch(
-    `${getGraphUrl(accessToken)}/${targetId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=24&access_token=${accessToken}`
+    `${getGraphUrl(accessToken)}/${targetId}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=24`,
+    { headers: { 'Authorization': `Bearer ${accessToken}` } }
   );
 
   const data = await response.json();
@@ -277,7 +279,8 @@ export async function checkUserFollowsAccount(
     // Use the Instagram Graph API to fetch followers filtered by user_id
     // This endpoint works for both public and private Business/Creator accounts
     const response = await fetch(
-      `${getGraphUrl(pageAccessToken)}/${igBusinessAccountId}/followers?user_id=${commenterId}&access_token=${pageAccessToken}`
+      `${getGraphUrl(pageAccessToken)}/${igBusinessAccountId}/followers?user_id=${commenterId}`,
+      { headers: { 'Authorization': `Bearer ${pageAccessToken}` } }
     );
 
     const data = await response.json();
@@ -311,7 +314,8 @@ export async function getMessageDetails(
 ): Promise<{ text: string | null; senderId: string | null }> {
   try {
     const response = await fetch(
-      `${getGraphUrl(pageAccessToken)}/${messageId}?fields=message,from&access_token=${pageAccessToken}`
+      `${getGraphUrl(pageAccessToken)}/${messageId}?fields=message,from`,
+      { headers: { 'Authorization': `Bearer ${pageAccessToken}` } }
     );
     const data = await response.json();
     if (data.error) {
