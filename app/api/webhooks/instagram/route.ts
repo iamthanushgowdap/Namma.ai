@@ -15,6 +15,13 @@ import { checkUserFollowsAccount, getMessageDetails } from '@/lib/meta/instagram
 import { getAIResponse } from '@/lib/ai-engine'
 import crypto from 'crypto'
 
+function getGraphUrl(accessToken: string): string {
+  const isDirectInstagram = accessToken && accessToken.startsWith('IGQ');
+  return isDirectInstagram 
+    ? 'https://graph.instagram.com/v19.0' 
+    : 'https://graph.facebook.com/v19.0';
+}
+
 /**
  * GET Handler for Meta Webhook subscription verification.
  */
@@ -93,8 +100,7 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (!igAccount) {
-        // Fallback: If igAccountId is a Facebook Page ID, resolve the connected account
-        // by verifying which decrypted access token matches this Page ID
+        // Fallback: If igAccountId is a Facebook Page ID or a global ID from direct connection, resolve the connected account
         const { data: allAccounts } = await supabase
           .from('instagram_accounts')
           .select('*')
@@ -106,10 +112,29 @@ export async function POST(request: NextRequest) {
           for (const acc of allAccounts) {
             try {
               const token = decrypt(acc.access_token_encrypted)
+              
+              // 1. Try standard Facebook Page / User check
               const meRes = await fetch(`https://graph.facebook.com/v21.0/me?access_token=${token}`)
               const meData = await meRes.json()
               if (meData.id === igAccountId) {
                 igAccount = acc
+                break
+              }
+
+              // 2. Try checking direct Instagram profile username mapping to support direct Instagram Login
+              const graphUrl = getGraphUrl(token)
+              const igCheckRes = await fetch(`${graphUrl}/${igAccountId}?fields=username&access_token=${token}`)
+              const igCheckData = await igCheckRes.json()
+              if (igCheckData.username && igCheckData.username.toLowerCase() === acc.username.toLowerCase()) {
+                igAccount = acc
+                
+                // Self-healing: Update DB with the real global Instagram Business Account ID
+                console.log(`Self-healing: Updating instagram_user_id for ${acc.username} to global ID ${igAccountId}`)
+                await supabase
+                  .from('instagram_accounts')
+                  .update({ instagram_user_id: igAccountId })
+                  .eq('id', acc.id)
+                
                 break
               }
             } catch (err) {
