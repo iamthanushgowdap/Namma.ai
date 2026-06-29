@@ -202,9 +202,12 @@ export async function subscribePageToWebhooks(
   pageAccessToken: string
 ): Promise<boolean> {
   const response = await fetch(
-    `${getGraphUrl(pageAccessToken)}/${pageId}/subscribed_apps?subscribed_fields=feed,mention&access_token=${pageAccessToken}`,
+    `${getGraphUrl(pageAccessToken)}/${pageId}/subscribed_apps?subscribed_fields=feed,mention`,
     {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${pageAccessToken}`,
+      },
     }
   );
 

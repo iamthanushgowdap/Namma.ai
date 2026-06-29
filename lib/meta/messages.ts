@@ -22,12 +22,13 @@ export async function sendInstagramMessage(
   text: string,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages`;
   
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${pageAccessToken}`,
     },
     body: JSON.stringify({
       recipient: {
@@ -62,12 +63,13 @@ export async function replyToComment(
   text: string,
   pageAccessToken: string
 ): Promise<{ id: string }> {
-  const url = `${getGraphUrl(pageAccessToken)}/${commentId}/replies?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/${commentId}/replies`;
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${pageAccessToken}`,
     },
     body: JSON.stringify({
       message: text,
@@ -97,12 +99,13 @@ export async function sendInstagramPrivateReply(
   text: string,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages`;
   
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${pageAccessToken}`,
     },
     body: JSON.stringify({
       recipient: {
@@ -142,11 +145,14 @@ export async function sendFollowGateCard(
   followGateMessage: string,
   pageAccessToken: string
 ): Promise<void> {
-  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages`;
 
   const response = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${pageAccessToken}`,
+    },
     body: JSON.stringify({
       recipient: { id: recipientId },
       message: {
@@ -179,7 +185,10 @@ export async function sendFollowGateCard(
     // Fallback: send plain text if template fails (e.g., account not template-approved)
     const fallback = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${pageAccessToken}`,
+      },
       body: JSON.stringify({
         recipient: { id: recipientId },
         message: {
@@ -208,11 +217,14 @@ export async function sendNotFollowingCard(
   igAccountUsername: string,
   pageAccessToken: string
 ): Promise<void> {
-  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages`;
 
   const response = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${pageAccessToken}`,
+    },
     body: JSON.stringify({
       recipient: { id: recipientId },
       message: {
@@ -245,7 +257,10 @@ export async function sendNotFollowingCard(
     // Fallback: plain text
     const fallback = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${pageAccessToken}`,
+      },
       body: JSON.stringify({
         recipient: { id: recipientId },
         message: {
@@ -271,12 +286,13 @@ export async function sendInstagramImageAttachment(
   imageUrl: string,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages`;
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${pageAccessToken}`,
     },
     body: JSON.stringify({
       recipient: {
@@ -324,12 +340,13 @@ export async function sendInstagramGenericTemplate(
   }>,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages`;
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${pageAccessToken}`,
     },
     body: JSON.stringify({
       recipient: {
@@ -387,12 +404,13 @@ export async function sendInstagramGenericTemplatePrivateReply(
   }>,
   pageAccessToken: string
 ): Promise<{ message_id: string }> {
-  const url = `${getGraphUrl(pageAccessToken)}/me/messages?access_token=${pageAccessToken}`;
+  const url = `${getGraphUrl(pageAccessToken)}/me/messages`;
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${pageAccessToken}`,
     },
     body: JSON.stringify({
       recipient: {
