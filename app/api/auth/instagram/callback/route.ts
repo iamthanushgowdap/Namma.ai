@@ -85,6 +85,27 @@ export async function GET(request: NextRequest) {
         console.error('Failed to store Instagram account in DB:', upsertError)
         continue
       }
+
+      // Automatically register Webhook subscription for the account
+      try {
+        const isDirect = account.pageAccessToken.startsWith('IG')
+        const version = 'v19.0'
+        const baseUrl = isDirect ? 'https://graph.instagram.com' : 'https://graph.facebook.com'
+        const targetId = account.instagramUserId
+        
+        const fields = isDirect 
+          ? 'comments,messages,messaging_postbacks,message_reactions'
+          : 'feed,mention,messages,messaging_postbacks,message_reactions'
+
+        const subUrl = `${baseUrl}/${version}/${targetId}/subscribed_apps?subscribed_fields=${fields}&access_token=${account.pageAccessToken}`
+        console.log(`[OAuth Callback] Activating webhook subscription for @${account.username} (type: ${isDirect ? 'Direct' : 'Page'})`)
+        
+        const subRes = await fetch(subUrl, { method: 'POST' })
+        const subData = await subRes.json()
+        console.log(`[OAuth Callback] Webhook subscription response:`, subData)
+      } catch (subErr) {
+        console.error(`[OAuth Callback] Failed to auto-subscribe webhooks:`, subErr)
+      }
     }
 
     return NextResponse.redirect(getRedirectUrl(`success=true&count=${igAccounts.length}`))
