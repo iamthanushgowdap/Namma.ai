@@ -33,27 +33,22 @@ export async function GET(request: NextRequest) {
       }, { status: 500 })
     }
 
-    const appId = process.env.META_APP_ID
-    const appSecret = process.env.META_APP_SECRET
+    const isDirect = accessToken.startsWith('IG')
 
-    if (!appId || !appSecret) {
-      return NextResponse.json({
-        success: false,
-        error: 'META_APP_ID or META_APP_SECRET is not configured.'
-      }, { status: 500 })
-    }
-
-    // 2. Query debug_token endpoint
-    const debugRes = await fetch(
-      `https://graph.facebook.com/debug_token?input_token=${accessToken}&access_token=${appId}|${appSecret}`
-    )
-    const debugData = await debugRes.json()
+    // 2. Query permissions directly from graph.instagram.com using the direct token
+    const version = 'v19.0'
+    const permissionsUrl = `https://graph.instagram.com/${version}/me/permissions?access_token=${accessToken}`
+    console.log(`[Diagnostic Token API] Fetching permissions from: https://graph.instagram.com/${version}/me/permissions`)
+    
+    const permRes = await fetch(permissionsUrl)
+    const permData = await permRes.json()
 
     return NextResponse.json({
       success: true,
       username: account.username,
       instagram_user_id: account.instagram_user_id,
-      debug_info: debugData
+      token_type: isDirect ? 'Direct Instagram (IG)' : 'Facebook Page (EAA)',
+      permissions_info: permData
     })
 
   } catch (err: any) {
