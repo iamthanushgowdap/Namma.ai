@@ -22,18 +22,16 @@ export function getOAuthUrl(redirectUri: string): string {
     throw new Error('META_APP_ID is not configured');
   }
 
-  // Required scopes for Instagram DM Automation
+  // Required scopes for Instagram Login for Business (direct Instagram credentials login)
   const scopes = [
-    'instagram_basic',
-    'instagram_manage_messages',
-    'instagram_manage_comments',
-    'pages_show_list',
-    'pages_read_engagement',
-    'business_management',
-    'pages_manage_metadata'
+    'instagram_business_basic',
+    'instagram_business_manage_messages',
+    'instagram_business_manage_comments',
+    'instagram_business_content_publish',
+    'instagram_business_manage_insights'
   ];
 
-  return `https://www.facebook.com/${META_GRAPH_VERSION}/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(
+  return `https://www.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${encodeURIComponent(
     redirectUri
   )}&scope=${scopes.join(',')}&response_type=code`;
 }
@@ -52,23 +50,32 @@ export async function exchangeCodeForToken(
     throw new Error('Meta App credentials are not configured');
   }
 
-  // 1. Get short-lived token
-  const response = await fetch(
-    `${META_GRAPH_URL}/oauth/access_token?client_id=${appId}&redirect_uri=${encodeURIComponent(
-      redirectUri
-    )}&client_secret=${appSecret}&code=${code}`
-  );
+  // 1. Get short-lived token from Instagram OAuth endpoint
+  const formData = new URLSearchParams();
+  formData.append('client_id', appId);
+  formData.append('client_secret', appSecret);
+  formData.append('grant_type', 'authorization_code');
+  formData.append('redirect_uri', redirectUri);
+  formData.append('code', code);
+
+  const response = await fetch('https://api.instagram.com/oauth/access_token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: formData.toString(),
+  });
 
   const data = await response.json();
   if (data.error) {
-    throw new Error(`Failed to exchange code: ${data.error.message}`);
+    throw new Error(`Failed to exchange code: ${data.error.message || data.error_message || JSON.stringify(data.error)}`);
   }
 
   const shortLivedToken = data.access_token;
 
-  // 2. Exchange for long-lived User Access Token (lasts 60 days)
+  // 2. Exchange for long-lived Instagram Token (lasts 60 days)
   const longLivedResponse = await fetch(
-    `${META_GRAPH_URL}/oauth/access_token?grant_type=fb_exchange_token&client_id=${appId}&client_secret=${appSecret}&fb_exchange_token=${shortLivedToken}`
+    `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${appSecret}&access_token=${shortLivedToken}`
   );
 
   const longLivedData = await longLivedResponse.json();
@@ -80,18 +87,41 @@ export async function exchangeCodeForToken(
 }
 
 /**
- * Retrieves the connected Instagram business accounts linked to the user's Facebook Pages.
+ * Retrieves the connected Instagram business accounts.
+ * Supports both direct Instagram Login tokens and linked Facebook Page tokens.
  */
 export async function getConnectedInstagramAccounts(
   userAccessToken: string
 ): Promise<MetaInstagramAccount[]> {
-  // 1. Get user's pages
+  console.log('--- DEBUG: Meta getConnectedInstagramAccounts ---');
+
+  // Path A: Try to query graph.instagram.com first (for direct Instagram Login for Business tokens)
+  try {
+    const meResponse = await fetch(
+      `https://graph.instagram.com/me?fields=id,username&access_token=${userAccessToken}`
+    );
+    const meData = await meResponse.json();
+    if (meData && meData.id && meData.username) {
+      console.log('Detected direct Instagram Login for Business token:', meData);
+      return [{
+        instagramUserId: meData.id,
+        username: meData.username,
+        name: meData.name || meData.username,
+        profilePictureUrl: undefined,
+        pageId: 'instagram_direct',
+        pageAccessToken: userAccessToken
+      }];
+    }
+  } catch (err) {
+    console.log('Not a direct Instagram token, trying Page flow:', err);
+  }
+
+  // Path B: Fallback to Facebook Page connection query flow
   const pagesResponse = await fetch(
     `${META_GRAPH_URL}/me/accounts?fields=name,id,access_token&access_token=${userAccessToken}`
   );
 
   const pagesData = await pagesResponse.json();
-  console.log('--- DEBUG: Meta getConnectedInstagramAccounts ---');
   console.log('pagesData response:', JSON.stringify(pagesData, null, 2));
 
   if (pagesData.error) {
@@ -101,7 +131,7 @@ export async function getConnectedInstagramAccounts(
   const pages = pagesData.data || [];
   const instagramAccounts: MetaInstagramAccount[] = [];
 
-  // 2. For each page, check if it has a linked Instagram Business Account
+  // For each page, check if it has a linked Instagram Business Account
   for (const page of pages) {
     const pageId = page.id;
     const pageAccessToken = page.access_token;
@@ -121,7 +151,7 @@ export async function getConnectedInstagramAccounts(
         name: igAcct.name,
         profilePictureUrl: igAcct.profile_picture_url,
         pageId: pageId,
-        pageAccessToken: pageAccessToken, // Using page access tokens ensures permanent offline access
+        pageAccessToken: pageAccessToken,
       });
     }
   }

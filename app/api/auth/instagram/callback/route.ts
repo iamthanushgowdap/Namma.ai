@@ -87,7 +87,11 @@ export async function GET(request: NextRequest) {
 
       // Subscribe Facebook Page to Webhooks for comments, messages, etc.
       try {
-        await subscribePageToWebhooks(account.pageId, account.pageAccessToken)
+        if (account.pageId !== 'instagram_direct') {
+          await subscribePageToWebhooks(account.pageId, account.pageAccessToken)
+        } else {
+          console.log(`Skipping Page webhook subscription for direct Instagram connection: ${account.instagramUserId}`)
+        }
       } catch (webhookSubError: any) {
         console.error(`Failed to subscribe Page ${account.pageId} to webhooks:`, webhookSubError)
       }
